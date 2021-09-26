@@ -1,9 +1,9 @@
 require('./lib/setup');
+require('dotenv').config({ path: './src/.env' });
 const { LogLevel, SapphireClient } = require('@sapphire/framework');
-const { prefix, discord_token } = require('./config.json');
 
 const client = new SapphireClient({
-	defaultPrefix: prefix,
+	defaultPrefix: process.env.PREFIX,
 	regexPrefix: /^(hey +)?bot[,! ]/i,
 	caseInsensitiveCommands: true,
 	logger: {
@@ -26,7 +26,7 @@ const client = new SapphireClient({
 const main = async () => {
 	try {
 		client.logger.info('Logging in');
-		await client.login(discord_token);
+		await client.login(process.env.TOKEN);
 		client.logger.info('logged in');
 	} catch (error) {
 		client.logger.fatal(error);
