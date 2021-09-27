@@ -9,8 +9,6 @@ class UserEvent extends Listener {
 	}
 
 	async run(guild) {
-		console.log(12);
-		console.log(guild.id);
 		try {
 			const guildConfig = await this.container.client.db.fetchGuild(guild.id);
 			console.log('Bot Has Joined Server, Saved To Database.');
