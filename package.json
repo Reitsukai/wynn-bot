@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "watch": "nodemon -L --watch src",
-    "start": "node src/index.js",
+    "start": "nodemon src/index.js",
     "format": "prettier --write \"src/**/*.js\""
   },
   "prettier": "@sapphire/prettier-config",

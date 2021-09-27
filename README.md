@@ -1,8 +1,12 @@
-Wynn discord bot
+# Wynn discord bot
 
-1.
+1. Install
+```
 npm i
-
-2. start
-
+```
+npm install -g nodemon 
+```
+2. Start bot
+```
 npm run start
+```
