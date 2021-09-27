@@ -1,6 +1,6 @@
 Wynn discord bot
 
-1.
+1. install
 npm i
 
 2. start
