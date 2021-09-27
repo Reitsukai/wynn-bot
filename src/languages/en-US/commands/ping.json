@@ -1,0 +1,4 @@
+{
+    "before": "Ping?",
+    "after": "Pong from JavaScript! Bot Latency {{latency}}ms. API Latency {{latency1}}ms"
+}

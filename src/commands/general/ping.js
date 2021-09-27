@@ -1,5 +1,6 @@
 const { Command } = require('@sapphire/framework');
 const { send } = require('@sapphire/plugin-editable-commands');
+const { fetchT } = require('@sapphire/plugin-i18next');
 
 class UserCommand extends Command {
 	constructor(context, options) {
@@ -10,11 +11,10 @@ class UserCommand extends Command {
 	}
 
 	async run(message) {
-		const msg = await send(message, 'Ping?');
 
-		const content = `Pong from JavaScript! Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${
-			msg.createdTimestamp - message.createdTimestamp
-		}ms.`;
+		const t = await fetchT(message);
+		const msg = await send(message, t('commands/ping:before'));
+		const content = t('commands/ping:after', { latency: Math.round(this.container.client.ws.ping), latency1: msg.createdTimestamp - message.createdTimestamp })
 
 		return send(message, content);
 	}
