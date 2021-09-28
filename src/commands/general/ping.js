@@ -6,7 +6,11 @@ class UserCommand extends WynnCommand {
 	constructor(context, options) {
 		super(context, {
 			...options,
-			description: 'ping pong'
+			name: 'ping',
+			aliases: ['ping', 'pong'],
+			description: 'commands/ping:description',
+			usage: 'commands/ping:usage',
+			example: 'commands/ping:example'
 		});
 	}
 
