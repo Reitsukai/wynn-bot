@@ -1,6 +1,7 @@
 require('./lib/setup');
 require('dotenv').config({ path: './src/.env' });
-const { LogLevel, SapphireClient } = require('@sapphire/framework');
+const { LogLevel, SapphireClient } = require('@sapphire/framework'),
+	mongoose = require('mongoose');
 
 const client = new SapphireClient({
 	defaultPrefix: process.env.PREFIX,
@@ -23,8 +24,22 @@ const client = new SapphireClient({
 	]
 });
 
+client.db = require('./database/mongodb');
+
 const main = async () => {
 	try {
+		await mongoose
+			.connect(process.env.MONGO_DB, {
+				useNewUrlParser: true,
+				useUnifiedTopology: true
+			})
+			.then(() => {
+				client.logger.info('MongoDB connected');
+			})
+			.catch((err) => {
+				client.logger.error(`Unable to connect MongoDB. Error: ${err}`);
+			});
+
 		client.logger.info('Logging in');
 		await client.login(process.env.TOKEN);
 		client.logger.info('logged in');
