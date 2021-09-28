@@ -3,7 +3,7 @@ const { Listener } = require('@sapphire/framework');
 class UserEvent extends Listener {
 	constructor(context) {
 		super(context, {
-			once: false,
+			once: true,
 			event: 'guildCreate'
 		});
 	}
