@@ -1,9 +1,10 @@
 require('./lib/setup');
 require('dotenv').config({ path: './src/.env' });
-const { LogLevel, SapphireClient } = require('@sapphire/framework'),
+const { LogLevel } = require('@sapphire/framework'),
 	mongoose = require('mongoose');
+const WynnClient = require('./lib/Structures/WynnClient');
 
-const client = new SapphireClient({
+const client = new WynnClient({
 	defaultPrefix: process.env.PREFIX,
 	regexPrefix: /^(hey +)?bot[,! ]/i,
 	caseInsensitiveCommands: true,
@@ -23,8 +24,6 @@ const client = new SapphireClient({
 		'DIRECT_MESSAGE_REACTIONS'
 	]
 });
-
-client.db = require('./database/mongodb');
 
 const main = async () => {
 	try {
