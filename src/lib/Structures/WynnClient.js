@@ -13,7 +13,7 @@ class WynnClient extends SapphireClient {
 				defaultMissingKey: 'missing',
 				defaultNS: 'default',
 				i18next: {
-					preload: ['en-US'],
+					preload: ['en-US', 'vi-VN'],
 					load: 'currentOnly',
 					lowerCaseLng: false,
 					fallbackLng: 'en-US',
