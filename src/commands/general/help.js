@@ -35,11 +35,14 @@ class UserCommand extends WynnCommand {
 
 	async buildCommandEmbed(t, message, command) {
 		const prefix = await this.container.client.fetchPrefix(message);
+
+		const cooldown = command.preconditions.entries.find((pre) => pre.name === 'Cooldown')?.context?.delay || 0;
+
 		return new MessageEmbed().setTitle(await t('commands/help:title', { cN: command.name })).addFields(
 			{ name: `__${await t('commands/help:descriptionTitle')}__`, value: `\`\`\`${await t(command.description)}\`\`\`` },
 			{ name: `__${t('commands/help:category')}__`, value: `\`\`\`${command.category.toUpperCase()}\`\`\``, inline: true },
 			{ name: `__${t('commands/help:aliases')}__`, value: `\`\`\`${command.aliases.join(', ')}\`\`\``, inline: true },
-			{ name: `__${t('commands/help:cooldown')}__`, value: `\`\`\`${command.cooldownDelay || 0}ms\`\`\``, inline: true },
+			{ name: `__${t('commands/help:cooldown')}__`, value: `\`\`\`${(cooldown / 1000).toFixed(2)}s\`\`\``, inline: true },
 			{
 				name: `__${t('commands/help:usageTitle')}__`,
 				value: `\`\`\`${t(command.usage, { prefix: prefix })}\`\`\``,
