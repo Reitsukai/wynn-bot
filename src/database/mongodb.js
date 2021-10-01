@@ -14,3 +14,7 @@ module.exports.fetchGuild = async function (key) {
 		return guildDB;
 	}
 };
+
+module.exports.updateGuild = async function (key, fieldUpdate) {
+	return await guildSchema.findOneAndUpdate({ id: key }, fieldUpdate, { new: true });
+};
