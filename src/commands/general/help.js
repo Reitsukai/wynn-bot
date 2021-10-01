@@ -21,7 +21,11 @@ class UserCommand extends WynnCommand {
 
 		if (commandName) {
 			const command = await this.container.stores.get('commands').get(commandName);
-			console.log(command);
+
+			if (!command) {
+				return send(message, t('commands/help:commandNotFound', { prefix: await this.container.client.fetchPrefix(message) }));
+			}
+
 			const msg = await this.buildCommandEmbed(t, message, command);
 			return send(message, { embeds: [msg] });
 		}
