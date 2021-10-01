@@ -1,6 +1,4 @@
 const WynnCommand = require('../../lib/Structures/WynnCommand');
-const { Permissions } = require('discord.js');
-
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 
