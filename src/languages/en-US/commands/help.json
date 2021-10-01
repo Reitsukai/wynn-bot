@@ -11,5 +11,6 @@
 	"example": ["{{prefix}}help", "{{prefix}}help ping"],
 	"buildTitle": "List Commands",
 	"buildDescription": "Use {{prefix}}help [command] to view more information",
+	"commandNotFound": "Cannot find this command. View more help for other command by `{{prefix}}help`",
 	"footer": "[]: optional, {}: required"
 }

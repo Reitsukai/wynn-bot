@@ -11,5 +11,6 @@
 	"example": ["{{prefix}}help", "{{prefix}}help ping"],
 	"buildTitle": "Danh sách lệnh",
 	"buildDescription": "Sử dụng {{prefix}}help [lệnh] để xem thêm thông tin",
+	"commandNotFound": "Không thể tìm thấy giúp đỡ cho lệnh này. Xem các lệnh khác bằng cách `{{prefix}}help`",
 	"footer": "[]: tuỳ chọn, {}: bắt buộc"
 }
