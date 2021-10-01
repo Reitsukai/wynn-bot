@@ -1,0 +1,10 @@
+{
+	"description": "View/update display language in server",
+	"usage": "{{prefix}}language [new language | list]",
+	"example": ["{{prefix}}language", "{{prefix}}language en-US", "{{prefix}}language list"],
+	"currentLanguage": "My display language is `{{language}}`",
+	"updateLanguage": "My display language has been change to `{{newLanguage}}`",
+	"listLanguage": "```diff\n- LIST AVAILABLE LANGUAGES\n+ {{list}}```",
+	"invalidInput": "New display language is invalid. Please view list available languages by command `{{prefix}}language list`",
+	"error": "> Cannot update display language for bot. Please try again or join support server\n **Support Server: ** {{supportServer}}"
+}
