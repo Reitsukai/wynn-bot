@@ -26,7 +26,7 @@ class UserCommand extends WynnCommand {
         const t = await fetchT(message);
         const content = t('commands/money:content', {
             money: userInfo.money,
-            emoji: moneyEmoji
+            emoji: moneyEmoji 
         });
         return send(message, content);
 	}
