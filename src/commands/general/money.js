@@ -2,7 +2,6 @@ const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const mUser = require('../../database/schema/user');
-const gameConfig = require('../../config/game');
 const emoji = require('../../config/emoji');
 
 class UserCommand extends WynnCommand {
