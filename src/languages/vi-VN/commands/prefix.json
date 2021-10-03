@@ -1,0 +1,8 @@
+{
+	"description": "Xem/thay đổi prefix của server",
+	"usage": "{{prefix}}prefix [prefix mới]",
+	"example": ["{{prefix}}prefix", "{{prefix}}prefix w"],
+	"currentPrefix": "Prefix của bot là `{{prefix}}`",
+	"updatePrefix": "Prefix của bot đã được cập nhật thành `{{newPrefix}}`",
+	"error": "> Không thể cập nhật prefix cho bot, vui lòng thử lại hoặc tham gia máy chủ hỗ trợ.\n **Máy chủ hỗ trợ: ** {{supportServer}}"
+}
