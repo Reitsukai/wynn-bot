@@ -1,0 +1,13 @@
+{
+	"description": "Coin flipping, coin tossing, or head or tail is the practice of throwing a coin in the air and checking",
+	"usage": "{{prefix}}cf 1000 h",
+	"example": ["{{prefix}}cf 1000 h"],
+    "betting": "{{user}} bet {{bet}} {{emoji}} and ...",
+    "win0": "{{user}} bet {{bet}} {{emoji}} on **heads** and win {{win}} {{emoji}}.",
+    "lose0": "{{user}} bet {{bet}} {{emoji}} on **heads** and lose all ಥ_ಥ.",
+    "win1": "{{user}} bet {{bet}} {{emoji}} on **tails** and win {{win}} {{emoji}}.",
+    "lose1": "{{user}} bet {{bet}} {{emoji}} on **tails** and lose all ಥ_ಥ.",
+    "inputerror": "{{user}} incorrect input format. Example : wcf 1000 h",
+    "rangeerror": "{{user}} please set between {{min}} and {{max}}",
+    "nomoney": "{{user}} don't have enough money to flip coin"
+}

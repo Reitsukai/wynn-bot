@@ -1,6 +1,6 @@
 module.exports = {
 	cf: {
-		min: 0,
-		max: 50000,
+		min: 1,
+		max: 80000,
 	}
 };

@@ -1,0 +1,13 @@
+{
+	"description": "Tung đồng xu trong không khí và kiểm tra xem nó úp hay ngửa",
+	"usage": "{{prefix}}cf 1000 ngửa",
+	"example": ["{{prefix}}cf 1000 úp"],
+    "betting": "{{user}} đặt {{bet}} {{emoji}} và ...",
+    "win0": "{{user}} đặt {{bet}} {{emoji}} vào mặt **ngửa** và thắng {{win}} {{emoji}}.",
+    "lose0": "{{user}} đặt {{bet}} {{emoji}} vào mặt **ngửa** và mất hết ಥ_ಥ.",
+    "win1": "{{user}} đặt {{bet}} {{emoji}} vào mặt **úp** và thắng {{win}} {{emoji}}.",
+    "lose1": "{{user}} đặt {{bet}} {{emoji}} vào mặt **úp** và mất hết ಥ_ಥ.",
+    "inputerror": "{{user}} nhập sai đầu vào. Ví dụ : wcf 1000 ngửa",
+    "rangeerror": "{{user}} vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
+    "nomoney": "{{user}} không đủ tiền để tung đồng xu"
+}
