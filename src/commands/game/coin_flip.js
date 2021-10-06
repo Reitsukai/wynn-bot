@@ -4,6 +4,7 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const mUser = require('../../database/schema/user');
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
+const { saveResultGambling } = require('../../repositories/game/saveResultGambling');
 
 class UserCommand extends WynnCommand {
     constructor(context, options) {
@@ -27,10 +28,17 @@ class UserCommand extends WynnCommand {
             let userInfo = await mUser
                 .findOne({ discordId: message.author.id })
                 .select(['money']);
-            const money = Number(args.next());
-            const betFace = args.next(1);
-            const allBetFaceStatus = ['t', 'h', 'tails', 'heads', 'ngửa', 'úp'];
+            const cashUser = userInfo.money;
 
+            let money = args.next();
+            let betFace = args.next();
+            if (money === 'all') {
+                money = cashUser < maxBet ? cashUser : maxBet;
+            } else {
+                money = Number(money);
+            }
+            betFace = betFace !== null ? betFace : 'heads';
+            const allBetFaceStatus = ['t', 'h', 'tails', 'heads', 'ngửa', 'úp'];
             if (!Number.isInteger(money) || !allBetFaceStatus.includes(betFace)) {
                 return send(message, t('commands/coin_flip:inputerror', {
                     user: message.author.tag
@@ -45,73 +53,67 @@ class UserCommand extends WynnCommand {
                 }));
             }
 
-            if (userInfo.money - money < 0) {
+            if (cashUser - money < 0) {
                 return send(message, t('commands/coin_flip:nomoney', {
                     user: message.author.tag
                 }));
             }
 
             let { win, lose } = await this.coinFlip(message, money, betFace, t);
-            // await saveBetResult(message, win, lose, 'cf');
+            await saveResultGambling(message, win, lose);
             return;
-        } catch (e) {
-
+        } catch (err) {
+            this.container.logger.error(err);
         }
     }
 
-    async coinFlip(msg, bet, betFace, t) {
+    async coinFlip(message, bet, betFace, t) {
         const moneyEmoji = emoji.common.money;
 
-        await send(msg, t('commands/coin_flip:betting', {
-            user: msg.author.tag,
+        await send(message, t('commands/coin_flip:betting', {
+            user: message.author.tag,
             bet: bet,
             emoji: moneyEmoji
         }));
 
         let win = null;
         let lose = null;
+
+        const currentLanguage = await this.container.i18n.fetchLanguage(message);
+
+        //convert
         const coinFace = {
             heads: ['heads', 'h', 'ngửa'],
             tails: ['tails', 't', 'úp']
         }
+        if (currentLanguage === 'vi-VN') {
+            if (coinFace.heads.includes(betFace)) betFace = 'ngửa';
+            else if (coinFace.tails.includes(betFace)) betFace = 'úp';
+        }
+        if (currentLanguage === 'en-US') {
+            if (coinFace.heads.includes(betFace)) betFace = 'heads';
+            else if (coinFace.tails.includes(betFace)) betFace = 'tails';
+        }
 
-        
         let chance = Math.floor(Math.random() * 2);
-        switch ([chance, coinFace.heads.includes(betFace)].join(',')) {
-            case '0,true':
-                win = bet;
-                await send(msg, t('commands/coin_flip:win0', {
-                    user: msg.author.tag,
-                    bet: win,
-                    win: (win * 2),
-                    emoji: moneyEmoji
-                }));
-                break;
-            case '1,true':
-                lose = bet;
-                await send(msg, t('commands/coin_flip:lose0', {
-                    user: msg.author.tag,
-                    bet: lose,
-                    emoji: moneyEmoji
-                }));
-                break;
-            case '0,false':
-                lose = bet;
-                await send(msg, t('commands/coin_flip:lose1', {
-                    user: msg.author.tag,
-                    bet: lose,
-                    emoji: moneyEmoji
-                }));
-                break;
-            case '1,false':
-                win = bet;
-                await send(msg, t('commands/coin_flip:win1', {
-                    user: msg.author.tag,
-                    bet: win,
-                    win: (win * 2),
-                    emoji: moneyEmoji
-                }));
-                break;
+        if (chance == 0) {
+            win = bet;
+            await send(message, t('commands/coin_flip:win', {
+                user: message.author.tag,
+                bet: win,
+                betFace: betFace,
+                win: (win * 2),
+                emoji: moneyEmoji
+            }));
+        }
+        else {
+            lose = bet;
+            await send(message, t('commands/coin_flip:lose', {
+                user: message.author.tag,
+                bet: lose,
+                betFace: betFace,
+                emoji: moneyEmoji
+            }));
         }
         return {
             win: win,
