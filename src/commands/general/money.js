@@ -12,7 +12,8 @@ class UserCommand extends WynnCommand {
 			aliases: ['money', 'currency', 'cash', 'credit', 'balance'],
 			description: 'commands/money:description',
 			usage: 'commands/money:usage',
-			example: 'commands/money:example'
+			example: 'commands/money:example',
+			cooldownDelay: 15000
 		});
 	}
 
