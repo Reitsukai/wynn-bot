@@ -81,7 +81,7 @@ class UserCommand extends WynnCommand {
 
 		const fields = commandGroups.map((item) => ({
 			name: `**${item.category.charAt(0).toUpperCase() + item.category.slice(1)}**`,
-			value: item.commands.map((item) => `\`${item}\``).join(', ')
+			value: item.commands.map((i) => `\`${i}\``).join(', ')
 		}));
 
 		const color = message.member.displayColor;

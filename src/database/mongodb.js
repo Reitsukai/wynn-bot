@@ -1,5 +1,5 @@
 const guildSchema = require('./schema/guild');
-//Create/find Guilds Database
+// Create/find Guilds Database
 module.exports.fetchGuild = async function (key) {
 	let guildDB = await guildSchema.findOne({ id: key });
 
