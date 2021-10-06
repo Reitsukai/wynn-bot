@@ -9,7 +9,7 @@ class UserCommand extends WynnCommand {
 		super(context, {
 			...options,
 			name: 'money',
-			aliases: ['money' , 'currency' , 'cash' , 'credit' , 'balance'],
+			aliases: ['money', 'currency', 'cash', 'credit', 'balance'],
 			description: 'commands/money:description',
 			usage: 'commands/money:usage',
 			example: 'commands/money:example',
@@ -18,17 +18,15 @@ class UserCommand extends WynnCommand {
 	}
 
 	async run(message) {
-        const moneyEmoji = emoji.common.money;
+		const moneyEmoji = emoji.common.money;
 
-        let userInfo = await mUser
-        .findOne({ discordId: message.author.id })
-        .select(['money']);
-        const t = await fetchT(message);
-        const content = t('commands/money:content', {
-            money: userInfo.money,
-            emoji: moneyEmoji 
-        });
-        return send(message, content);
+		const userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
+		const t = await fetchT(message);
+		const content = t('commands/money:content', {
+			money: userInfo.money,
+			emoji: moneyEmoji
+		});
+		return send(message, content);
 	}
 }
 
