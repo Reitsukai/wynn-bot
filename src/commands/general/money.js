@@ -13,7 +13,7 @@ class UserCommand extends WynnCommand {
 			description: 'commands/money:description',
 			usage: 'commands/money:usage',
 			example: 'commands/money:example',
-			cooldownDelay: 20000
+			cooldownDelay: 15000
 		});
 	}
 

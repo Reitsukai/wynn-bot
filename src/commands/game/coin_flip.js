@@ -29,19 +29,24 @@ class UserCommand extends WynnCommand {
                 .findOne({ discordId: message.author.id })
                 .select(['money']);
             const cashUser = userInfo.money;
-
+            //syntax check
             let money = args.next();
             let betFace = args.next();
             if (money === 'all') {
                 money = cashUser < maxBet ? cashUser : maxBet;
-            } else {
+            } else if (!isNaN(Number(money))) {
                 money = Number(money);
+            } else if (betFace === null) {
+                betFace = money;
+                money = Number(1);
             }
+            //choice check
             betFace = betFace !== null ? betFace : 'heads';
-            const allBetFaceStatus = ['t', 'h', 'tails', 'heads', 'ngửa', 'úp'];
-            if (!Number.isInteger(money) || !allBetFaceStatus.includes(betFace)) {
+            const allBetFaceStatus = ['t', 'h', 'tails', 'heads'];
+            if (isNaN(money) || !allBetFaceStatus.includes(betFace)) {
                 return send(message, t('commands/coin_flip:inputerror', {
-                    user: message.author.tag
+                    user: message.author.tag,
+                    prefix: await this.container.client.fetchPrefix(message)
                 }));
             }
 
@@ -59,9 +64,7 @@ class UserCommand extends WynnCommand {
                 }));
             }
 
-            let { win, lose } = await this.coinFlip(message, money, betFace, t);
-            await saveResultGambling(message, win, lose);
-            return;
+            return await this.coinFlip(message, money, betFace, t);
         } catch (err) {
             this.container.logger.error(err);
         }
@@ -79,26 +82,11 @@ class UserCommand extends WynnCommand {
         let win = null;
         let lose = null;
 
-        const currentLanguage = await this.container.i18n.fetchLanguage(message);
-
-        //convert
-        const coinFace = {
-            heads: ['heads', 'h', 'ngửa'],
-            tails: ['tails', 't', 'úp']
-        }
-        if (currentLanguage === 'vi-VN') {
-            if (coinFace.heads.includes(betFace)) betFace = 'ngửa';
-            else if (coinFace.tails.includes(betFace)) betFace = 'úp';
-        }
-        if (currentLanguage === 'en-US') {
-            if (coinFace.heads.includes(betFace)) betFace = 'heads';
-            else if (coinFace.tails.includes(betFace)) betFace = 'tails';
-        }
-
         let chance = Math.floor(Math.random() * 2);
-        if (chance == 0) {
+        if (chance == 0 && (betFace == 'h' || betFace == 'heads')) {
             win = bet;
-            await send(message, t('commands/coin_flip:win', {
+            await saveResultGambling(message, win, lose);
+            await send(message, t('commands/coin_flip:win_heads', {
                 user: message.author.tag,
                 bet: win,
                 betFace: betFace,
@@ -106,19 +94,38 @@ class UserCommand extends WynnCommand {
                 emoji: moneyEmoji
             }));
         }
-        else {
+        else if (chance == 1 && (betFace == 'h' || betFace == 'heads')) {
             lose = bet;
-            await send(message, t('commands/coin_flip:lose', {
+            await saveResultGambling(message, win, lose);
+            await send(message, t('commands/coin_flip:lose_heads', {
                 user: message.author.tag,
                 bet: lose,
                 betFace: betFace,
                 emoji: moneyEmoji
             }));
         }
-        return {
-            win: win,
-            lose: lose
-        };
+        else if (chance == 0 && (betFace == 't' || betFace == 'tails')) {
+            win = bet;
+            await saveResultGambling(message, win, lose);
+            await send(message, t('commands/coin_flip:win_tails', {
+                user: message.author.tag,
+                bet: win,
+                betFace: betFace,
+                win: (win * 2),
+                emoji: moneyEmoji
+            }));
+        }
+        else if (chance == 1 && (betFace == 't' || betFace == 'tails')) {
+            lose = bet;
+            await saveResultGambling(message, win, lose);
+            await send(message, t('commands/coin_flip:lose_tails', {
+                user: message.author.tag,
+                bet: lose,
+                betFace: betFace,
+                emoji: moneyEmoji
+            }));
+        }
+        return;
     }
 }
 
