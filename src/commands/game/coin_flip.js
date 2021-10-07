@@ -81,6 +81,15 @@ class UserCommand extends WynnCommand {
 
 		const { result, value, bet } = flip(betFace);
 
+		await send(
+			message,
+			t('commands/coin_flip:betting', {
+				user: message.author.id,
+				bet: betMoney,
+				emoji: emoji.common.money,
+				face: t(`commands/coin_flip:${bet}`)
+			})
+		);
 		try {
 			await this.container.client.db.updateUser(message.author.id, {
 				$inc: {
