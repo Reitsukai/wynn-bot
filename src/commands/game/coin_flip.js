@@ -20,15 +20,14 @@ class UserCommand extends WynnCommand {
 	}
 
 	async run(message, args) {
-		const ts = Date.now();
 		try {
-			// init emoji, money
+			//init emoji, money
 			const t = await fetchT(message);
 			const maxBet = game.cf.max;
 			const minBet = game.cf.min;
-			const userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
+			let userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
 			const cashUser = userInfo.money;
-			// syntax check
+			//syntax check
 			let money = args.next();
 			let betFace = args.next();
 			if (money === 'all') {
@@ -39,7 +38,7 @@ class UserCommand extends WynnCommand {
 				betFace = money;
 				money = Number(1);
 			}
-			// choice check
+			//choice check
 			betFace = betFace !== null ? betFace : 'heads';
 			const allBetFaceStatus = ['t', 'h', 'tails', 'heads'];
 			if (isNaN(money) || !allBetFaceStatus.includes(betFace)) {
@@ -76,10 +75,6 @@ class UserCommand extends WynnCommand {
 		} catch (err) {
 			this.container.logger.error(err);
 		}
-
-		const te = Date.now();
-
-		console.log(te - ts);
 	}
 
 	async coinFlip(message, bet, betFace, t) {
@@ -97,7 +92,7 @@ class UserCommand extends WynnCommand {
 		let win = null;
 		let lose = null;
 
-		const chance = Math.floor(Math.random() * 2);
+		let chance = Math.floor(Math.random() * 2);
 		if (chance == 0 && (betFace == 'h' || betFace == 'heads')) {
 			win = bet;
 			await saveResultGambling(message, win, lose);
