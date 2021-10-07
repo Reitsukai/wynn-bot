@@ -21,7 +21,6 @@ class UserEvent extends Listener {
 			.send(t(`preconditions:${error.identifier}`, { ...error.context, returnObjects: true, joinArray: ', ' }))
 			.then((msg) => {
 				if (error.identifier === 'preconditionCooldown') {
-					console.log(error);
 					setTimeout(() => {
 						msg.delete();
 					}, timeOutCooldown);
