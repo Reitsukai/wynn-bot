@@ -33,5 +33,5 @@ module.exports.fetchUser = async function (key) {
 };
 
 module.exports.updateUser = async function (key, fieldUpdate) {
-	return await userSchema.findOneAndUpdate(key, fieldUpdate, { new: true });
+	return await userSchema.findOneAndUpdate({ discordId: key }, fieldUpdate, { new: true });
 };
