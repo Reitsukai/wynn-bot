@@ -31,3 +31,7 @@ module.exports.fetchUser = async function (key) {
 		return userDB;
 	}
 };
+
+module.exports.updateUser = async function (key, fieldUpdate) {
+	return await userSchema.findOneAndUpdate(key, fieldUpdate, { new: true });
+};
