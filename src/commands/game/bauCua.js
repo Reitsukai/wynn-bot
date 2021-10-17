@@ -1,10 +1,8 @@
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
-const mUser = require('../../database/schema/user');
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
-const { saveResultGambling } = require('../../repositories/game/saveResultGambling');
 const { MessageEmbed } = require('discord.js');
 
 class UserCommand extends WynnCommand {
@@ -26,12 +24,11 @@ class UserCommand extends WynnCommand {
             const t = await fetchT(message);
             const maxBet = game.baucua.max;
             const minBet = game.baucua.min;
-            let userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
-            const cashUser = userInfo.money;
+            let userInfo = await this.container.client.db.fetchUser(message.author.id);
             //syntax check
-            let money = Number(args.next());
+            let betMoney = (await args.next()) === 'all' ? maxBet : Number(args.next());
 
-            if (isNaN(money)) {
+            if (isNaN(betMoney)) {
                 return send(
                     message,
                     t('commands/baucua:inputerror', {
@@ -41,7 +38,7 @@ class UserCommand extends WynnCommand {
                 );
             }
 
-            if (money < minBet || money > maxBet) {
+            if (betMoney < minBet || betMoney > maxBet) {
                 return send(
                     message,
                     t('commands/baucua:rangeerror', {
@@ -52,7 +49,7 @@ class UserCommand extends WynnCommand {
                 );
             }
 
-            if (cashUser - money < 0) {
+            if (userInfo.money - betMoney < 0) {
                 return send(
                     message,
                     t('commands/baucua:nomoney', {
@@ -74,7 +71,7 @@ class UserCommand extends WynnCommand {
             const cancel = emoji.common.tick_x;
             let numOfBet = [0, 0, 0, 0, 0, 0];
             //create message
-            let newMsg = await send(message, { embeds: [createBetMessage(message, money, dices, moneyEmoji, t)] });
+            let newMsg = await send(message, { embeds: [createBetMessage(message, betMoney, dices, moneyEmoji, t)] });
             await Promise.all([
                 newMsg.react(dice_icon),
                 newMsg.react(cancel),
@@ -95,7 +92,11 @@ class UserCommand extends WynnCommand {
             collector.on('collect', async (reaction, user) => {
                 let status = 0;
                 if (reaction.emoji.name === cancel) { //cancel thì hoàn tiền
-                    await saveResultGambling(message, numOfBet.reduce(function (a, b) { return a + b; }, 0), null);
+                    await this.container.client.db.updateUser(message.author.id, {
+                        $inc: {
+                            money: numOfBet.reduce(function (a, b) { return a + b; }, 0)
+                        }
+                    });
                     collector.stop();
                     await newMsg.delete();
                 } else if (reaction.emoji.name === dice_icon) { //quay
@@ -119,45 +120,61 @@ class UserCommand extends WynnCommand {
                         lose = bet - win;
                         win = null;
                     }
-                    await saveResultGambling(message, win, lose - bet);
+
+                    await this.container.client.db.updateUser(message.author.id, {
+                        $inc: {
+                            money: win !== null ? win : bet - lose
+                        }
+                    });
+
                     let resultMsg = createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t);
                     await newMsg.edit({ embeds: [resultMsg] });
                 } else { //thay doi
-                    await saveResultGambling(message, null, money);
+
+                    await this.container.client.db.updateUser(message.author.id, {
+                        $inc: {
+                            money: -betMoney
+                        }
+                    });
+
                     switch (reaction.emoji.name) {
                         case dices.bau:
-                            numOfBet[0] += money;
+                            numOfBet[0] += betMoney;
                             status = 0;
                             break;
                         case dices.cua:
-                            numOfBet[1] += money;
+                            numOfBet[1] += betMoney;
                             status = 1;
                             break;
                         case dices.ca:
-                            numOfBet[2] += money;
+                            numOfBet[2] += betMoney;
                             status = 2;
                             break;
                         case dices.ga:
-                            numOfBet[3] += money;
+                            numOfBet[3] += betMoney;
                             status = 3;
                             break;
                         case dices.tom:
-                            numOfBet[4] += money;
+                            numOfBet[4] += betMoney;
                             status = 4;
                             break;
                         case dices.nai:
-                            numOfBet[5] += money;
+                            numOfBet[5] += betMoney;
                             status = 5;
                             break;
                     }
                     await reaction.users.remove(message.author.id);
-                    userInfo = await mUser
-                        .findOne({ discordId: message.author.id })
-                        .select(['money']).lean();
+                    userInfo = await this.container.client.db.fetchUser(message.author.id);
                     //check money
                     if (userInfo.money < 0) {
-                        numOfBet[status] -= money; //reset ve trang thai cu
-                        await saveResultGambling(message, money, null);
+                        numOfBet[status] -= betMoney; //reset ve trang thai cu
+
+                        await this.container.client.db.updateUser(message.author.id, {
+                            $inc: {
+                                money: betMoney
+                            }
+                        });
+
                         let processMsg = editProcessMessage(message, dices, numOfBet, t, 'warn');
                         await newMsg.edit({ embeds: [processMsg] });
                     } else {
@@ -167,8 +184,8 @@ class UserCommand extends WynnCommand {
                 }
             });
             return;
-        } catch (err) {
-            this.container.logger.error(err);
+        } catch {
+            return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
         }
     }
 
