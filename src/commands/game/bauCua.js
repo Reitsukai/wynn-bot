@@ -16,7 +16,7 @@ class UserCommand extends WynnCommand {
             description: 'commands/baucua:description',
             usage: 'commands/baucua:usage',
             example: 'commands/baucua:example',
-            cooldownDelay: 20000
+            cooldownDelay: 5000
         });
     }
 
@@ -86,23 +86,19 @@ class UserCommand extends WynnCommand {
                 newMsg.react(dices.nai)
             ]);
             //bet and result
-            const filter = (reaction, user) => user.id === message.author.id &&
-                (reaction.emoji.toString() === dices.bau ||
-                    reaction.emoji.toString() === dices.cua ||
-                    reaction.emoji.toString() === dices.ca ||
-                    reaction.emoji.toString() === dices.ga ||
-                    reaction.emoji.toString() === dices.tom ||
-                    reaction.emoji.toString() === dices.nai ||
-                    reaction.emoji.toString() === dice_icon ||
-                    reaction.emoji.toString() === cancel);
-            const collector = newMsg.createReactionCollector(filter, { time: 60000 });
+            const filter = (reaction, user) => {
+                return [dice_icon, cancel, dices.bau, dices.cua, dices.ca, dices.ga, dices.tom, dices.nai].includes(reaction.emoji.name)
+                    && user.id === message.author.id;
+            };
+
+            const collector = newMsg.createReactionCollector({ filter, time: 40000 });
             collector.on('collect', async (reaction, user) => {
                 let status = 0;
-                if (reaction.emoji.toString() === cancel) { //cancel thì hoàn tiền
+                if (reaction.emoji.name === cancel) { //cancel thì hoàn tiền
                     await saveResultGambling(message, numOfBet.reduce(function (a, b) { return a + b; }, 0), null);
                     collector.stop();
                     await newMsg.delete();
-                } else if (reaction.emoji.toString() === dice_icon) { //quay
+                } else if (reaction.emoji.name === dice_icon) { //quay
                     await Promise.all([
                         collector.stop(),
                         newMsg.reactions.removeAll()
@@ -128,7 +124,7 @@ class UserCommand extends WynnCommand {
                     await newMsg.edit({ embeds: [resultMsg] });
                 } else { //thay doi
                     await saveResultGambling(message, null, money);
-                    switch (reaction.emoji.toString()) {
+                    switch (reaction.emoji.name) {
                         case dices.bau:
                             numOfBet[0] += money;
                             status = 0;
