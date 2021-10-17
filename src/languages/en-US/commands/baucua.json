@@ -6,7 +6,7 @@
     "inputerror": "**{{user}}** incorrect input format. Example : {{prefix}}bc 1000",
     "rangeerror": "**{{user}}** please set between {{min}} and {{max}}",
     "nomoney": "**{{user}}** don't have enough money to bet Fish Shrimp Crab",
-    "description": "Fish 🐟 Shrimp 🦐 Crab 🦀",
+    "description": "Game Fish 🐟 Shrimp 🦐 Crab 🦀, after 40 seconds will automatically rotate if you don't press spin",
     "title": "===>🎲   Fish 🐟 Shrimp 🦐 Crab 🦀   🎲<===",
     "descrp": "**{{author}}** react to select cell you want to bet",
     "footer": "Note: Each react is equal **{{bet}} {{emoji}}** you bet",

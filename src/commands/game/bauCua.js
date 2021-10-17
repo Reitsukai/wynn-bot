@@ -14,7 +14,7 @@ class UserCommand extends WynnCommand {
             description: 'commands/baucua:description',
             usage: 'commands/baucua:usage',
             example: 'commands/baucua:example',
-            cooldownDelay: 5000
+            cooldownDelay: 25000
         });
     }
 
@@ -26,8 +26,8 @@ class UserCommand extends WynnCommand {
             const minBet = game.baucua.min;
             let userInfo = await this.container.client.db.fetchUser(message.author.id);
             //syntax check
-            let betMoney = (await args.next()) === 'all' ? maxBet : Number(args.next());
-
+            let input = (await args.next());
+            let betMoney = input === 'all' ? maxBet : Number(input);
             if (isNaN(betMoney)) {
                 return send(
                     message,
@@ -183,6 +183,38 @@ class UserCommand extends WynnCommand {
                     }
                 }
             });
+            //hết giờ thì tự quay
+            collector.on('end', async (reaction, user) => {
+                await Promise.all([
+                    collector.stop(),
+                    newMsg.reactions.removeAll()
+                ]);
+                let bet = 0;
+                let win = null;
+                let lose = null;
+                for (var i in numOfBet) { bet += numOfBet[i]; }
+                let randDices = [];
+                while (randDices.length < 3) {
+                    randDices.push(Math.floor(Math.random() * 6));
+                }
+                win = numOfBet[randDices[0]] * 2 + numOfBet[randDices[1]] * 2 + numOfBet[randDices[2]] * 2;
+                //TH ra giống nhau
+                if (randDices[0] == randDices[1] || randDices[0] == randDices[2]) win -= numOfBet[randDices[0]];
+                if (randDices[1] == randDices[2]) win -= numOfBet[randDices[1]];
+                if (win < bet) {
+                    lose = bet - win;
+                    win = null;
+                }
+
+                await this.container.client.db.updateUser(message.author.id, {
+                    $inc: {
+                        money: win !== null ? win : bet - lose
+                    }
+                });
+
+                let resultMsg = createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t);
+                await newMsg.edit({ embeds: [resultMsg] });
+            });
             return;
         } catch {
             return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
@@ -213,8 +245,8 @@ function createBetMessage(message, bet, dices, moneyEmoji, t) {
 }
 
 function editProcessMessage(message, dices, numOfBet, t, warn) {
-    const warnFooter = "======================================";
-    if (warn === 'warn') warnFooter = t('commands/coin_flip:nomoney', { user: message.author.tag });
+    let warnFooter = "======================================";
+    if (warn === 'warn') warnFooter = t('commands/baucua:nomoney', { user: message.author.tag });
     return new MessageEmbed()
         .setTitle(t('commands/baucua:title'))
         .setDescription(t('commands/baucua:descrp', { author: message.author.tag }))

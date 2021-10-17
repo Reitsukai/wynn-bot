@@ -6,7 +6,7 @@
     "inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}bc 1000",
     "rangeerror": "**{{user}}** vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
     "nomoney": "**{{user}}** không đủ tiền để chơi Tôm Cua Cá",
-    "description": "Tôm 🦐 Cua 🦀 Cá 🐟",
+    "description": "Trò chơi Tôm 🦐 Cua 🦀 Cá 🐟, sau 40 giây sẽ tự động quay nếu bạn không bấm quay",
     "title": "===>🎲   Tôm 🦐 Cua 🦀 Cá 🐟   🎲<===",
     "descrp": "**{{author}}** bấm để chọn ô bạn muốn đặt",
     "footer": "Lưu ý: Mỗi react bằng **{{bet}} {{emoji}}** đã đặt",
