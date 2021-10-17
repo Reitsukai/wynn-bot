@@ -84,7 +84,7 @@ class UserCommand extends WynnCommand {
 		await send(
 			message,
 			t('commands/coin_flip:betting', {
-				user: message.author.id,
+				user: message.author.tag,
 				bet: betMoney,
 				emoji: emoji.common.money,
 				face: t(`commands/coin_flip:${bet}`)
@@ -100,7 +100,7 @@ class UserCommand extends WynnCommand {
 			await send(
 				message,
 				t('commands/coin_flip:result', {
-					user: message.author.username,
+					user: message.author.tag,
 					money: betMoney,
 					status: result ? t('commands/coin_flip:win') : t('commands/coin_flip:lost'),
 					value: t(`commands/coin_flip:${value}`),
