@@ -18,8 +18,24 @@ class UserCommand extends WynnCommand {
 		const t = await fetchT(message);
 
 		const commandName = await args.pick('string').catch(() => null);
-
 		if (commandName) {
+			if(commandName.includes('ownerBot') && process.env.OWNER_IDS.split(',').includes(message.author.id)){
+				const commandNameOwner = await args.next();
+				if(commandNameOwner === null){
+					return send(message, { embeds: [await this.buildHelpOwner(t, message)] });
+				}
+
+				const commandOwner = await this.container.stores.get('commands').get(commandNameOwner);
+
+				if(!commandOwner) {
+					return send(message, t('commands/help:commandNotFound', { prefix: await this.container.client.fetchPrefix(message) }));
+				}
+
+				const msg = await this.buildCommandEmbed(t, message, commandOwner);
+				return send(message, { embeds: [msg] });
+				
+			}
+
 			const command = await this.container.stores.get('commands').get(commandName);
 
 			if (!command) {
@@ -67,7 +83,8 @@ class UserCommand extends WynnCommand {
 		const commandGroups = [];
 
 		categories.forEach((category) => {
-			let commands = this.container.stores
+			if(!(category === 'ownerBot')){
+				let commands = this.container.stores
 				.get('commands')
 				.filter((command) => command.category === category)
 				.toJSON();
@@ -77,6 +94,43 @@ class UserCommand extends WynnCommand {
 				category: category,
 				commands: commands
 			});
+			}
+		});
+
+		const fields = commandGroups.map((item) => ({
+			name: `**${item.category.charAt(0).toUpperCase() + item.category.slice(1)}**`,
+			value: item.commands.map((i) => `\`${i}\``).join(', ')
+		}));
+
+		const color = message.member.displayColor;
+		return new MessageEmbed()
+			.setTitle(t('commands/help:buildTitle'))
+			.setDescription(`\`\`\`${t('commands/help:buildDescription', { prefix })}\`\`\``)
+			.setColor(color)
+			.addFields(fields)
+			.setThumbnail(this.container.client.user.displayAvatarURL())
+			.setFooter(t('commands/help:footer'));
+	}
+
+	async buildHelpOwner(t, message) {
+		const prefix = await this.container.client.fetchPrefix(message);
+		const categories = this.container.stores.get('commands').categories;
+
+		const commandGroups = [];
+
+		categories.forEach((category) => {
+			if(category === 'ownerBot'){
+				let commands = this.container.stores
+				.get('commands')
+				.filter((command) => command.category === category)
+				.toJSON();
+
+			commands = Object.assign(commands).map((item) => item.name);
+			commandGroups.push({
+				category: category,
+				commands: commands
+			});
+			}
 		});
 
 		const fields = commandGroups.map((item) => ({
