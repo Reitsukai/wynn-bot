@@ -92,18 +92,17 @@ class UserCommand extends WynnCommand {
             collector.on('collect', async (reaction, user) => {
                 let status = 0;
                 if (reaction.emoji.name === cancel) { //cancel thì hoàn tiền
+                    collector.stop("done");
                     await this.container.client.db.updateUser(message.author.id, {
                         $inc: {
                             money: numOfBet.reduce(function (a, b) { return a + b; }, 0)
                         }
                     });
-                    collector.stop();
                     await newMsg.delete();
+                    return;
                 } else if (reaction.emoji.name === dice_icon) { //quay
-                    await Promise.all([
-                        collector.stop(),
-                        newMsg.reactions.removeAll()
-                    ]);
+                    collector.stop("done");
+                    await newMsg.reactions.removeAll();
                     let bet = 0;
                     let win = null;
                     let lose = null;
@@ -129,6 +128,7 @@ class UserCommand extends WynnCommand {
 
                     let resultMsg = createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t);
                     await newMsg.edit({ embeds: [resultMsg] });
+                    return;
                 } else { //thay doi
 
                     await this.container.client.db.updateUser(message.author.id, {
@@ -183,37 +183,17 @@ class UserCommand extends WynnCommand {
                     }
                 }
             });
-            //hết giờ thì tự quay
-            collector.on('end', async (reaction, user) => {
-                await Promise.all([
-                    collector.stop(),
-                    newMsg.reactions.removeAll()
-                ]);
-                let bet = 0;
-                let win = null;
-                let lose = null;
-                for (var i in numOfBet) { bet += numOfBet[i]; }
-                let randDices = [];
-                while (randDices.length < 3) {
-                    randDices.push(Math.floor(Math.random() * 6));
+            //hết giờ thì cancel
+            collector.on('end', async(reason) => {
+                if (reason == "time") {
+                    await this.container.client.db.updateUser(message.author.id, {
+                        $inc: {
+                            money: numOfBet.reduce(function(a, b) { return a + b; }, 0)
+                        }
+                    });
+                    await newMsg.delete();
+                    return;
                 }
-                win = numOfBet[randDices[0]] * 2 + numOfBet[randDices[1]] * 2 + numOfBet[randDices[2]] * 2;
-                //TH ra giống nhau
-                if (randDices[0] == randDices[1] || randDices[0] == randDices[2]) win -= numOfBet[randDices[0]];
-                if (randDices[1] == randDices[2]) win -= numOfBet[randDices[1]];
-                if (win < bet) {
-                    lose = bet - win;
-                    win = null;
-                }
-
-                await this.container.client.db.updateUser(message.author.id, {
-                    $inc: {
-                        money: win !== null ? win : bet - lose
-                    }
-                });
-
-                let resultMsg = createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t);
-                await newMsg.edit({ embeds: [resultMsg] });
             });
             return;
         } catch {
