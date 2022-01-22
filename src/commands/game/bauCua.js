@@ -111,11 +111,9 @@ class UserCommand extends WynnCommand {
                 let status = 0;
                 if (reaction.emoji.name === cancel) { //cancel thì hoàn tiền
                     collector.stop("done");
-                    await this.container.client.db.updateUser(message.author.id, {
-                        $inc: {
-                            money: numOfBet.reduce(function (a, b) { return a + b; }, 0)
-                        }
-                    });
+
+                    this.saveBetResult(message, numOfBet.reduce(function(a, b) { return a + b; }, 0));
+
                     await newMsg.delete();
                     return;
                 } else if (reaction.emoji.name === dice_icon) { //quay
@@ -138,11 +136,8 @@ class UserCommand extends WynnCommand {
                         win = null;
                     }
 
-                    await this.container.client.db.updateUser(message.author.id, {
-                        $inc: {
-                            money: win !== null ? win : bet - lose
-                        }
-                    });
+                    this.saveBetResult(message, win !== null ? win : bet - lose);
+
                     if (win != null) {
                         embedMSG.setColor(0x78be5a);
                         editBetMessage(embedMSG, numOfBet, t,
@@ -176,11 +171,7 @@ class UserCommand extends WynnCommand {
                     return;
                 } else { //thay doi
 
-                    await this.container.client.db.updateUser(message.author.id, {
-                        $inc: {
-                            money: -betMoney
-                        }
-                    });
+                    this.saveBetResult(message, -betMoney);
 
                     switch (reaction.emoji.name) {
                         case dices.bau:
@@ -215,11 +206,7 @@ class UserCommand extends WynnCommand {
                     if (userInfo.money < 0) {
                         numOfBet[status] -= betMoney; //reset ve trang thai cu
 
-                        await this.container.client.db.updateUser(message.author.id, {
-                            $inc: {
-                                money: betMoney
-                            }
-                        });
+                        this.saveBetResult(message, betMoney);
 
                         embedMSG.setFooter(t('commands/baucua:nomoney', { user: message.author.tag }));
                     } 
@@ -229,11 +216,8 @@ class UserCommand extends WynnCommand {
             //hết giờ thì cancel
             collector.on('end', async(collected,reason) => {
                 if (reason == "time") {
-                    await this.container.client.db.updateUser(message.author.id, {
-                        $inc: {
-                            money: numOfBet.reduce(function(a, b) { return a + b; }, 0)
-                        }
-                    });
+                    this.saveBetResult(message, numOfBet.reduce(function(a, b) { return a + b; }, 0));
+
                     embedMSG.setColor(0xffd700);
                     embedMSG.setFooter(t('commands/baucua:notactive'));
                     await newMsg.edit({ embeds: [embedMSG] });
@@ -246,7 +230,13 @@ class UserCommand extends WynnCommand {
         }
     }
 
-
+    async saveBetResult(message, money) {
+        return await this.container.client.db.updateUser(message.author.id, {
+            $inc: {
+                money: money
+            }
+        });
+    }
 }
 
 function editBetMessage(embedMSG, numOfBet, t, msgResult) {
