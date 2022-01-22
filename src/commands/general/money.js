@@ -17,7 +17,7 @@ class UserCommand extends WynnCommand {
 		});
 	}
 
-	async run(message) {
+	async messageRun(message) {
 		const moneyEmoji = emoji.common.money;
 
 		const userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);

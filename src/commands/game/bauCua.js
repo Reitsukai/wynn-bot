@@ -30,7 +30,7 @@ class UserCommand extends WynnCommand {
         });
     }
 
-    async run(message, args) {
+    async messageRun(message, args) {
         const t = await fetchT(message);
         try {
             //init emoji, money

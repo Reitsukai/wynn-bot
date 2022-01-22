@@ -14,7 +14,7 @@ class UserCommand extends WynnCommand {
 		});
 	}
 
-	async run(message) {
+	async messageRun(message) {
 		const t = await fetchT(message);
 		const msg = await send(message, t('commands/ping:before'));
 		const content = t('commands/ping:after', {
