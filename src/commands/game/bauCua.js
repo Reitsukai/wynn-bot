@@ -4,6 +4,18 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
 const { MessageEmbed } = require('discord.js');
+const moneyEmoji = emoji.common.money;
+const dices = {
+    bau: emoji.game.baucua.bau,
+    cua: emoji.game.baucua.cua,
+    ca: emoji.game.baucua.ca,
+    ga: emoji.game.baucua.ga,
+    tom: emoji.game.baucua.tom,
+    nai: emoji.game.baucua.nai
+};
+const dice_icon = emoji.game.baucua.dice;
+const cancel = emoji.common.tick_x;
+const blank = emoji.common.blank;
 
 class UserCommand extends WynnCommand {
     constructor(context, options) {
@@ -19,9 +31,9 @@ class UserCommand extends WynnCommand {
     }
 
     async run(message, args) {
+        const t = await fetchT(message);
         try {
             //init emoji, money
-            const t = await fetchT(message);
             const maxBet = game.baucua.max;
             const minBet = game.baucua.min;
             let userInfo = await this.container.client.db.fetchUser(message.author.id);
@@ -58,20 +70,26 @@ class UserCommand extends WynnCommand {
                 );
             }
 
-            const moneyEmoji = emoji.common.money;
-            const dices = {
-                bau: emoji.game.baucua.bau,
-                cua: emoji.game.baucua.cua,
-                ca: emoji.game.baucua.ca,
-                ga: emoji.game.baucua.ga,
-                tom: emoji.game.baucua.tom,
-                nai: emoji.game.baucua.nai
-            };
-            const dice_icon = emoji.game.baucua.dice;
-            const cancel = emoji.common.tick_x;
             let numOfBet = [0, 0, 0, 0, 0, 0];
             //create message
-            let newMsg = await send(message, { embeds: [createBetMessage(message, betMoney, dices, moneyEmoji, t)] });
+            let embedMSG = new MessageEmbed()
+                .setTitle(t('commands/baucua:title'))
+                .setDescription(t('commands/baucua:descrp', { author: message.author.tag }))
+                .addFields(
+                    { name: t('commands/baucua:bau', { emo: dices.bau }), value: '0', inline: true },
+                    { name: t('commands/baucua:cua', { emo: dices.cua }), value: '0', inline: true },
+                    { name: t('commands/baucua:ca', { emo: dices.ca }), value: '0', inline: true },
+                    { name: t('commands/baucua:ga', { emo: dices.ga }), value: '0', inline: true },
+                    { name: t('commands/baucua:tom', { emo: dices.tom }), value: '0', inline: true },
+                    { name: t('commands/baucua:nai', { emo: dices.nai }), value: '0', inline: true },
+                )
+                .addField(`${blank}`,
+                    t('commands/baucua:footer', {
+                        bet: betMoney,
+                        emoji: moneyEmoji
+                    })
+                );
+            let newMsg = await send(message, { embeds: [embedMSG] });
             await Promise.all([
                 newMsg.react(dice_icon),
                 newMsg.react(cancel),
@@ -88,7 +106,7 @@ class UserCommand extends WynnCommand {
                     && user.id === message.author.id;
             };
 
-            const collector = newMsg.createReactionCollector({ filter, time: 40000 });
+            const collector = newMsg.createReactionCollector({ filter, time: 5000 });
             collector.on('collect', async (reaction, user) => {
                 let status = 0;
                 if (reaction.emoji.name === cancel) { //cancel thì hoàn tiền
@@ -125,9 +143,36 @@ class UserCommand extends WynnCommand {
                             money: win !== null ? win : bet - lose
                         }
                     });
-
-                    let resultMsg = createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t);
-                    await newMsg.edit({ embeds: [resultMsg] });
+                    if (win != null) {
+                        embedMSG.setColor(0x78be5a);
+                        editBetMessage(embedMSG, numOfBet, t,
+                            t('commands/baucua:win', {
+                                author: message.author.tag,
+                                icon1: convertEmoji(randDices[0], dices),
+                                icon2: convertEmoji(randDices[1], dices),
+                                icon3: convertEmoji(randDices[2], dices),
+                                bet: bet,
+                                emoji: moneyEmoji,
+                                win: win
+                            })
+                        ); 
+                    }
+                    else {
+                        embedMSG.setColor(0xff0000);
+                        editBetMessage(embedMSG, numOfBet, t, 
+                            t('commands/baucua:lose', {
+                                author: message.author.tag,
+                                icon1: convertEmoji(randDices[0], dices),
+                                icon2: convertEmoji(randDices[1], dices),
+                                icon3: convertEmoji(randDices[2], dices),
+                                bet: bet,
+                                emoji: moneyEmoji,
+                                lose: lose
+                            })
+                        );
+                    }
+                    // let resultMsg = createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t);
+                    await newMsg.edit({ embeds: [embedMSG] });
                     return;
                 } else { //thay doi
 
@@ -166,6 +211,7 @@ class UserCommand extends WynnCommand {
                     await reaction.users.remove(message.author.id);
                     userInfo = await this.container.client.db.fetchUser(message.author.id);
                     //check money
+                    editBetMessage(embedMSG, numOfBet, t, null);
                     if (userInfo.money < 0) {
                         numOfBet[status] -= betMoney; //reset ve trang thai cu
 
@@ -175,23 +221,22 @@ class UserCommand extends WynnCommand {
                             }
                         });
 
-                        let processMsg = editProcessMessage(message, dices, numOfBet, t, 'warn');
-                        await newMsg.edit({ embeds: [processMsg] });
-                    } else {
-                        let processMsg = editProcessMessage(message, dices, numOfBet, t, null);
-                        await newMsg.edit({ embeds: [processMsg] });
-                    }
+                        embedMSG.setFooter(t('commands/baucua:nomoney', { user: message.author.tag }));
+                    } 
+                    await newMsg.edit({ embeds: [embedMSG] });
                 }
             });
             //hết giờ thì cancel
-            collector.on('end', async(reason) => {
+            collector.on('end', async(collected,reason) => {
                 if (reason == "time") {
                     await this.container.client.db.updateUser(message.author.id, {
                         $inc: {
                             money: numOfBet.reduce(function(a, b) { return a + b; }, 0)
                         }
                     });
-                    await newMsg.delete();
+                    embedMSG.setColor(0xffd700);
+                    embedMSG.setFooter(t('commands/baucua:notactive'));
+                    await newMsg.edit({ embeds: [embedMSG] });
                     return;
                 }
             });
@@ -204,41 +249,29 @@ class UserCommand extends WynnCommand {
 
 }
 
-function createBetMessage(message, bet, dices, moneyEmoji, t) {
-    return new MessageEmbed()
-        .setTitle(t('commands/baucua:title'))
-        .setDescription(t('commands/baucua:descrp', { author: message.author.tag }))
-        .addFields(
-            { name: t('commands/baucua:bau', { emo: dices.bau }), value: '0', inline: true },
-            { name: t('commands/baucua:cua', { emo: dices.cua }), value: '0', inline: true },
-            { name: t('commands/baucua:ca', { emo: dices.ca }), value: '0', inline: true },
-            { name: t('commands/baucua:ga', { emo: dices.ga }), value: '0', inline: true },
-            { name: t('commands/baucua:tom', { emo: dices.tom }), value: '0', inline: true },
-            { name: t('commands/baucua:nai', { emo: dices.nai }), value: '0', inline: true },
-        )
-        .addField('=======================================',
-            t('commands/baucua:footer', {
-                bet: bet,
-                emoji: moneyEmoji
-            })
-        );
-}
-
-function editProcessMessage(message, dices, numOfBet, t, warn) {
-    let warnFooter = "======================================";
-    if (warn === 'warn') warnFooter = t('commands/baucua:nomoney', { user: message.author.tag });
-    return new MessageEmbed()
-        .setTitle(t('commands/baucua:title'))
-        .setDescription(t('commands/baucua:descrp', { author: message.author.tag }))
-        .addFields(
+function editBetMessage(embedMSG, numOfBet, t, msgResult) {
+    if(msgResult !== null) {
+        embedMSG.setFields(
             { name: t('commands/baucua:bau', { emo: dices.bau }), value: numOfBet[0].toString(), inline: true },
             { name: t('commands/baucua:cua', { emo: dices.cua }), value: numOfBet[1].toString(), inline: true },
             { name: t('commands/baucua:ca', { emo: dices.ca }), value: numOfBet[2].toString(), inline: true },
             { name: t('commands/baucua:ga', { emo: dices.ga }), value: numOfBet[3].toString(), inline: true },
             { name: t('commands/baucua:tom', { emo: dices.tom }), value: numOfBet[4].toString(), inline: true },
             { name: t('commands/baucua:nai', { emo: dices.nai }), value: numOfBet[5].toString(), inline: true },
-        )
-        .addField('=======================================', warnFooter);
+            { name: `${blank}`, value: msgResult, inline: false}
+        );
+    }
+    else {
+        embedMSG.setFields(
+            { name: t('commands/baucua:bau', { emo: dices.bau }), value: numOfBet[0].toString(), inline: true },
+            { name: t('commands/baucua:cua', { emo: dices.cua }), value: numOfBet[1].toString(), inline: true },
+            { name: t('commands/baucua:ca', { emo: dices.ca }), value: numOfBet[2].toString(), inline: true },
+            { name: t('commands/baucua:ga', { emo: dices.ga }), value: numOfBet[3].toString(), inline: true },
+            { name: t('commands/baucua:tom', { emo: dices.tom }), value: numOfBet[4].toString(), inline: true },
+            { name: t('commands/baucua:nai', { emo: dices.nai }), value: numOfBet[5].toString(), inline: true },
+            { name: `${blank}`, value: `${blank}`, inline: false}
+        );
+    }
 }
 
 function convertEmoji(x, dices) {
@@ -248,55 +281,6 @@ function convertEmoji(x, dices) {
     if (x == 3) return dices.ga;
     if (x == 4) return dices.tom;
     if (x == 5) return dices.nai;
-}
-
-function createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t) {
-    if (win != null) {
-        return new MessageEmbed()
-            .setColor(0x78be5a)
-            .setTitle(t('commands/baucua:title'))
-            .addFields(
-                { name: t('commands/baucua:bau', { emo: dices.bau }), value: numOfBet[0].toString(), inline: true },
-                { name: t('commands/baucua:cua', { emo: dices.cua }), value: numOfBet[1].toString(), inline: true },
-                { name: t('commands/baucua:ca', { emo: dices.ca }), value: numOfBet[2].toString(), inline: true },
-                { name: t('commands/baucua:ga', { emo: dices.ga }), value: numOfBet[3].toString(), inline: true },
-                { name: t('commands/baucua:tom', { emo: dices.tom }), value: numOfBet[4].toString(), inline: true },
-                { name: t('commands/baucua:nai', { emo: dices.nai }), value: numOfBet[5].toString(), inline: true },
-            )
-            .addField('=======================================',
-                t('commands/baucua:win', {
-                    author: message.author.tag,
-                    icon1: convertEmoji(randDices[0], dices),
-                    icon2: convertEmoji(randDices[1], dices),
-                    icon3: convertEmoji(randDices[2], dices),
-                    bet: bet,
-                    emoji: moneyEmoji,
-                    win: win
-                })
-            );
-    }
-    return new MessageEmbed()
-        .setColor(0xff0000)
-        .setTitle(t('commands/baucua:title'))
-        .addFields(
-            { name: t('commands/baucua:bau', { emo: dices.bau }), value: numOfBet[0].toString(), inline: true },
-            { name: t('commands/baucua:cua', { emo: dices.cua }), value: numOfBet[1].toString(), inline: true },
-            { name: t('commands/baucua:ca', { emo: dices.ca }), value: numOfBet[2].toString(), inline: true },
-            { name: t('commands/baucua:ga', { emo: dices.ga }), value: numOfBet[3].toString(), inline: true },
-            { name: t('commands/baucua:tom', { emo: dices.tom }), value: numOfBet[4].toString(), inline: true },
-            { name: t('commands/baucua:nai', { emo: dices.nai }), value: numOfBet[5].toString(), inline: true },
-        )
-        .addField('=======================================',
-            t('commands/baucua:lose', {
-                author: message.author.tag,
-                icon1: convertEmoji(randDices[0], dices),
-                icon2: convertEmoji(randDices[1], dices),
-                icon3: convertEmoji(randDices[2], dices),
-                bet: bet,
-                emoji: moneyEmoji,
-                lose: lose
-            })
-        );
 }
 
 exports.UserCommand = UserCommand;
