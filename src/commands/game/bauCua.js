@@ -106,7 +106,7 @@ class UserCommand extends WynnCommand {
                     && user.id === message.author.id;
             };
 
-            const collector = newMsg.createReactionCollector({ filter, time: 5000 });
+            const collector = newMsg.createReactionCollector({ filter, time: 35000 });
             collector.on('collect', async (reaction, user) => {
                 let status = 0;
                 if (reaction.emoji.name === cancel) { //cancel thì hoàn tiền
