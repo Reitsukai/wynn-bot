@@ -208,7 +208,9 @@ class UserCommand extends WynnCommand {
 
                         this.saveBetResult(message, betMoney);
 
-                        embedMSG.setFooter(t('commands/baucua:nomoney', { user: message.author.tag }));
+                        embedMSG.setFooter({ text: 
+                            t('commands/baucua:nomoney', { user: message.author.tag })
+                        });
                     } 
                     await newMsg.edit({ embeds: [embedMSG] });
                 }
@@ -219,7 +221,9 @@ class UserCommand extends WynnCommand {
                     this.saveBetResult(message, numOfBet.reduce(function(a, b) { return a + b; }, 0));
 
                     embedMSG.setColor(0xffd700);
-                    embedMSG.setFooter(t('commands/baucua:notactive'));
+                    embedMSG.setFooter({ text:
+                        t('commands/baucua:notactive')
+                    });
                     await newMsg.edit({ embeds: [embedMSG] });
                     return;
                 }
