@@ -17,5 +17,6 @@
     "ca": "Fish {{emo}}",
     "ga": "Rooster {{emo}}",
     "tom": "Shrimp {{emo}}",
-    "nai": "Stag {{emo}}"
+    "nai": "Stag {{emo}}",
+    "notactive": "Bet time is up but you haven't decided to play yet ~~>_<~~ "
 }

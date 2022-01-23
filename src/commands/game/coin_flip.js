@@ -17,7 +17,7 @@ class UserCommand extends WynnCommand {
 		});
 	}
 
-	async run(message, args) {
+	async messageRun(message, args) {
 		const t = await fetchT(message);
 		const userInfo = await this.container.client.db.fetchUser(message.author.id);
 

@@ -3,7 +3,7 @@ module.exports = {
 		money: '💸',
 		tick_x: '❌',
 		tick: '✅',
-		blank: '<:blank:616199445289238539>'
+		blank: '<:blank:934295616648003614>'
 	},
 	game: {
 		baucua: {

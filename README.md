@@ -8,3 +8,11 @@ npm i
 ```
 npm run start
 ```
+3. Update
+```
+npm install -g npm-check-updates
+ncu -u
+npm update
+or 
+npm install
+```

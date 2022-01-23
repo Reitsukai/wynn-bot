@@ -14,7 +14,7 @@ class UserCommand extends WynnCommand {
 			example: 'commands/help:example'
 		});
 	}
-	async run(message, args) {
+	async messageRun(message, args) {
 		const t = await fetchT(message);
 
 		const commandName = await args.pick('string').catch(() => null);
