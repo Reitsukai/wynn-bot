@@ -13,30 +13,30 @@ class UserCommand extends WynnCommand {
 		});
 	}
 
-	async run(message, args) {
-		if (process.env.OWNER_IDS.split(',').includes(message.author.id)) {
-			const t = await fetchT(message);
-			let mentionUser = message.mentions.users.first();
-			let userInfo = null;
-			const mentions = await args.next();
-			const money = await args.next();
-///->>> mai fix			//lỗi check input & find user
-			if(!mentionUser){
-				userInfo = await this.container.client.db.fetchUser(mentions);
-			}
-			else {
-				userInfo = await this.container.client.db.fetchUser(mentionUser.id);
-			}
+	async messageRun(message, args) {
+		const t = await fetchT(message);
+		try {
+			if (process.env.OWNER_IDS.split(',').includes(message.author.id)) {
+				let mentionUser = message.mentions.users.first();
+				let userInfo = null;
+				const mentions = await args.next();
+				const money = await args.next();
 
-			if(!userInfo){
-				return message.channel.send('Cannot find user');
-			}
+				if(!mentionUser){
+					userInfo = await this.container.client.db.checkExistUser(mentions);
+				}
+				else {
+					userInfo = await this.container.client.db.checkExistUser(mentionUser.id);
+				}
 
-			if(!money){
-				return message.channel.send('Error money input');
-			}
+				if(!userInfo){
+					return message.channel.send('Cannot find user');
+				}
 
-			try {
+				if(!money || !Number.isInteger(parseInt(money))){
+					return message.channel.send('Error money input');
+				}
+				
 				await this.container.client.db.updateUser(
 					mentionUser ? mentionUser.id : mentions, 
 					{
@@ -44,13 +44,11 @@ class UserCommand extends WynnCommand {
 						money: money
 					}
 				});
-
 				return message.channel.send('Success add ' + money);
-			} catch {
-				return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 			}
+		} catch {
+			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
-
 	}
 }
 
