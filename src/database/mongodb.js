@@ -35,3 +35,11 @@ module.exports.fetchUser = async function (key) {
 module.exports.updateUser = async function (key, fieldUpdate) {
 	return await userSchema.findOneAndUpdate({ discordId: key }, fieldUpdate, { new: true });
 };
+
+module.exports.checkExistUser = async function (key) {
+	let userDB = await userSchema.findOne({ discordId: key });
+
+	if (userDB) {
+		return userDB;
+	}
+};

@@ -18,11 +18,24 @@ class UserCommand extends WynnCommand {
 		const t = await fetchT(message);
 
 		const commandName = await args.pick('string').catch(() => null);
+		
+		if(process.env.OWNER_IDS.split(',').includes(message.author.id)) {
+			if(commandName) {
+				const command = await this.container.stores.get('commands').get(commandName);
+
+				if (!command) {
+					return send(message, t('commands/help:commandNotFound', { prefix: await this.container.client.fetchPrefix(message) }));
+				}
+				const msg = await this.buildCommandEmbed(t, message, command);
+				return send(message, { embeds: [msg] });
+			}
+
+			return send(message, { embeds: [await this.buildHelp(t, message, 'owner')] });
+		}
 
 		if (commandName) {
 			const command = await this.container.stores.get('commands').get(commandName);
-
-			if (!command) {
+			if (!command || command.category === 'ownerBot') {
 				return send(message, t('commands/help:commandNotFound', { prefix: await this.container.client.fetchPrefix(message) }));
 			}
 
@@ -30,7 +43,7 @@ class UserCommand extends WynnCommand {
 			return send(message, { embeds: [msg] });
 		}
 
-		return send(message, { embeds: [await this.buildHelp(t, message)] });
+		return send(message, { embeds: [await this.buildHelp(t, message, null)] });
 	}
 
 	async buildCommandEmbed(t, message, command) {
@@ -60,23 +73,25 @@ class UserCommand extends WynnCommand {
 		);
 	}
 
-	async buildHelp(t, message) {
+	async buildHelp(t, message, flag) {
 		const prefix = await this.container.client.fetchPrefix(message);
 		const categories = this.container.stores.get('commands').categories;
 
 		const commandGroups = [];
 
 		categories.forEach((category) => {
-			let commands = this.container.stores
+			if(flag === 'owner' || category !== 'ownerBot') {
+				let commands = this.container.stores
 				.get('commands')
 				.filter((command) => command.category === category)
 				.toJSON();
 
-			commands = Object.assign(commands).map((item) => item.name);
-			commandGroups.push({
-				category: category,
-				commands: commands
-			});
+				commands = Object.assign(commands).map((item) => item.name);
+				commandGroups.push({
+					category: category,
+					commands: commands
+				});
+			}
 		});
 
 		const fields = commandGroups.map((item) => ({
@@ -91,8 +106,11 @@ class UserCommand extends WynnCommand {
 			.setColor(color)
 			.addFields(fields)
 			.setThumbnail(this.container.client.user.displayAvatarURL())
-			.setFooter(t('commands/help:footer'));
+			.setFooter({ text:
+				t('commands/help:footer')
+			});
 	}
+
 }
 
 exports.UserCommand = UserCommand;
