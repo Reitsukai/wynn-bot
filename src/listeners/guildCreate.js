@@ -1,4 +1,5 @@
 const { Listener } = require('@sapphire/framework');
+const logger = require('../utils/logger');
 
 class UserEvent extends Listener {
 	constructor(context) {
@@ -14,7 +15,7 @@ class UserEvent extends Listener {
 			const guildConfig = await this.container.client.db.fetchGuild(guild.id);
 			console.log('Bot Has Joined Server, Saved To Database.');
 		} catch (err) {
-			console.log(err);
+            logger.error(err);
 		}
 	}
 }

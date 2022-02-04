@@ -1,6 +1,8 @@
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
+const logger = require('../../utils/logger');
+
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
 const { MessageEmbed } = require('discord.js');
@@ -229,7 +231,8 @@ class UserCommand extends WynnCommand {
                 }
             });
             return;
-        } catch {
+		} catch (err) {
+            logger.error(err);
             return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
         }
     }

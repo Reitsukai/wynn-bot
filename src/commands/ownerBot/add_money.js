@@ -1,6 +1,7 @@
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
+const logger = require('../../utils/logger');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -44,9 +45,13 @@ class UserCommand extends WynnCommand {
 						money: money
 					}
 				});
+				logger.warn(
+					`User: ${mentionUser ? mentionUser.id : mentions} | ${money} gold | By ${message.author.id}`
+				);
 				return message.channel.send('Success add ' + money);
 			}
-		} catch {
+		} catch (err) {
+            logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}
