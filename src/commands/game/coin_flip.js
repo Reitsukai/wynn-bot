@@ -81,12 +81,13 @@ class UserCommand extends WynnCommand {
 
 		const { result, value, bet } = flip(betFace);
 
-		await send(
+		let messageResult = await send(
 			message,
 			t('commands/coin_flip:betting', {
 				user: message.author.tag,
 				bet: betMoney,
 				emoji: emoji.common.money,
+				emojispin: emoji.game.cf.spin,
 				face: t(`commands/coin_flip:${bet}`)
 			})
 		);
@@ -97,18 +98,20 @@ class UserCommand extends WynnCommand {
 				}
 			});
 
-			await send(
-				message,
-				t('commands/coin_flip:result', {
-					user: message.author.tag,
-					money: betMoney,
-					status: result ? t('commands/coin_flip:win') : t('commands/coin_flip:lost'),
-					value: t(`commands/coin_flip:${value}`),
-					face: t(`commands/coin_flip:${bet}`),
-					emoji: emoji.common.money,
-					result: result ? betMoney * 2 : betMoney
-				})
-			);
+			setTimeout(function(){
+				messageResult.edit(
+					t('commands/coin_flip:result', {
+						user: message.author.tag,
+						money: betMoney,
+						status: result ? t('commands/coin_flip:win') : t('commands/coin_flip:lost'),
+						value: t(`commands/coin_flip:${value}`),
+						face: t(`commands/coin_flip:${bet}`),
+						emoji: emoji.common.money,
+						emojiResult: result ? emoji.game.cf.win : emoji.game.cf.lose,
+						result: result ? betMoney * 2 : betMoney
+					})
+				)
+			},2000);
 		} catch {
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}

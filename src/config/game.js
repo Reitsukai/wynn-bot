@@ -1,10 +1,10 @@
 module.exports = {
 	cf: {
 		min: 1,
-		max: 80000
+		max: 5000
 	},
 	baucua: {
 		min: 1,
-		max: 20000
+		max: 2000
 	}
 };
