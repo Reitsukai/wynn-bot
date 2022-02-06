@@ -1,5 +1,6 @@
 const { Events, Listener } = require('@sapphire/framework');
 const { fetchT } = require('@sapphire/plugin-i18next');
+const { send } = require('@sapphire/plugin-editable-commands');
 
 class UserEvent extends Listener {
 	constructor(context) {
@@ -15,6 +16,15 @@ class UserEvent extends Listener {
 		if (error.identifier === 'preconditionCooldown') {
 			timeOutCooldown = error.context.remaining;
 			error.context = { ...error.context, remaining: `\`${(error.context.remaining / 1000).toFixed(2)}s\`` };
+		}
+
+		if (error.identifier === 'preconditionClientPermissions') {
+            return send(
+				message,
+				t('preconditions:preconditionClientPermissions', {
+					perm: error.context.missing
+				})
+			);
 		}
 
 		return message.channel
