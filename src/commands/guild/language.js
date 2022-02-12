@@ -1,6 +1,7 @@
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
+const logger = require('../../utils/logger');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -48,7 +49,7 @@ class UserCommand extends WynnCommand {
 				return send(message, newT('commands/language:updateLanguage', { newLanguage: newLang }));
 			}
 		} catch (err) {
-			this.container.logger.error(err);
+            logger.error(err);
 			return send(message, t('commands/language:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}
