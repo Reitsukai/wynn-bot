@@ -1,6 +1,6 @@
 # Wynn discord bot
 
-## [Avatar Bot](https://i.pximg.net/img-original/img/2017/11/29/16/42/23/66087872_p0.jpg)
+## [Avatar Bot](https://www.pixiv.net/en/artworks/66087872)
 
 This avatar drawn by [Lyrin](https://www.pixiv.net/en/users/12546488). 
 Thank you so much for the picture.
