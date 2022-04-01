@@ -11,8 +11,16 @@ class UserEvent extends Listener {
 	async run(message) {
 		if (message.author.bot) return;
 		if (!message.guild) return;
-
-		await this.container.client.db.fetchUser(message.author.id);
+		let userInfo = await this.container.client.db.checkExistUser(message.author.id);
+		if (userInfo != null) {
+			return await this.container.client.db.updateUser(message.author.id, {
+				$inc: {
+					money: 1
+				}
+			});
+		} else {
+			return await this.container.client.db.fetchUser(message.author.id);
+		}
 	}
 }
 
