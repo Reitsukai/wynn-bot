@@ -4,6 +4,7 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -99,7 +100,7 @@ class UserCommand extends WynnCommand {
 				}
 			});
 
-			setTimeout(function(){
+			setTimeout(function () {
 				messageResult.edit(
 					t('commands/coin_flip:result', {
 						user: message.author.tag,
@@ -111,13 +112,19 @@ class UserCommand extends WynnCommand {
 						emojiResult: result ? emoji.game.cf.win : emoji.game.cf.lose,
 						result: result ? betMoney * 2 : betMoney
 					})
-				)
-			},2000);
+				);
+			}, 2000);
 		} catch (err) {
-            logger.error(err);
+			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}
 }
 
-exports.UserCommand = UserCommand;
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('coin_flip')
+		.setDescription('commands/coin_flip:description')
+		.addIntegerOption((option) => option.setName('int').setDescription('Enter an integer')),
+	UserCommand
+};

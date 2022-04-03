@@ -3,6 +3,7 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const mUser = require('../../database/schema/user');
 const emoji = require('../../config/emoji');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -30,4 +31,7 @@ class UserCommand extends WynnCommand {
 	}
 }
 
-exports.UserCommand = UserCommand;
+module.exports = {
+	data: new SlashCommandBuilder().setName('money').setDescription('commands/money:description'),
+	UserCommand
+};

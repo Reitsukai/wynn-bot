@@ -2,6 +2,7 @@ const WynnCommand = require('../../lib/Structures/WynnCommand');
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -49,10 +50,13 @@ class UserCommand extends WynnCommand {
 				return send(message, newT('commands/language:updateLanguage', { newLanguage: newLang }));
 			}
 		} catch (err) {
-            logger.error(err);
+			logger.error(err);
 			return send(message, t('commands/language:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}
 }
 
-exports.UserCommand = UserCommand;
+module.exports = {
+	data: new SlashCommandBuilder().setName('language').setDescription('commands/language:description'),
+	UserCommand
+};

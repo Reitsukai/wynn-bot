@@ -2,6 +2,7 @@ const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 const { MessageEmbed } = require('discord.js');
 const WynnCommand = require('../../lib/Structures/WynnCommand');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -18,9 +19,9 @@ class UserCommand extends WynnCommand {
 		const t = await fetchT(message);
 
 		const commandName = await args.pick('string').catch(() => null);
-		
-		if(process.env.OWNER_IDS.split(',').includes(message.author.id)) {
-			if(commandName) {
+
+		if (process.env.OWNER_IDS.split(',').includes(message.author.id)) {
+			if (commandName) {
 				const command = await this.container.stores.get('commands').get(commandName);
 
 				if (!command) {
@@ -80,11 +81,11 @@ class UserCommand extends WynnCommand {
 		const commandGroups = [];
 
 		categories.forEach((category) => {
-			if(flag === 'owner' || category !== 'ownerBot') {
+			if (flag === 'owner' || category !== 'ownerBot') {
 				let commands = this.container.stores
-				.get('commands')
-				.filter((command) => command.category === category)
-				.toJSON();
+					.get('commands')
+					.filter((command) => command.category === category)
+					.toJSON();
 
 				commands = Object.assign(commands).map((item) => item.name);
 				commandGroups.push({
@@ -106,11 +107,11 @@ class UserCommand extends WynnCommand {
 			.setColor(color)
 			.addFields(fields)
 			.setThumbnail(this.container.client.user.displayAvatarURL())
-			.setFooter({ text:
-				t('commands/help:footer')
-			});
+			.setFooter({ text: t('commands/help:footer') });
 	}
-
 }
 
-exports.UserCommand = UserCommand;
+module.exports = {
+	data: new SlashCommandBuilder().setName('help').setDescription('commands/help:description'),
+	UserCommand
+};

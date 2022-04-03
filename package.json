@@ -4,6 +4,7 @@
 	"description": "Wynn Discord bot",
 	"main": "src/index.js",
 	"scripts": {
+		"register": "node -r dotenv/config src/slash/register.js",
 		"watch": "nodemon -L --watch src",
 		"start": "nodemon src/index.js",
 		"lint": "eslint --fix --ext .js, .",
@@ -28,6 +29,7 @@
 	"homepage": "https://github.com/alikuxac/wynn-bot#readme",
 	"dependencies": {
 		"@discordjs/collection": "^0.5.0",
+		"@discordjs/rest": "^0.3.0",
 		"@sapphire/discord-utilities": "^2.7.0",
 		"@sapphire/discord.js-utilities": "latest",
 		"@sapphire/fetch": "latest",
@@ -41,6 +43,7 @@
 		"@sapphire/type": "^2.1.2",
 		"@sapphire/utilities": "^3.3.0",
 		"@skyra/editable-commands": "^2.1.2",
+		"discord-api-types": "^0.30.0",
 		"discord.js": "^13.6.0",
 		"dotenv": "^16.0.0",
 		"mongoose": "^6.2.0",
