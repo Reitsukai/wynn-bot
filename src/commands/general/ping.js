@@ -22,11 +22,19 @@ class UserCommand extends WynnCommand {
 			latency: Math.round(this.container.client.ws.ping),
 			latency1: msg.createdTimestamp - message.createdTimestamp
 		});
+		if (message.type === 'APPLICATION_COMMAND') {
+			msg.delete();
+			return content;
+		}
 		return send(message, content);
+	}
+
+	async execute(interaction) {
+		return await interaction.reply(await this.messageRun(interaction));
 	}
 }
 
 module.exports = {
-	data: new SlashCommandBuilder().setName('ping').setDescription('commands/ping:description'),
+	data: new SlashCommandBuilder().setName('ping').setDescription('Send ping request and check response times'),
 	UserCommand
 };

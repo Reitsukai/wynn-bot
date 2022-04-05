@@ -20,18 +20,28 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message) {
 		const moneyEmoji = emoji.common.money;
-
-		const userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
 		const t = await fetchT(message);
+		if (message.type === 'APPLICATION_COMMAND') {
+			const userInfo = await mUser.findOne({ discordId: message.user.id }).select(['money']);
+			return t('commands/money:content', {
+				money: userInfo.money,
+				emoji: moneyEmoji
+			});
+		}
+		const userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
 		const content = t('commands/money:content', {
 			money: userInfo.money,
 			emoji: moneyEmoji
 		});
 		return send(message, content);
 	}
+
+	async execute(interaction) {
+		return await interaction.reply(await this.messageRun(interaction));
+	}
 }
 
 module.exports = {
-	data: new SlashCommandBuilder().setName('money').setDescription('commands/money:description'),
+	data: new SlashCommandBuilder().setName('money').setDescription('Check your money'),
 	UserCommand
 };
