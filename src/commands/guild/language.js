@@ -4,6 +4,7 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/index');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
+const { Permissions } = require('discord.js');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -25,7 +26,6 @@ class UserCommand extends WynnCommand {
 	}
 
 	async mainProcess(arg, message) {
-		console.log(arg);
 		const t = await fetchT(message);
 		const currentLanguage = await this.container.i18n.fetchLanguage(message);
 		const languageMap = this.container.i18n.languages;
@@ -64,16 +64,25 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		return await interaction.reply(await this.mainProcess(interaction.options.getString('language'), interaction));
+		if (interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+			return await interaction.reply(await this.mainProcess(interaction.options.getString('language'), interaction));
+		}
+		const t = await fetchT(interaction);
+		return interaction.reply(t('preconditions:AdminOnly'));
 	}
 }
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('language')
-		.setDescription('Check language server')
+		.setDescription('Check or set your language server')
 		.addStringOption((option) =>
-			option.setName('language').setDescription('Enter your language or type "list" to view all language').setRequired(false)
+			option
+				.setName('language')
+				.setDescription('Enter your language to set')
+				.setRequired(false)
+				.addChoice('Tiếng Việt', 'vi-VN')
+				.addChoice('English - US', 'en-US')
 		),
 	UserCommand
 };
