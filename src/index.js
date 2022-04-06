@@ -65,16 +65,17 @@ const main = async () => {
 		});
 		console.log('Successfully reloaded application (/) commands.');
 		//handle
-		client.on('interactionCreate', async (interaction) => {
-			if (!interaction.isCommand()) return;
-			const command = client.stores.get('commands').get(interaction.commandName);
-			if (!command) return;
-			try {
-				command.execute(interaction);
-			} catch (error) {
-				client.logger.error('Error when run slash command');
-			}
-		});
+		// client.on('interactionCreate', async (interaction) => {
+		// 	if (!interaction.isCommand()) return;
+		// 	const command = client.stores.get('commands').get(interaction.commandName);
+		// 	if (!command) return;
+		// 	try {
+		// 		command.execute(interaction);
+		// 	} catch (error) {
+		// 		client.logger.error('Error when run slash command');
+		// 		client.logger.error(error);
+		// 	}
+		// });
 	} catch (error) {
 		client.logger.fatal(error);
 		client.destroy();

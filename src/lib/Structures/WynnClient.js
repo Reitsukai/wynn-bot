@@ -1,4 +1,5 @@
 const { SapphireClient } = require('@sapphire/framework');
+const Discord = require('discord.js');
 
 async function fetchPrefix(message) {
 	const guild = await this.db.fetchGuild(message.guild.id);
@@ -30,7 +31,8 @@ class WynnClient extends SapphireClient {
 
 					return 'en-US';
 				}
-			}
+			},
+			timeouts: new Discord.Collection()
 		});
 		this.db = require('./../../database/mongodb');
 
