@@ -22,11 +22,19 @@ class UserCommand extends WynnCommand {
 		const moneyEmoji = emoji.common.money;
 		const t = await fetchT(message);
 		if (message.type === 'APPLICATION_COMMAND') {
+			const checkCoolDown = await this.container.client.checkTimeCoolDown(message.user.id, this.name, this.options.cooldownDelay, t);
+			if (checkCoolDown) {
+				return checkCoolDown;
+			}
 			const userInfo = await mUser.findOne({ discordId: message.user.id }).select(['money']);
 			return t('commands/money:content', {
 				money: userInfo.money,
 				emoji: moneyEmoji
 			});
+		}
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return send(message, checkCoolDown);
 		}
 		const userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
 		const content = t('commands/money:content', {

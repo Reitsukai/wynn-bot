@@ -14,19 +14,21 @@ class UserEvent extends Listener {
 		if (!interaction.isCommand()) return;
 		const command = this.container.stores.get('commands').get(interaction.commandName);
 		if (!command) return;
+		// let x = this.container.stores.get('preconditions').get('Cooldown').buckets.get(command);
+		// console.log(x.sweepInterval._idleStart);
 		try {
-			const getTimeout = this.container.client.options.timeouts.get(`${interaction.user.id}_${command.name}`) || 0;
+			// const getTimeout = this.container.client.options.timeouts.get(`${interaction.user.id}_${command.name}`) || 0;
 
-			if (Date.now() - getTimeout < 0) {
-				const t = await fetchT(interaction);
-				return interaction.reply(
-					t('preconditions:preconditionCooldown', {
-						remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
-					})
-				);
-			}
+			// if (Date.now() - getTimeout < 0) {
+			// 	const t = await fetchT(interaction);
+			// 	return interaction.reply(
+			// 		t('preconditions:preconditionCooldown', {
+			// 			remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
+			// 		})
+			// 	);
+			// }
 
-			this.container.client.options.timeouts.set(`${interaction.user.id}_${command.name}`, Date.now() + (command.options.cooldownDelay || 0));
+			// this.container.client.options.timeouts.set(`${interaction.user.id}_${command.name}`, Date.now() + (command.options.cooldownDelay || 0));
 			command.execute(interaction);
 		} catch (error) {
 			logger.error(error);

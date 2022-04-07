@@ -1,9 +1,19 @@
-const { SapphireClient } = require('@sapphire/framework');
+const { SapphireClient, container } = require('@sapphire/framework');
 const Discord = require('discord.js');
 
 async function fetchPrefix(message) {
 	const guild = await this.db.fetchGuild(message.guild.id);
 	return guild.prefix;
+}
+
+async function checkTimeCoolDown(id, name, delay, t) {
+	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
+	if (Date.now() - getTimeout < 0) {
+		return t('preconditions:preconditionCooldown', {
+			remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
+		});
+	}
+	container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
 }
 
 class WynnClient extends SapphireClient {
@@ -37,6 +47,8 @@ class WynnClient extends SapphireClient {
 		this.db = require('./../../database/mongodb');
 
 		this.fetchPrefix = fetchPrefix.bind(this);
+
+		this.checkTimeCoolDown = checkTimeCoolDown.bind(this);
 	}
 }
 module.exports = WynnClient;
