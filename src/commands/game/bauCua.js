@@ -3,6 +3,7 @@ const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const utils = require('../../lib/utils');
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
@@ -35,19 +36,27 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return send(message, checkCoolDown);
+		}
+		let input = await args.next();
+		let betMoney = input === 'all' ? maxBet : Number(input);
+		let userInfo = await this.container.client.db.fetchUser(message.author.id);
+		return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
+	}
+
+	async mainProcess(betMoney, message, t, userInfo, userId, tag) {
 		try {
 			//init emoji, money
 			const maxBet = game.baucua.max;
 			const minBet = game.baucua.min;
-			let userInfo = await this.container.client.db.fetchUser(message.author.id);
 			//syntax check
-			let input = await args.next();
-			let betMoney = input === 'all' ? maxBet : Number(input);
 			if (isNaN(betMoney)) {
 				return send(
 					message,
 					t('commands/baucua:inputerror', {
-						user: message.author.tag,
+						user: tag,
 						prefix: await this.container.client.fetchPrefix(message)
 					})
 				);
@@ -57,7 +66,7 @@ class UserCommand extends WynnCommand {
 				return send(
 					message,
 					t('commands/baucua:rangeerror', {
-						user: message.author.tag,
+						user: tag,
 						min: minBet,
 						max: maxBet
 					})
@@ -68,7 +77,7 @@ class UserCommand extends WynnCommand {
 				return send(
 					message,
 					t('commands/baucua:nomoney', {
-						user: message.author.tag
+						user: tag
 					})
 				);
 			}
@@ -77,7 +86,7 @@ class UserCommand extends WynnCommand {
 			//create message
 			let embedMSG = new MessageEmbed()
 				.setTitle(t('commands/baucua:title'))
-				.setDescription(t('commands/baucua:descrp', { author: message.author.tag }))
+				.setDescription(t('commands/baucua:descrp', { author: tag }))
 				.addFields(
 					{ name: t('commands/baucua:bau', { emo: dices.bau }), value: '0', inline: true },
 					{ name: t('commands/baucua:cua', { emo: dices.cua }), value: '0', inline: true },
@@ -108,7 +117,7 @@ class UserCommand extends WynnCommand {
 			const filter = (reaction, user) => {
 				return (
 					[dice_icon, cancel, dices.bau, dices.cua, dices.ca, dices.ga, dices.tom, dices.nai].includes(reaction.emoji.name) &&
-					user.id === message.author.id
+					user.id === userId
 				);
 			};
 
@@ -120,7 +129,7 @@ class UserCommand extends WynnCommand {
 					collector.stop('done');
 
 					this.saveBetResult(
-						message,
+						userId,
 						numOfBet.reduce(function (a, b) {
 							return a + b;
 						}, 0)
@@ -151,7 +160,7 @@ class UserCommand extends WynnCommand {
 						win = null;
 					}
 
-					this.saveBetResult(message, win !== null ? win : bet - lose);
+					this.saveBetResult(userId, win !== null ? win : bet - lose);
 
 					if (win != null) {
 						embedMSG.setColor(0x78be5a);
@@ -160,7 +169,7 @@ class UserCommand extends WynnCommand {
 							numOfBet,
 							t,
 							t('commands/baucua:win', {
-								author: message.author.tag,
+								author: tag,
 								icon1: convertEmoji(randDices[0], dices),
 								icon2: convertEmoji(randDices[1], dices),
 								icon3: convertEmoji(randDices[2], dices),
@@ -176,7 +185,7 @@ class UserCommand extends WynnCommand {
 							numOfBet,
 							t,
 							t('commands/baucua:lose', {
-								author: message.author.tag,
+								author: tag,
 								icon1: convertEmoji(randDices[0], dices),
 								icon2: convertEmoji(randDices[1], dices),
 								icon3: convertEmoji(randDices[2], dices),
@@ -192,7 +201,7 @@ class UserCommand extends WynnCommand {
 				} else {
 					//thay doi
 
-					this.saveBetResult(message, -betMoney);
+					this.saveBetResult(userId, -betMoney);
 
 					switch (reaction.emoji.name) {
 						case dices.bau:
@@ -220,16 +229,16 @@ class UserCommand extends WynnCommand {
 							status = 5;
 							break;
 					}
-					await reaction.users.remove(message.author.id);
-					userInfo = await this.container.client.db.fetchUser(message.author.id);
+					await reaction.users.remove(userId);
+					userInfo = await this.container.client.db.fetchUser(userId);
 					//check money
 					editBetMessage(embedMSG, numOfBet, t, null);
 					if (userInfo.money < 0) {
 						numOfBet[status] -= betMoney; //reset ve trang thai cu
 
-						this.saveBetResult(message, betMoney);
+						this.saveBetResult(userId, betMoney);
 
-						embedMSG.setFooter({ text: t('commands/baucua:nomoney', { user: message.author.tag }) });
+						embedMSG.setFooter({ text: t('commands/baucua:nomoney', { user: tag }) });
 					}
 					await newMsg.edit({ embeds: [embedMSG] });
 				}
@@ -238,7 +247,7 @@ class UserCommand extends WynnCommand {
 			collector.on('end', async (collected, reason) => {
 				if (reason == 'time') {
 					this.saveBetResult(
-						message,
+						userId,
 						numOfBet.reduce(function (a, b) {
 							return a + b;
 						}, 0)
@@ -257,8 +266,8 @@ class UserCommand extends WynnCommand {
 		}
 	}
 
-	async saveBetResult(message, money) {
-		return await this.container.client.db.updateUser(message.author.id, {
+	async saveBetResult(userId, money) {
+		return await this.container.client.db.updateUser(userId, {
 			$inc: {
 				money: money
 			}
@@ -266,7 +275,21 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		return await interaction.reply(await this.messageRun(interaction));
+		const t = await fetchT(interaction);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return interaction.reply(checkCoolDown);
+		}
+		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
+		interaction.reply(t('commands/baucua:description'));
+		return await this.mainProcess(
+			Number(interaction.options.getInteger('betmoney')),
+			interaction,
+			t,
+			userInfo,
+			interaction.user.id,
+			interaction.user.tag
+		);
 	}
 }
 
@@ -306,7 +329,7 @@ function convertEmoji(x, dices) {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('baucua')
-		.setDescription('commands/baucua:description')
-		.addIntegerOption((option) => option.setName('int').setDescription('Enter an integer')),
+		.setDescription('Game Fish 🐟 Shrimp 🦐 Crab 🦀')
+		.addIntegerOption((option) => option.setName('betmoney').setDescription('Enter an integer').setRequired(true)),
 	UserCommand
 };

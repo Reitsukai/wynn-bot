@@ -21,12 +21,16 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		const t = await fetchT(message);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return send(message, checkCoolDown);
+		}
 		const arg = await args.pick('string').catch(() => null);
-		return this.mainProcess(arg, message);
+		return this.mainProcess(arg, message, t);
 	}
 
-	async mainProcess(arg, message) {
-		const t = await fetchT(message);
+	async mainProcess(arg, message, t) {
 		const currentLanguage = await this.container.i18n.fetchLanguage(message);
 		const languageMap = this.container.i18n.languages;
 
@@ -64,10 +68,14 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		if (interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-			return await interaction.reply(await this.mainProcess(interaction.options.getString('language'), interaction));
-		}
 		const t = await fetchT(interaction);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return interaction.reply(checkCoolDown);
+		}
+		if (interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+			return await interaction.reply(await this.mainProcess(interaction.options.getString('language'), interaction, t));
+		}
 		return interaction.reply(t('preconditions:AdminOnly'));
 	}
 }

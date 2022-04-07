@@ -21,12 +21,16 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		const t = await fetchT(message);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return send(message, checkCoolDown);
+		}
 		const prefix = await args.pick('string').catch(() => null);
-		return this.mainProcess(message, prefix);
+		return this.mainProcess(message, prefix, t);
 	}
 
-	async mainProcess(message, prefix) {
-		const t = await fetchT(message);
+	async mainProcess(message, prefix, t) {
 		const currentPrefix = await this.container.client.fetchPrefix(message);
 
 		if (!prefix) {
@@ -46,10 +50,14 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		if (interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-			return await interaction.reply(await this.mainProcess(interaction, interaction.options.getString('prefix')));
-		}
 		const t = await fetchT(interaction);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return interaction.reply(checkCoolDown);
+		}
+		if (interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+			return await interaction.reply(await this.mainProcess(interaction, interaction.options.getString('prefix'), t));
+		}
 		return interaction.reply(t('preconditions:AdminOnly'));
 	}
 }
