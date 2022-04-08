@@ -17,9 +17,9 @@ async function returnForSlashOrSendMessage(message, content) {
 	return await send(message, content);
 }
 
-async function replySlashOrSendMessage(message, content) {
+async function returnForSlashWithLabelOrSendMessage(message, content, status) {
 	if (message.type === 'APPLICATION_COMMAND') {
-		return message.reply(content);
+		return { content: content, status: status };
 	}
 	return await send(message, content);
 }
@@ -27,4 +27,4 @@ async function replySlashOrSendMessage(message, content) {
 module.exports.pickRandom = pickRandom;
 module.exports.sendLoadingMessage = sendLoadingMessage;
 module.exports.returnForSlashOrSendMessage = returnForSlashOrSendMessage;
-module.exports.replySlashOrSendMessage = replySlashOrSendMessage;
+module.exports.returnForSlashWithLabelOrSendMessage = returnForSlashWithLabelOrSendMessage;
