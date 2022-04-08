@@ -7,6 +7,7 @@ const emoji = require('../../config/emoji');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const betFaces = ['h', 'heads', 't', 'tails'];
 const wait = require('node:timers/promises').setTimeout;
+const utils = require('../../lib/utils');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
