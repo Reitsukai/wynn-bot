@@ -20,6 +20,8 @@ const dices = {
 const dice_icon = emoji.game.baucua.dice;
 const cancel = emoji.common.tick_x;
 const blank = emoji.common.blank;
+const maxBet = game.baucua.max;
+const minBet = game.baucua.min;
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -43,45 +45,49 @@ class UserCommand extends WynnCommand {
 		let input = await args.next();
 		let betMoney = input === 'all' ? maxBet : Number(input);
 		let userInfo = await this.container.client.db.fetchUser(message.author.id);
+		//syntax check
+		if (isNaN(betMoney)) {
+			return send(
+				message,
+				t('commands/baucua:inputerror', {
+					user: message.author.tag,
+					prefix: await this.container.client.fetchPrefix(message)
+				})
+			);
+		}
+		let result = this.validateBetMoney(betMoney, message, t, userInfo, message.author.tag);
+		if (result === null) {
+			return;
+		}
 		return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
+	}
+
+	async validateBetMoney(betMoney, message, t, userInfo, tag) {
+		if (betMoney < minBet || betMoney > maxBet) {
+			return await utils.returnForSlashWithLabelOrSendMessage(
+				message,
+				t('commands/baucua:rangeerror', {
+					user: tag,
+					min: minBet,
+					max: maxBet
+				}),
+				'end'
+			);
+		}
+
+		if (userInfo.money - betMoney < 0) {
+			return await utils.returnForSlashWithLabelOrSendMessage(
+				message,
+				t('commands/baucua:nomoney', {
+					user: tag
+				}),
+				'end'
+			);
+		}
 	}
 
 	async mainProcess(betMoney, message, t, userInfo, userId, tag) {
 		try {
-			//init emoji, money
-			const maxBet = game.baucua.max;
-			const minBet = game.baucua.min;
-			//syntax check
-			if (isNaN(betMoney)) {
-				return send(
-					message,
-					t('commands/baucua:inputerror', {
-						user: tag,
-						prefix: await this.container.client.fetchPrefix(message)
-					})
-				);
-			}
-
-			if (betMoney < minBet || betMoney > maxBet) {
-				return send(
-					message,
-					t('commands/baucua:rangeerror', {
-						user: tag,
-						min: minBet,
-						max: maxBet
-					})
-				);
-			}
-
-			if (userInfo.money - betMoney < 0) {
-				return send(
-					message,
-					t('commands/baucua:nomoney', {
-						user: tag
-					})
-				);
-			}
-
 			let numOfBet = [0, 0, 0, 0, 0, 0];
 			//create message
 			let embedMSG = new MessageEmbed()
@@ -278,10 +284,14 @@ class UserCommand extends WynnCommand {
 		const t = await fetchT(interaction);
 		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
 		if (checkCoolDown) {
-			return interaction.reply(checkCoolDown);
+			return await interaction.reply(checkCoolDown);
 		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		interaction.reply(t('commands/baucua:description'));
+		let result = await this.validateBetMoney(Number(interaction.options.getInteger('betmoney')), interaction, t, userInfo, interaction.user.tag);
+		if (result !== undefined && result.status === 'end') {
+			return await interaction.reply(result.content);
+		}
+		await interaction.reply(t('commands/baucua:description'));
 		return await this.mainProcess(
 			Number(interaction.options.getInteger('betmoney')),
 			interaction,
