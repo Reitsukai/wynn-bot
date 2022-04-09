@@ -4,6 +4,10 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const betFaces = ['h', 'heads', 't', 'tails'];
+const wait = require('node:timers/promises').setTimeout;
+const utils = require('../../lib/utils');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -20,12 +24,15 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return send(message, checkCoolDown);
+		}
 		const userInfo = await this.container.client.db.fetchUser(message.author.id);
 
 		const first = await args.pick('string').catch(() => null);
 		const next = (await args.next()) || undefined;
 
-		const betFaces = ['h', 'heads', 't', 'tails'];
 		let betFace, betMoney;
 
 		if (!Number.isNaN(Number(first))) {
@@ -48,24 +55,29 @@ class UserCommand extends WynnCommand {
 				})
 			);
 		}
+		return this.mainProcess(betMoney, betFace, message, t, userInfo, message.author.id, message.author.tag);
+	}
 
+	async mainProcess(betMoney, betFace, message, t, userInfo, userId, tag) {
 		if (betMoney < game.cf.min || betMoney > game.cf.max) {
-			return send(
+			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/coin_flip:rangeerror', {
-					user: message.author.tag,
+					user: tag,
 					min: game.cf.min,
 					max: game.cf.max
-				})
+				}),
+				'end'
 			);
 		}
 
 		if (userInfo.money - betMoney < 0) {
-			return send(
+			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/coin_flip:nomoney', {
-					user: message.author.tag
-				})
+					user: tag
+				}),
+				'end'
 			);
 		}
 
@@ -82,42 +94,81 @@ class UserCommand extends WynnCommand {
 
 		const { result, value, bet } = flip(betFace);
 
-		let messageResult = await send(
-			message,
-			t('commands/coin_flip:betting', {
-				user: message.author.tag,
-				bet: betMoney,
-				emoji: emoji.common.money,
-				emojispin: emoji.game.cf.spin,
-				face: t(`commands/coin_flip:${bet}`)
-			})
-		);
 		try {
-			await this.container.client.db.updateUser(message.author.id, {
+			await this.container.client.db.updateUser(userId, {
 				$inc: {
 					money: result ? betMoney : -betMoney
 				}
 			});
 
-			setTimeout(function(){
-				messageResult.edit(
-					t('commands/coin_flip:result', {
-						user: message.author.tag,
-						money: betMoney,
-						status: result ? t('commands/coin_flip:win') : t('commands/coin_flip:lost'),
-						value: t(`commands/coin_flip:${value}`),
-						face: t(`commands/coin_flip:${bet}`),
-						emoji: emoji.common.money,
-						emojiResult: result ? emoji.game.cf.win : emoji.game.cf.lose,
-						result: result ? betMoney * 2 : betMoney
-					})
-				)
-			},2000);
+			const content1 = t('commands/coin_flip:betting', {
+				user: tag,
+				bet: betMoney,
+				emoji: emoji.common.money,
+				emojispin: emoji.game.cf.spin,
+				face: t(`commands/coin_flip:${bet}`)
+			});
+
+			const content2 = t('commands/coin_flip:result', {
+				user: tag,
+				money: betMoney,
+				status: result ? t('commands/coin_flip:win') : t('commands/coin_flip:lost'),
+				value: t(`commands/coin_flip:${value}`),
+				face: t(`commands/coin_flip:${bet}`),
+				emoji: emoji.common.money,
+				emojiResult: result ? emoji.game.cf.win : emoji.game.cf.lose,
+				result: result ? betMoney * 2 : betMoney
+			});
+
+			if (message.type === 'APPLICATION_COMMAND') {
+				return {
+					content1: content1,
+					content2: content2
+				};
+			}
+
+			let messageResult = await send(message, content1);
+			await wait(1000);
+			return messageResult.edit(content2);
 		} catch (err) {
-            logger.error(err);
+			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}
+
+	async execute(interaction) {
+		const t = await fetchT(interaction);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		if (checkCoolDown) {
+			return await interaction.reply(checkCoolDown);
+		}
+		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
+		// interaction.reply(t('commands/coin_flip:description'));
+		let result = await this.mainProcess(
+			Number(interaction.options.getInteger('betmoney')),
+			interaction.options.getString('betface'),
+			interaction,
+			t,
+			userInfo,
+			interaction.user.id,
+			interaction.user.tag
+		);
+		if (result.status === 'end') {
+			return await interaction.reply(result.content);
+		}
+		await interaction.reply(result.content1);
+		await wait(1000);
+		return await interaction.editReply(result.content2);
+	}
 }
 
-exports.UserCommand = UserCommand;
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('coin_flip')
+		.setDescription('Coin flipping, coin tossing, or head or tail')
+		.addIntegerOption((option) => option.setName('betmoney').setDescription('Enter an integer').setRequired(true))
+		.addStringOption((option) =>
+			option.setName('betface').setDescription('Enter a string').setRequired(true).addChoice('heads', 'heads').addChoice('tails', 'tails')
+		),
+	UserCommand
+};
