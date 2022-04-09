@@ -55,8 +55,8 @@ class UserCommand extends WynnCommand {
 				})
 			);
 		}
-		let result = this.validateBetMoney(betMoney, message, t, userInfo, message.author.tag);
-		if (result === null) {
+		let result = await this.validateBetMoney(betMoney, message, t, userInfo, message.author.tag);
+		if (result !== undefined) {
 			return;
 		}
 		return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
