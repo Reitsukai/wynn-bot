@@ -1,7 +1,7 @@
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
-const logger = require('../../utils/index');
+const { logger } = require('../../utils/index');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 const { Permissions } = require('discord.js');
