@@ -43,3 +43,10 @@ module.exports.checkExistUser = async function (key) {
 		return userDB;
 	}
 };
+
+module.exports.transactionItemUser = async function (key1, key2, fieldUpdate1, fieldUpdate2, value1, value2) {
+	var bulkOp = userSchema.collection.initializeUnorderedBulkOp();
+	bulkOp.find({ discordId: key1 }).updateOne(fieldUpdate1);
+	bulkOp.find({ discordId: key2 }).updateOne(fieldUpdate2);
+	return bulkOp.execute();
+};

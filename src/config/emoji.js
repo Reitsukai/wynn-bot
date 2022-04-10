@@ -1,6 +1,6 @@
 module.exports = {
 	common: {
-		money: '<:emoji_4:935384880639012904>',
+		money: '<:emoji_4:962628333156327425>',
 		tick_x: '❌',
 		tick: '✅',
 		blank: '<:blank:934295616648003614>'

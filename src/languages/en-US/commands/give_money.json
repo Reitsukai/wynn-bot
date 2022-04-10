@@ -1,0 +1,9 @@
+{
+	"description": "Send your money to others",
+	"usage": "{{prefix}}give_money <id / @mention> <money>",
+	"example": ["{{prefix}}give_money 662508642251309057 100000"],
+	"inputerror": "**{{user}}** incorrect input format. Example : {{prefix}}give_money 662508642251309057 100000",
+	"nomoney": "**{{user}}** don't have enough money.",
+	"usererror": "**{{user}}**, invalid recipient",
+	"result": "**{{user}}** sent **{{value}} {{emoji}}** to **{{target}}** successfully."
+}
