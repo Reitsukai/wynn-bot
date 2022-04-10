@@ -1,7 +1,7 @@
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
-const logger = require('../../utils/logger');
+const { logger } = require('../../utils/index');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -10,7 +10,7 @@ class UserCommand extends WynnCommand {
 			name: 'add_money',
 			description: 'add money to user',
 			usage: 'wadd_money <id / @mention> <money> ',
-			example: 'wadd_money 662508642251309057 100000',
+			example: 'wadd_money 662508642251309057 100000'
 		});
 	}
 
@@ -23,35 +23,30 @@ class UserCommand extends WynnCommand {
 				const mentions = await args.next();
 				const money = await args.next();
 
-				if(!mentionUser){
+				if (!mentionUser) {
 					userInfo = await this.container.client.db.checkExistUser(mentions);
-				}
-				else {
+				} else {
 					userInfo = await this.container.client.db.checkExistUser(mentionUser.id);
 				}
 
-				if(!userInfo){
+				if (!userInfo) {
 					return message.channel.send('Cannot find user');
 				}
 
-				if(!money || !Number.isInteger(parseInt(money))){
+				if (!money || !Number.isInteger(parseInt(money))) {
 					return message.channel.send('Error money input');
 				}
-				
-				await this.container.client.db.updateUser(
-					mentionUser ? mentionUser.id : mentions, 
-					{
+
+				await this.container.client.db.updateUser(mentionUser ? mentionUser.id : mentions, {
 					$inc: {
 						money: money
 					}
 				});
-				logger.warn(
-					`User: ${mentionUser ? mentionUser.id : mentions} | ${money} gold | By ${message.author.id}`
-				);
+				logger.warn(`User: ${mentionUser ? mentionUser.id : mentions} | ${money} gold | By ${message.author.id}`);
 				return message.channel.send('Success add ' + money);
 			}
 		} catch (err) {
-            logger.error(err);
+			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}

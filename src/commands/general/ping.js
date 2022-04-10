@@ -1,6 +1,7 @@
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 const WynnCommand = require('../../lib/Structures/WynnCommand');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -21,8 +22,19 @@ class UserCommand extends WynnCommand {
 			latency: Math.round(this.container.client.ws.ping),
 			latency1: msg.createdTimestamp - message.createdTimestamp
 		});
+		if (message.type === 'APPLICATION_COMMAND') {
+			msg.delete();
+			return content;
+		}
 		return send(message, content);
+	}
+
+	async execute(interaction) {
+		return await interaction.reply(await this.messageRun(interaction));
 	}
 }
 
-exports.UserCommand = UserCommand;
+module.exports = {
+	data: new SlashCommandBuilder().setName('ping').setDescription('Send ping request and check response times'),
+	UserCommand
+};
