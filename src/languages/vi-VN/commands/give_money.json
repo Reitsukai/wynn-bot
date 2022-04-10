@@ -4,6 +4,6 @@
 	"example": ["{{prefix}}give_money 662508642251309057 100000"],
 	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}give_money 662508642251309057 100000",
 	"nomoney": "**{{user}}** không đủ tiền",
-	"usererror": "**{{user}}**, người bạn gửi tiền không hợp lệ",
+	"usererror": "**{{user}}**, người nhận không hợp lệ",
 	"result": "**{{user}}** đã gửi **{{value}} {{emoji}}** cho **{{target}}** thành công."
 }

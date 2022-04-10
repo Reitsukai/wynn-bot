@@ -48,7 +48,7 @@ class UserCommand extends WynnCommand {
 			);
 		}
 
-		if (!money || !Number.isInteger(parseInt(money))) {
+		if (!money || !Number.isInteger(parseInt(money)) || money < 1) {
 			return send(
 				message,
 				t('commands/give_money:inputerror', {
@@ -57,10 +57,10 @@ class UserCommand extends WynnCommand {
 				})
 			);
 		}
-		return await this.mainProcess(message, money, message.author.tag, userGiveInfo, userReceiveInfo, mentionUser, mentions);
+		return await this.mainProcess(message, money, message.author.tag, userGiveInfo, userReceiveInfo, t);
 	}
 
-	async mainProcess(message, money, tag, userGiveInfo, userReceiveInfo, mentionUser, mentions) {
+	async mainProcess(message, money, tag, userGiveInfo, userReceiveInfo, t) {
 		try {
 			const moneyEmoji = emoji.common.money;
 
@@ -73,23 +73,17 @@ class UserCommand extends WynnCommand {
 				);
 			}
 
-			await this.container.client.db.updateUser(mentionUser ? mentionUser.id : mentions, {
-				$inc: {
-					money: money
-				}
-			});
-
 			await this.container.client.db.transactionItemUser(
-				mentionUser ? mentionUser.id : mentions,
+				userReceiveInfo.discordId,
+				userGiveInfo.discordId,
 				{
 					$inc: {
-						money: money
+						money: parseInt(money)
 					}
 				},
-				userGiveInfo.id,
 				{
 					$inc: {
-						money: -money
+						money: -parseInt(money)
 					}
 				}
 			);
@@ -100,7 +94,7 @@ class UserCommand extends WynnCommand {
 					user: tag,
 					value: money,
 					emoji: moneyEmoji,
-					target: userReceiveInfo
+					target: `<@${userReceiveInfo.discordId}>`
 				})
 			);
 		} catch (err) {
@@ -115,8 +109,24 @@ class UserCommand extends WynnCommand {
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
-		let userReceiveInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		return await this.mainProcess();
+		if (interaction.options.getInteger('money') < 1) {
+			return await interaction.reply(
+				t('commands/give_money:inputerror', {
+					user: interaction.user.tag,
+					prefix: await this.container.client.fetchPrefix(interaction)
+				})
+			);
+		}
+		return await interaction.reply(
+			await this.mainProcess(
+				interaction,
+				interaction.options.getInteger('money'),
+				interaction.user.tag,
+				await this.container.client.db.fetchUser(interaction.user.id),
+				await this.container.client.db.fetchUser(interaction.options.getUser('target').id),
+				t
+			)
+		);
 	}
 }
 
@@ -125,6 +135,6 @@ module.exports = {
 		.setName('give_money')
 		.setDescription('Give money to other user')
 		.addIntegerOption((option) => option.setName('money').setDescription('Enter an integer').setRequired(true))
-		.addUserOption((option) => option.setName('target').setDescription('Select a user')),
+		.addUserOption((option) => option.setName('target').setDescription('Select a user').setRequired(true)),
 	UserCommand
 };
