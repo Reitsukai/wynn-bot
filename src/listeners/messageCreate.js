@@ -15,7 +15,7 @@ class UserEvent extends Listener {
 		if (userInfo != null) {
 			return await this.container.client.db.updateUser(message.author.id, {
 				$inc: {
-					money: 1
+					money: Math.floor(Math.random() * 10) + 1
 				}
 			});
 		} else {
