@@ -20,9 +20,12 @@ for (const folder of fs.readdirSync('./src/commands')) {
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
+let regexPrefix = '(^(hey +)?bot[,! ])|(' + process.env.PREFIX.toString().toLocaleUpperCase() + ')';
+
 const client = new WynnClient({
 	defaultPrefix: process.env.PREFIX,
-	regexPrefix: /^(hey +)?bot[,! ]/i,
+	regexPrefix: RegExp(regexPrefix),
+	//regexPrefix/i,
 	caseInsensitiveCommands: true,
 	logger: {
 		level: LogLevel.Debug
