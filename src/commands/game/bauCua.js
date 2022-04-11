@@ -7,7 +7,7 @@ const utils = require('../../lib/utils');
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const moneyEmoji = emoji.common.money;
 const dices = {
 	bau: emoji.game.baucua.bau,
@@ -108,29 +108,31 @@ class UserCommand extends WynnCommand {
 						emoji: moneyEmoji
 					})
 				);
-			let newMsg = await send(message, { embeds: [embedMSG] });
-			await Promise.all([
-				newMsg.react(dice_icon),
-				newMsg.react(cancel),
-				newMsg.react(dices.bau),
-				newMsg.react(dices.cua),
-				newMsg.react(dices.ca),
-				newMsg.react(dices.ga),
-				newMsg.react(dices.tom),
-				newMsg.react(dices.nai)
-			]);
+			const row = new MessageActionRow().addComponents(
+				new MessageButton().setCustomId(`${dice_icon}`).setLabel(`${dice_icon}`).setStyle('SUCCESS'),
+				new MessageButton().setCustomId(`${dices.bau}`).setLabel(`${dices.bau}`).setStyle('SECONDARY'),
+				new MessageButton().setCustomId(`${dices.cua}`).setLabel(`${dices.cua}`).setStyle('SECONDARY'),
+				new MessageButton().setCustomId(`${dices.ca}`).setLabel(`${dices.ca}`).setStyle('SECONDARY')
+			);
+			const row2 = new MessageActionRow().addComponents(
+				new MessageButton().setCustomId(`${cancel}`).setLabel(`✖`).setStyle('DANGER'),
+				new MessageButton().setCustomId(`${dices.ga}`).setLabel(`${dices.ga}`).setStyle('SECONDARY'),
+				new MessageButton().setCustomId(`${dices.tom}`).setLabel(`${dices.tom}`).setStyle('SECONDARY'),
+				new MessageButton().setCustomId(`${dices.nai}`).setLabel(`${dices.nai}`).setStyle('SECONDARY')
+			);
+			let newMsg = await send(message, { embeds: [embedMSG], components: [row, row2] });
 			//bet and result
-			const filter = (reaction, user) => {
+			const filter = (message) => {
 				return (
-					[dice_icon, cancel, dices.bau, dices.cua, dices.ca, dices.ga, dices.tom, dices.nai].includes(reaction.emoji.name) &&
-					user.id === userId
+					[dice_icon, cancel, dices.bau, dices.cua, dices.ca, dices.ga, dices.tom, dices.nai].includes(message.customId) &&
+					message.user.id === userId
 				);
 			};
 
-			const collector = newMsg.createReactionCollector({ filter, time: 35000 });
-			collector.on('collect', async (reaction, user) => {
+			const collector = newMsg.createMessageComponentCollector({ filter, time: 35000 });
+			collector.on('collect', async (message) => {
 				let status = 0;
-				if (reaction.emoji.name === cancel) {
+				if (message.customId === cancel) {
 					//cancel thì hoàn tiền
 					collector.stop('done');
 
@@ -143,10 +145,10 @@ class UserCommand extends WynnCommand {
 
 					await newMsg.delete();
 					return;
-				} else if (reaction.emoji.name === dice_icon) {
+				} else if (message.customId === dice_icon) {
 					//quay
 					collector.stop('done');
-					await newMsg.reactions.removeAll();
+					// await newMsg.reactions.removeAll();
 					let bet = 0;
 					let win = null;
 					let lose = null;
@@ -202,51 +204,61 @@ class UserCommand extends WynnCommand {
 						);
 					}
 					// let resultMsg = createResultMessage(message, bet, win, lose, randDices, dices, numOfBet, moneyEmoji, t);
-					await newMsg.edit({ embeds: [embedMSG] });
+					// await newMsg.edit({ embeds: [embedMSG] });
+					await message.update({ embeds: [embedMSG], components: [] });
 					return;
 				} else {
-					//thay doi
-
-					this.saveBetResult(userId, -betMoney);
-
-					switch (reaction.emoji.name) {
-						case dices.bau:
-							numOfBet[0] += betMoney;
-							status = 0;
-							break;
-						case dices.cua:
-							numOfBet[1] += betMoney;
-							status = 1;
-							break;
-						case dices.ca:
-							numOfBet[2] += betMoney;
-							status = 2;
-							break;
-						case dices.ga:
-							numOfBet[3] += betMoney;
-							status = 3;
-							break;
-						case dices.tom:
-							numOfBet[4] += betMoney;
-							status = 4;
-							break;
-						case dices.nai:
-							numOfBet[5] += betMoney;
-							status = 5;
-							break;
-					}
-					await reaction.users.remove(userId);
 					userInfo = await this.container.client.db.fetchUser(userId);
 					//check money
-					editBetMessage(embedMSG, numOfBet, t, null);
-					if (userInfo.money < 0) {
-						numOfBet[status] -= betMoney; //reset ve trang thai cu
-
-						this.saveBetResult(userId, betMoney);
-
+					if (userInfo.money < betMoney) {
+						//numOfBet[status] -= betMoney; //reset ve trang thai cu
+						//this.saveBetResult(userId, betMoney);
 						embedMSG.setFooter({ text: t('commands/baucua:nomoney', { user: tag }) });
+						row.components.forEach((e) => {
+							if (e.customId !== dice_icon) {
+								e.setDisabled(true);
+							}
+						});
+						row2.components.forEach((e) => {
+							if (e.customId !== cancel) {
+								e.setDisabled(true);
+							}
+						});
+						await message.update({ embeds: [embedMSG], components: [row, row2] });
+					} else {
+						//thay doi
+						switch (message.customId) {
+							case dices.bau:
+								numOfBet[0] += betMoney;
+								status = 0;
+								break;
+							case dices.cua:
+								numOfBet[1] += betMoney;
+								status = 1;
+								break;
+							case dices.ca:
+								numOfBet[2] += betMoney;
+								status = 2;
+								break;
+							case dices.ga:
+								numOfBet[3] += betMoney;
+								status = 3;
+								break;
+							case dices.tom:
+								numOfBet[4] += betMoney;
+								status = 4;
+								break;
+							case dices.nai:
+								numOfBet[5] += betMoney;
+								status = 5;
+								break;
+						}
+						// await reaction.users.remove(userId);
+						this.saveBetResult(userId, -betMoney);
+						editBetMessage(embedMSG, numOfBet, t, null);
+						// await newMsg.edit({ embeds: [embedMSG] });
+						await message.update({ embeds: [embedMSG] });
 					}
-					await newMsg.edit({ embeds: [embedMSG] });
 				}
 			});
 			//hết giờ thì cancel
@@ -262,6 +274,7 @@ class UserCommand extends WynnCommand {
 					embedMSG.setColor(0xffd700);
 					embedMSG.setFooter({ text: t('commands/baucua:notactive') });
 					await newMsg.edit({ embeds: [embedMSG] });
+					// await message.update({ embeds: [embedMSG], components: [row, row2] });
 					return;
 				}
 			});

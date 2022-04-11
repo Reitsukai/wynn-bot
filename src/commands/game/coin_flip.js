@@ -116,7 +116,7 @@ class UserCommand extends WynnCommand {
 				value: t(`commands/coin_flip:${value}`),
 				face: t(`commands/coin_flip:${bet}`),
 				emoji: emoji.common.money,
-				emojiResult: result ? emoji.game.cf.win : emoji.game.cf.lose,
+				emojiResult: value === 'heads' ? emoji.game.cf.win : emoji.game.cf.lose,
 				result: result ? betMoney * 2 : betMoney
 			});
 
