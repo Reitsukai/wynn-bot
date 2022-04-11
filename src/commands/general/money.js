@@ -26,7 +26,7 @@ class UserCommand extends WynnCommand {
 			if (checkCoolDown) {
 				return checkCoolDown;
 			}
-			const userInfo = await mUser.findOne({ discordId: message.user.id }).select(['money']);
+			const userInfo = await this.container.client.db.fetchUser(message.user.id);
 			return t('commands/money:content', {
 				money: userInfo.money,
 				emoji: moneyEmoji
@@ -36,7 +36,7 @@ class UserCommand extends WynnCommand {
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
-		const userInfo = await mUser.findOne({ discordId: message.author.id }).select(['money']);
+		const userInfo = await this.container.client.db.fetchUser(message.author.id);
 		const content = t('commands/money:content', {
 			money: userInfo.money,
 			emoji: moneyEmoji
