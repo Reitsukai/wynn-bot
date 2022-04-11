@@ -110,15 +110,34 @@ class UserCommand extends WynnCommand {
 				);
 			const row = new MessageActionRow().addComponents(
 				new MessageButton().setCustomId(`${dice_icon}`).setLabel(`${dice_icon}`).setStyle('SUCCESS'),
-				new MessageButton().setCustomId(`${dices.bau}`).setLabel(`${dices.bau}`).setStyle('SECONDARY'),
-				new MessageButton().setCustomId(`${dices.cua}`).setLabel(`${dices.cua}`).setStyle('SECONDARY'),
-				new MessageButton().setCustomId(`${dices.ca}`).setLabel(`${dices.ca}`).setStyle('SECONDARY')
+				new MessageButton()
+					.setCustomId(`${dices.bau}`)
+					.setLabel(t('commands/baucua:bau', { emo: '' }))
+					.setStyle('SECONDARY')
+					.setEmoji(dices.bau),
+				new MessageButton()
+					.setCustomId(`${dices.cua}`)
+					.setLabel(t('commands/baucua:cua', { emo: dices.cua }))
+					.setStyle('SECONDARY'),
+				new MessageButton()
+					.setCustomId(`${dices.ca}`)
+					.setLabel(t('commands/baucua:ca', { emo: dices.ca }))
+					.setStyle('SECONDARY')
 			);
 			const row2 = new MessageActionRow().addComponents(
 				new MessageButton().setCustomId(`${cancel}`).setLabel(`✖`).setStyle('DANGER'),
-				new MessageButton().setCustomId(`${dices.ga}`).setLabel(`${dices.ga}`).setStyle('SECONDARY'),
-				new MessageButton().setCustomId(`${dices.tom}`).setLabel(`${dices.tom}`).setStyle('SECONDARY'),
-				new MessageButton().setCustomId(`${dices.nai}`).setLabel(`${dices.nai}`).setStyle('SECONDARY')
+				new MessageButton()
+					.setCustomId(`${dices.ga}`)
+					.setLabel(t('commands/baucua:ga', { emo: dices.ga }))
+					.setStyle('SECONDARY'),
+				new MessageButton()
+					.setCustomId(`${dices.tom}`)
+					.setLabel(t('commands/baucua:tom', { emo: dices.tom }))
+					.setStyle('SECONDARY'),
+				new MessageButton()
+					.setCustomId(`${dices.nai}`)
+					.setLabel(t('commands/baucua:nai', { emo: dices.nai }))
+					.setStyle('SECONDARY')
 			);
 			let newMsg = await send(message, { embeds: [embedMSG], components: [row, row2] });
 			//bet and result
