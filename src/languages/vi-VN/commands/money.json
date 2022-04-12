@@ -1,5 +1,5 @@
 {
-	"content": "Số tiền của bạn: {{money}} {{emoji}}",
+	"content": "Số tiền của **{{tag}}** : {{money}} {{emoji}}",
 	"description": "Kiểm tra số dư tiền của bạn! Bạn có thể kiếm được nhiều hơn .... ",
 	"usage": "{{prefix}}money",
 	"example": ["{{prefix}}money"]

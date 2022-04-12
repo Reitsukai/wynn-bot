@@ -5,7 +5,8 @@ module.exports = class WynnCommand extends Command {
 		super(context, {
 			...options,
 			name: (name ?? context.name).toLowerCase(),
-			requiredClientPermissions: ['MANAGE_MESSAGES', 'ADD_REACTIONS', 'USE_EXTERNAL_EMOJIS']
+			requiredClientPermissions: ['MANAGE_MESSAGES', 'ADD_REACTIONS', 'USE_EXTERNAL_EMOJIS'],
+			cooldownFilteredUsers: process.env.OWNER_IDS.split(',')
 		});
 		this.usage = options.usage || '';
 		this.example = options.example || [];

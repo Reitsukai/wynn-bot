@@ -1,5 +1,5 @@
 {
-	"content": "Your money is: {{money}} {{emoji}}",
+	"content": "**{{tag}}**'s amount is: {{money}} {{emoji}}",
 	"description": "Check your money balance! You can earn more ....",
 	"usage": "{{prefix}}money",
 	"example": ["{{prefix}}money"]

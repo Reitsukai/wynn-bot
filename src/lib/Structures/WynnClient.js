@@ -7,6 +7,9 @@ async function fetchPrefix(message) {
 }
 
 async function checkTimeCoolDown(id, name, delay, t) {
+	if (process.env.OWNER_IDS.split(',').includes(id)) {
+		return;
+	}
 	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
 	if (Date.now() - getTimeout < 0) {
 		return t('preconditions:preconditionCooldown', {

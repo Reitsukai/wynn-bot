@@ -28,6 +28,7 @@ class UserCommand extends WynnCommand {
 			}
 			const userInfo = await this.container.client.db.fetchUser(message.user.id);
 			return t('commands/money:content', {
+				tag: message.user.tag,
 				money: userInfo.money,
 				emoji: moneyEmoji
 			});
@@ -38,6 +39,7 @@ class UserCommand extends WynnCommand {
 		}
 		const userInfo = await this.container.client.db.fetchUser(message.author.id);
 		const content = t('commands/money:content', {
+			tag: message.author.tag,
 			money: userInfo.money,
 			emoji: moneyEmoji
 		});

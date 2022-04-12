@@ -25,6 +25,10 @@ const client = new WynnClient({
 	regexPrefix: RegExp('(^(hey +)?bot[,! ])|(' + process.env.PREFIX.toString().toLocaleUpperCase() + ')'),
 	//regexPrefix/i,
 	caseInsensitiveCommands: true,
+	caseInsensitivePrefixes: true,
+	defaultCooldown: {
+		delay: 5000
+	},
 	logger: {
 		level: LogLevel.Debug
 	},
