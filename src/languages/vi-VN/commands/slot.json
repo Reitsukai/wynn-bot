@@ -1,11 +1,11 @@
 {
-	"usage": "{{prefix}}s 1000",
-	"example": ["{{prefix}}s 1000"],
-	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}s 1000",
+	"usage": "{{prefix}}slot 1000",
+	"example": ["{{prefix}}slot 1000"],
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}slot 1000",
 	"rangeerror": "**{{user}}** vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
 	"nomoney": "**{{user}}** không đủ tiền để chơi",
 	"description": "Máy đánh bạc VOZ",
-	"process": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞                            ⌟**",
-	"lose": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞        THUA        ⌟**\n** {{user}}** đã đặt **{{bet}} {{moneyEmoji}}** và mất hết",
+	"process": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞       SLOTS       ⌟**",
+	"lose": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞        THUA       ⌟**\n** {{user}}** đã đặt **{{bet}} {{moneyEmoji}}** và mất hết",
 	"win": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞      THẮNG      ⌟**\n** {{user}}** đã đặt **{{bet}} {{moneyEmoji}}** và được **{{win}} {{moneyEmoji}}**"
 }

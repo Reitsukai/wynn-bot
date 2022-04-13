@@ -1,11 +1,11 @@
 {
-	"usage": "{{prefix}}s 1000",
-	"example": ["{{prefix}}s 1000"],
-	"inputerror": "**{{user}}** incorrect input format. Example : {{prefix}}s 1000",
+	"usage": "{{prefix}}slot 1000",
+	"example": ["{{prefix}}slot 1000"],
+	"inputerror": "**{{user}}** incorrect input format. Example : {{prefix}}slot 1000",
 	"rangeerror": "**{{user}}** please set between {{min}} and {{max}}",
 	"nomoney": "**{{user}}** don't have enough money",
 	"description": "Slots machine VOZ",
-	"process": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞                            ⌟**",
+	"process": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞       SLOTS       ⌟**",
 	"lose": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞        LOSE        ⌟**\n** {{user}}** bet **{{bet}} {{moneyEmoji}}** and lost all",
-	"win": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞       WIN       ⌟**\n** {{user}}** bet **{{bet}} {{moneyEmoji}}** and won **{{win}} {{moneyEmoji}}**"
+	"win": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞         WIN         ⌟**\n** {{user}}** bet **{{bet}} {{moneyEmoji}}** and won **{{win}} {{moneyEmoji}}**"
 }

@@ -14,7 +14,7 @@ class UserCommand extends WynnCommand {
 		super(context, {
 			...options,
 			name: 'slot',
-			aliases: ['s', 'slot'],
+			aliases: ['slot', 'sl', 's'],
 			description: 'commands/slot:description',
 			usage: 'commands/slot:usage',
 			example: 'commands/slot:example',
