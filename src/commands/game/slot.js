@@ -78,7 +78,7 @@ class UserCommand extends WynnCommand {
 	async editSlotMsg(slotMsg, status, message, betMoney, tag, emoji1, emoji2, emoji3, emojiLoad, win, moneyEmoji, t, userId) {
 		await this.container.client.db.updateUser(userId, {
 			$inc: {
-				money: win === 0 ? -betMoney : win
+				money: win - betMoney
 			}
 		});
 
@@ -146,8 +146,8 @@ class UserCommand extends WynnCommand {
 			let chance = Math.floor(Math.random() * 100) + 1; // 1->100
 			let win = 0;
 
-			if (chance <= 20) {
-				// 20% 	x1 VVV
+			if (chance <= 25) {
+				// 25% 	x1 VVV
 				win = betMoney;
 				return await this.editSlotMsg(
 					slotMsg,
@@ -164,7 +164,7 @@ class UserCommand extends WynnCommand {
 					t,
 					userId
 				);
-			} else if (chance <= 40) {
+			} else if (chance <= 45) {
 				// 20% x2 OOO
 				win = betMoney * 2;
 				return await this.editSlotMsg(
@@ -182,7 +182,7 @@ class UserCommand extends WynnCommand {
 					t,
 					userId
 				);
-			} else if (chance <= 45) {
+			} else if (chance <= 50) {
 				// 5% x5 ZZZ
 				win = betMoney * 5;
 				return await this.editSlotMsg(
@@ -200,7 +200,7 @@ class UserCommand extends WynnCommand {
 					t,
 					userId
 				);
-			} else if (chance <= 46) {
+			} else if (chance <= 51) {
 				// 1% x10 VOZ
 				win = betMoney * 10;
 				return await this.editSlotMsg(
