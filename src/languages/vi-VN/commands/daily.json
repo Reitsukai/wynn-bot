@@ -1,0 +1,7 @@
+{
+	"description": "Điểm danh hằng ngày để kiếm quà tặng hấp dẫn",
+	"usage": "{{prefix}}daily",
+	"example": ["{{prefix}}daily"],
+	"attendance": "**{{user}}** đã điểm danh hôm nay",
+	"result": "**{{user}}** điểm danh thành công nhận được {{moneyDaily}} {{emoji}} !\n Bạn đang có **{{dailyStreak}}** ngày điểm danh liên tục."
+}

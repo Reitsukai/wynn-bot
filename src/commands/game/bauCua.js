@@ -43,8 +43,8 @@ class UserCommand extends WynnCommand {
 			return send(message, checkCoolDown);
 		}
 		let input = await args.next();
-		let betMoney = input === 'all' ? maxBet : Number(input);
 		let userInfo = await this.container.client.db.fetchUser(message.author.id);
+		let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
 		//syntax check
 		if (isNaN(betMoney)) {
 			return send(
