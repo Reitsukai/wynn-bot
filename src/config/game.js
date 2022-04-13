@@ -6,5 +6,9 @@ module.exports = {
 	baucua: {
 		min: 1,
 		max: 2000
+	},
+	slot: {
+		min: 1,
+		max: 5000
 	}
 };

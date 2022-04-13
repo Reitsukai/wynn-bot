@@ -1,0 +1,11 @@
+{
+	"usage": "{{prefix}}s 1000",
+	"example": ["{{prefix}}s 1000"],
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}s 1000",
+	"rangeerror": "**{{user}}** vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
+	"nomoney": "**{{user}}** không đủ tiền để chơi",
+	"description": "Máy đánh bạc VOZ",
+	"process": "**⌜       SLOTS       ⌝\n══════════\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞                            ⌟**",
+	"lose": "**⌜       SLOTS       ⌝\n══════════\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞        THUA        ⌟**\n** {{user}}** đã đặt **{{bet}} {{moneyEmoji}}** và mất hết",
+	"win": "**⌜       SLOTS       ⌝\n══════════\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞      THẮNG      ⌟**\n** {{user}}** đã đặt **{{bet}} {{moneyEmoji}}** và được **{{win}} {{moneyEmoji}}**"
+}
