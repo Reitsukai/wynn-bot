@@ -229,7 +229,7 @@ class UserCommand extends WynnCommand {
 					arrayResult.splice(arrayResult.indexOf(lost[1]), 1);
 					//reroll
 					lost[Math.floor(Math.random() * 3)] = arrayResult[Math.floor(Math.random() * arrayResult.length)];
-				} else if (lost[0] === 1 && lost[1] === 2 && lost[2] === 3) {
+				} else if (lost[0] === emoji1 && lost[1] === emoji2 && lost[2] === emoji3) {
 					let indexReroll = Math.floor(Math.random() * 3);
 					arrayResult.splice(arrayResult.indexOf(lost[indexReroll]), 1);
 					lost[indexReroll] = arrayResult[Math.floor(Math.random() * arrayResult.length)];

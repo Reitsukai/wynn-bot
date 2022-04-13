@@ -5,7 +5,7 @@
 	"rangeerror": "**{{user}}** please set between {{min}} and {{max}}",
 	"nomoney": "**{{user}}** don't have enough money",
 	"description": "Slots machine VOZ",
-	"process": "**⌜       SLOTS       ⌝\n══════════\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞                            ⌟**",
-	"lose": "**⌜       SLOTS       ⌝\n══════════\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞        LOSE        ⌟**\n** {{user}}** bet **{{bet}} {{moneyEmoji}}** and lost all",
-	"win": "**⌜       SLOTS       ⌝\n══════════\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞       WIN       ⌟**\n** {{user}}** bet **{{bet}} {{moneyEmoji}}** and won **{{win}} {{moneyEmoji}}**"
+	"process": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞                            ⌟**",
+	"lose": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞        LOSE        ⌟**\n** {{user}}** bet **{{bet}} {{moneyEmoji}}** and lost all",
+	"win": "**⌜════════⌝\n\\> {{icon1}} | {{icon2}} | {{icon3}} <\n══════════\n⌞       WIN       ⌟**\n** {{user}}** bet **{{bet}} {{moneyEmoji}}** and won **{{win}} {{moneyEmoji}}**"
 }
