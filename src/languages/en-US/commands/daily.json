@@ -1,0 +1,7 @@
+{
+	"description": "Take attendance daily to earn attractive gifts",
+	"usage": "{{prefix}}daily",
+	"example": ["{{prefix}}daily"],
+	"attendance": "**{{user}}** checked in today",
+	"result": "**{{user}}** have successfully registered and received {{moneyDaily}} {{emoji}} !\n You have **{{dailyStreak}}** daily streak."
+}

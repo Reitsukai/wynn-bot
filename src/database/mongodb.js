@@ -1,5 +1,6 @@
 const guildSchema = require('./schema/guild');
 const userSchema = require('./schema/user');
+const dailySchema = require('./schema/daily');
 // Create/find Guilds Database
 module.exports.fetchGuild = async function (key) {
 	let guildDB = await guildSchema.findOne({ id: key });
@@ -53,4 +54,12 @@ module.exports.transactionItemUser = async function (key1, key2, fieldUpdate1, f
 
 module.exports.upsertUser = async function (key, fieldUpdate) {
 	return await userSchema.updateOne({ discordId: key }, fieldUpdate, { upsert: true });
+};
+
+module.exports.getDailyInfo = async function (key) {
+	return await dailySchema.findOne({ discordId: key });
+};
+
+module.exports.setDailyInfo = async function (key, fieldUpdate) {
+	return await dailySchema.updateOne({ discordId: key }, fieldUpdate, { upsert: true });
 };

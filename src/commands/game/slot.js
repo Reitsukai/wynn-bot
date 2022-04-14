@@ -8,6 +8,8 @@ const wait = require('node:timers/promises').setTimeout;
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
+const maxBet = game.slot.max;
+const minBet = game.slot.min;
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -29,8 +31,8 @@ class UserCommand extends WynnCommand {
 			return send(message, checkCoolDown);
 		}
 		let input = await args.next();
-		let betMoney = input === 'all' ? maxBet : Number(input);
 		let userInfo = await this.container.client.db.fetchUser(message.author.id);
+		let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
 		//syntax check
 		if (isNaN(betMoney)) {
 			return send(
@@ -49,9 +51,6 @@ class UserCommand extends WynnCommand {
 	}
 
 	async validateBetMoney(betMoney, message, t, userInfo, tag) {
-		const maxBet = game.slot.max;
-		const minBet = game.slot.min;
-
 		if (betMoney < minBet || betMoney > maxBet) {
 			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
