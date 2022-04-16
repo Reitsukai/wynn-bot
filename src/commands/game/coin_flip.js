@@ -17,14 +17,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['cf', 'coin_flip'],
 			description: 'commands/coin_flip:description',
 			usage: 'commands/coin_flip:usage',
-			example: 'commands/coin_flip:example',
-			cooldownDelay: 20000
+			example: 'commands/coin_flip:example'
+			// cooldownDelay: 20000
 		});
 	}
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 15000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -47,6 +47,7 @@ class UserCommand extends WynnCommand {
 		}
 
 		if (!betFaces.includes(betFace) || !betMoney) {
+			await this.container.client.resetCustomCooldown(message.author.id, this.name);
 			return send(
 				message,
 				t('commands/coin_flip:inputerror', {
@@ -60,6 +61,7 @@ class UserCommand extends WynnCommand {
 
 	async mainProcess(betMoney, betFace, message, t, userInfo, userId, tag) {
 		if (betMoney < game.cf.min || betMoney > game.cf.max) {
+			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
 			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/coin_flip:rangeerror', {
@@ -72,6 +74,7 @@ class UserCommand extends WynnCommand {
 		}
 
 		if (userInfo.money - betMoney < 0) {
+			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
 			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/coin_flip:nomoney', {
@@ -138,7 +141,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 15000, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}

@@ -19,14 +19,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['slot', 'sl', 's'],
 			description: 'commands/slot:description',
 			usage: 'commands/slot:usage',
-			example: 'commands/slot:example',
-			cooldownDelay: 15000
+			example: 'commands/slot:example'
+			// cooldownDelay: 15000
 		});
 	}
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 15000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -35,6 +35,7 @@ class UserCommand extends WynnCommand {
 		let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
 		//syntax check
 		if (isNaN(betMoney)) {
+			await this.container.client.resetCustomCooldown(message.author.id, this.name);
 			return send(
 				message,
 				t('commands/slot:inputerror', {
@@ -52,6 +53,7 @@ class UserCommand extends WynnCommand {
 
 	async validateBetMoney(betMoney, message, t, userInfo, tag) {
 		if (betMoney < minBet || betMoney > maxBet) {
+			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
 			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/slot:rangeerror', {
@@ -64,6 +66,7 @@ class UserCommand extends WynnCommand {
 		}
 
 		if (userInfo.money - betMoney < 0) {
+			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
 			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/slot:nomoney', {
@@ -257,7 +260,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 15000, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}

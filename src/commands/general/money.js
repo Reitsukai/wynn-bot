@@ -13,8 +13,8 @@ class UserCommand extends WynnCommand {
 			aliases: ['money', 'currency', 'cash', 'credit', 'balance'],
 			description: 'commands/money:description',
 			usage: 'commands/money:usage',
-			example: 'commands/money:example',
-			cooldownDelay: 15000
+			example: 'commands/money:example'
+			// cooldownDelay: 15000
 		});
 	}
 
@@ -22,7 +22,7 @@ class UserCommand extends WynnCommand {
 		const moneyEmoji = emoji.common.money;
 		const t = await fetchT(message);
 		if (message.type === 'APPLICATION_COMMAND') {
-			const checkCoolDown = await this.container.client.checkTimeCoolDown(message.user.id, this.name, this.options.cooldownDelay, t);
+			const checkCoolDown = await this.container.client.checkTimeCoolDown(message.user.id, this.name, 15000, t);
 			if (checkCoolDown) {
 				return checkCoolDown;
 			}
@@ -33,7 +33,7 @@ class UserCommand extends WynnCommand {
 				emoji: moneyEmoji
 			});
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 15000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}

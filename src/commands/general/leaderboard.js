@@ -16,14 +16,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['top', 'lb', 'leaderboard'],
 			description: 'commands/top:description',
 			usage: 'commands/top:usage',
-			example: 'commands/top:example',
-			cooldownDelay: 25000
+			example: 'commands/top:example'
+			// cooldownDelay: 35000
 		});
 	}
 
 	async messageRun(message) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 35000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -53,7 +53,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 35000, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
