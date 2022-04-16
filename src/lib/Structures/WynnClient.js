@@ -16,7 +16,19 @@ async function checkTimeCoolDown(id, name, delay, t) {
 			remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
 		});
 	}
-	container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
+	return container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
+}
+
+async function resetCooldown(idUser, command) {
+	let mapCooldown = container.stores.get('preconditions').get('Cooldown').buckets.get(command);
+	let valueOfCooldown = mapCooldown.get(idUser);
+	valueOfCooldown.expires = Date.now() + 5000;
+	return mapCooldown.set(idUser, valueOfCooldown);
+	// console.log(mapCooldown.get('662508642251309057'));
+}
+
+async function resetCustomCooldown(id, name) {
+	return container.client.options.timeouts.set(`${id}_${name}`, Date.now() + 8000);
 }
 
 class WynnClient extends SapphireClient {
@@ -52,6 +64,10 @@ class WynnClient extends SapphireClient {
 		this.fetchPrefix = fetchPrefix.bind(this);
 
 		this.checkTimeCoolDown = checkTimeCoolDown.bind(this);
+
+		this.resetCooldown = resetCooldown.bind(this);
+
+		this.resetCustomCooldown = resetCustomCooldown.bind(this);
 	}
 }
 module.exports = WynnClient;
