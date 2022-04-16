@@ -16,7 +16,7 @@ async function checkTimeCoolDown(id, name, delay, t) {
 			remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
 		});
 	}
-	return container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
+	container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
 }
 
 async function resetCooldown(idUser, command) {

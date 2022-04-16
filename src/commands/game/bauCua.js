@@ -31,14 +31,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['bc', 'baucua'],
 			description: 'commands/baucua:description',
 			usage: 'commands/baucua:usage',
-			example: 'commands/baucua:example',
-			cooldownDelay: 25000
+			example: 'commands/baucua:example'
+			// cooldownDelay: 25000
 		});
 	}
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 22000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -47,6 +47,7 @@ class UserCommand extends WynnCommand {
 		let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
 		//syntax check
 		if (isNaN(betMoney)) {
+			await this.container.client.resetCustomCooldown(message.author.id, this.name);
 			return send(
 				message,
 				t('commands/baucua:inputerror', {
@@ -64,6 +65,7 @@ class UserCommand extends WynnCommand {
 
 	async validateBetMoney(betMoney, message, t, userInfo, tag) {
 		if (betMoney < minBet || betMoney > maxBet) {
+			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
 			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/baucua:rangeerror', {
@@ -76,6 +78,7 @@ class UserCommand extends WynnCommand {
 		}
 
 		if (userInfo.money - betMoney < 0) {
+			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
 			return await utils.returnForSlashWithLabelOrSendMessage(
 				message,
 				t('commands/baucua:nomoney', {
@@ -314,7 +317,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 22000, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
