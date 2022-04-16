@@ -39,6 +39,9 @@ class UserCommand extends WynnCommand {
 			dailyStreak = 0;
 		}
 		moneyDaily += dailyStreak * 100;
+		if (moneyDaily > 5000) {
+			moneyDaily = 5000;
+		}
 		dailyStreak++;
 		await this.container.client.db.updateUser(userId, {
 			$inc: {

@@ -15,14 +15,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['lg', 'lang'],
 			usage: 'commands/language:usage',
 			example: 'commands/language:example',
-			preconditions: ['GuildOnly', ['AdminOnly']],
-			cooldownDelay: 15000
+			preconditions: ['GuildOnly', ['AdminOnly']]
+			// cooldownDelay: 15000
 		});
 	}
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 10000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -69,7 +69,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 10000, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}

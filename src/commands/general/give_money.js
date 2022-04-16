@@ -14,14 +14,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['give_money', 'give_currency', 'give_cash', 'give_credit', 'give_balance', 'give'],
 			description: 'commands/give_money:description',
 			usage: 'commands/give_money:usage',
-			example: 'commands/give_money:example',
-			cooldownDelay: 10000
+			example: 'commands/give_money:example'
+			// cooldownDelay: 10000
 		});
 	}
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 10000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -105,7 +105,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, this.options.cooldownDelay, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 10000, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}

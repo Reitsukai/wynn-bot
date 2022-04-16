@@ -19,7 +19,7 @@ class UserEvent extends Listener {
 		}
 
 		if (error.identifier === 'preconditionClientPermissions') {
-            return send(
+			return send(
 				message,
 				t('preconditions:preconditionClientPermissions', {
 					perm: error.context.missing
