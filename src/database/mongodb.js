@@ -75,3 +75,11 @@ module.exports.initLotteryResult = async function (arrayInit, typeLottery) {
 	});
 	return await lotteryDB.save().catch((err) => console.log(err));
 };
+
+module.exports.getLotteryResult = async function () {
+	return await lotteryResultSchema.find().sort({ createdAt: -1 }).limit(4);
+};
+
+module.exports.updateLotteryResult = async function (array, id) {
+	return await lotteryResultSchema.findOneAndUpdate({ _id: id }, { arrayResult: array });
+};

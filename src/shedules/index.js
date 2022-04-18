@@ -6,15 +6,14 @@ const logger = require('../utils/logger');
 exports.InitCron = async function (client) {
 	try {
 		// every min
-		cron.schedule('*/30 * * * * *', async () => {}, {
-			scheduled: true
-		});
+		// cron.schedule('*/30 * * * * *', async () => {}, {
+		// 	scheduled: true
+		// });
 		// at 13h every day
 		cron.schedule(
-			'* * * * *',
-			//'0 13 * * *',
+			// '* * * * *',
+			'0 13 * * *',
 			async () => {
-				console.log('abc');
 				await lotteryCronInit(client);
 			},
 			{
@@ -22,15 +21,16 @@ exports.InitCron = async function (client) {
 			}
 		);
 		// at 18h every day
-		// cron.schedule(
-		// 	'0 18 * * *',
-		// 	async () => {
-		// 		await lotteryCronResult(bot);
-		// 	},
-		// 	{
-		// 		scheduled: true
-		// 	}
-		// );
+		cron.schedule(
+			// '* * * * *',
+			'0 18 * * *',
+			async () => {
+				await lotteryCronResult(client);
+			},
+			{
+				scheduled: true
+			}
+		);
 	} catch (e) {
 		logger.error(e);
 	}
