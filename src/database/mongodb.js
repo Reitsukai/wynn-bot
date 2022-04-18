@@ -1,6 +1,7 @@
 const guildSchema = require('./schema/guild');
 const userSchema = require('./schema/user');
 const dailySchema = require('./schema/daily');
+const lotteryResultSchema = require('./schema/lotteryResult');
 // Create/find Guilds Database
 module.exports.fetchGuild = async function (key) {
 	let guildDB = await guildSchema.findOne({ id: key });
@@ -21,6 +22,7 @@ module.exports.updateGuild = async function (key, fieldUpdate) {
 	return await guildSchema.findOneAndUpdate({ id: key }, fieldUpdate, { new: true });
 };
 
+//user
 module.exports.fetchUser = async function (key) {
 	let userDB = await userSchema.findOne({ discordId: key });
 
@@ -56,10 +58,20 @@ module.exports.upsertUser = async function (key, fieldUpdate) {
 	return await userSchema.updateOne({ discordId: key }, fieldUpdate, { upsert: true });
 };
 
+//daily
 module.exports.getDailyInfo = async function (key) {
 	return await dailySchema.findOne({ discordId: key });
 };
 
 module.exports.setDailyInfo = async function (key, fieldUpdate) {
 	return await dailySchema.updateOne({ discordId: key }, fieldUpdate, { upsert: true });
+};
+
+//lottery
+module.exports.initLotteryResult = async function (arrayInit, typeLottery) {
+	let lotteryDB = new lotteryResultSchema({
+		arrayInit: arrayInit,
+		typeLottery: typeLottery
+	});
+	return await lotteryDB.save().catch((err) => console.log(err));
 };

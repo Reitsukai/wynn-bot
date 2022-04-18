@@ -7,6 +7,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 require('dotenv').config({ path: './src/.env' });
 const fs = require('node:fs');
+let cronJob = require('./shedules/index');
 
 const commands = [];
 for (const folder of fs.readdirSync('./src/commands')) {
@@ -81,6 +82,8 @@ const main = async () => {
 		// 		client.logger.error(error);
 		// 	}
 		// });
+		await cronJob.InitCron(client);
+		console.log('Successfully Init cron');
 	} catch (error) {
 		client.logger.fatal(error);
 		client.destroy();
