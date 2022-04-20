@@ -31,6 +31,26 @@ async function resetCustomCooldown(id, name) {
 	return container.client.options.timeouts.set(`${id}_${name}`, Date.now() + 8000);
 }
 
+async function loadArrayLottery() {
+	const arrayLottery = await this.db.loadArrayLottery();
+	//server go off load backup
+	for (let i = 0; i < arrayLottery.length; i++) {
+		if (arrayLottery[i].arrayBackup.length > 0) {
+			container.client.options.lottery.push(arrayLottery[i].arrayBackup);
+		} else {
+			container.client.options.lottery.push(arrayLottery[i].arrayInit);
+		}
+	}
+}
+
+async function setArrayLottery(arrayType2, arrayType3, arrayType4, arrayType5) {
+	container.client.options.lottery = [];
+	container.client.options.lottery.push(arrayType2);
+	container.client.options.lottery.push(arrayType3);
+	container.client.options.lottery.push(arrayType4);
+	container.client.options.lottery.push(arrayType5);
+}
+
 class WynnClient extends SapphireClient {
 	constructor(options) {
 		super({
@@ -57,17 +77,19 @@ class WynnClient extends SapphireClient {
 					return 'en-US';
 				}
 			},
-			timeouts: new Discord.Collection()
+			timeouts: new Discord.Collection(),
+			lottery: new Array()
 		});
 		this.db = require('./../../database/mongodb');
 
 		this.fetchPrefix = fetchPrefix.bind(this);
-
+		//cooldown
 		this.checkTimeCoolDown = checkTimeCoolDown.bind(this);
-
 		this.resetCooldown = resetCooldown.bind(this);
-
 		this.resetCustomCooldown = resetCustomCooldown.bind(this);
+		//cache array lottery
+		this.loadArrayLottery = loadArrayLottery.bind(this);
+		this.setArrayLottery = setArrayLottery.bind(this);
 	}
 }
 module.exports = WynnClient;

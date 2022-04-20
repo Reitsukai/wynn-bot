@@ -5,9 +5,8 @@ module.exports = mongoose.model(
 	'LotteryResult',
 	new mongoose.Schema(
 		{
-			arrayInit: { type: Array },
-			typeLottery: { type: Number },
-			count: { type: Number, default: 0 },
+			counter: { type: Number, default: 0 },
+			lotteryType: { type: Number },
 			arrayResult: { type: Array, default: [] }
 		},
 		{

@@ -2,6 +2,8 @@ const guildSchema = require('./schema/guild');
 const userSchema = require('./schema/user');
 const dailySchema = require('./schema/daily');
 const lotteryResultSchema = require('./schema/lotteryResult');
+const lotterySchema = require('./schema/lottery');
+const lotteryArraySchema = require('./schema/lotteryArray');
 // Create/find Guilds Database
 module.exports.fetchGuild = async function (key) {
 	let guildDB = await guildSchema.findOne({ id: key });
@@ -67,19 +69,131 @@ module.exports.setDailyInfo = async function (key, fieldUpdate) {
 	return await dailySchema.updateOne({ discordId: key }, fieldUpdate, { upsert: true });
 };
 
-//lottery
-module.exports.initLotteryResult = async function (arrayInit, typeLottery) {
-	let lotteryDB = new lotteryResultSchema({
+//lottery array
+module.exports.initLottery = async function (arrayInit, lotteryType) {
+	let lotteryDB = new lotteryArraySchema({
 		arrayInit: arrayInit,
-		typeLottery: typeLottery
+		lotteryType: lotteryType
 	});
+	let lotteryResDB = new lotteryResultSchema({
+		lotteryType: lotteryType
+	});
+	lotteryResDB.save().catch((err) => console.log(err));
 	return await lotteryDB.save().catch((err) => console.log(err));
 };
 
+module.exports.loadArrayLottery = async function () {
+	return await lotteryArraySchema.find().sort({ _id: -1 }).limit(4);
+};
+
+//lottery result
 module.exports.getLotteryResult = async function () {
 	return await lotteryResultSchema.find().sort({ createdAt: -1 }).limit(4);
 };
 
+module.exports.getLotteryResultByType = async function (lotteryType) {
+	return await lotteryResultSchema.findOne({ lotteryType: lotteryType }).sort({ createdAt: -1 });
+};
+
+module.exports.updateCountLotteryResult = async function (id, count) {
+	try {
+		const results = await lotteryResultSchema
+			.aggregate([
+				{ $match: { _id: id } },
+				{
+					$project: {
+						counter: {
+							$cond: [{ $lt: ['$counter', count] }, count, { $add: ['$counter', 1] }]
+						}
+					}
+				}
+			])
+			.exec();
+		const data = results[0];
+		const { counter } = data;
+		return await lotteryResultSchema.findOneAndUpdate({ _id: id }, { $set: { counter } }, { new: true }).exec();
+		// console.log(doc);
+	} catch (err) {
+		console.error(err);
+	}
+	// return await lotteryResultSchema.findOneAndUpdate({ lotteryType: lotteryType }, {});
+	// ({ lotteryType: lotteryType }).sort({ createdAt: -1 });
+};
+
 module.exports.updateLotteryResult = async function (array, id) {
-	return await lotteryResultSchema.findOneAndUpdate({ _id: id }, { arrayResult: array });
+	return await lotteryResultSchema.updateOne({ _id: id }, { arrayResult: array });
+};
+
+//lotteryUser
+// module.exports.checkExistCodeLottery = async function (code) {
+// 	if ((await lotterySchema.findOne({ code: code }).count()) > 0) {
+// 		return false;
+// 	} else {
+// 		return true;
+// 	}
+// };
+
+// module.exports.getRandomByTypeDigit = async function (type) {
+// 	let code;
+// 	while (true) {
+// 		let randomCode = await lotteryResultSchema
+// 			.findOneAndUpdate(
+// 				{ lotteryType: type },
+// 				{
+// 					$inc: {
+// 						count: 1
+// 					}
+// 				}
+// 			)
+// 			.sort({ createdAt: -1 });
+// 		code = randomCode.arrayInit[randomCode.count];
+// 		//check sold out lottery
+// 		if (code === undefined) {
+// 			return 'sold';
+// 		}
+// 		//check if user pick this code
+// 		let check = await lotterySchema.findOne({ lotteryType: type, code: code });
+// 		if (check) {
+// 			continue;
+// 		}
+// 		break;
+// 	}
+// 	return code;
+// };
+
+// module.exports.getRandomLottery = async function () {
+// 	let code;
+// 	for (let i = 5; i > 1; i--) {
+// 		let randomCode = await lotteryResultSchema
+// 			.findOneAndUpdate(
+// 				{ lotteryType: i },
+// 				{
+// 					$inc: {
+// 						count: 1
+// 					}
+// 				}
+// 			)
+// 			.sort({ createdAt: -1 });
+// 		code = randomCode.arrayInit[randomCode.count];
+// 		//check sold out lottery
+// 		if (code === undefined) {
+// 			continue;
+// 		}
+// 		//check if user pick this code
+// 		let check = await lotterySchema.findOne({ lotteryType: i, code: code });
+// 		if (check) {
+// 			continue;
+// 		}
+// 		break;
+// 	}
+// 	return code;
+// };
+
+module.exports.createNewLottery = async function (discordId, code) {
+	let userLot = new lotterySchema({
+		discordId: discordId,
+		lotteryType: code.toString().length,
+		code: code
+	});
+	await userLot.save().catch((err) => console.log(err));
 };

@@ -83,6 +83,7 @@ const main = async () => {
 		// 	}
 		// });
 		await cronJob.InitCron(client);
+		client.loadArrayLottery();
 		console.log('Successfully Init cron');
 	} catch (error) {
 		client.logger.fatal(error);

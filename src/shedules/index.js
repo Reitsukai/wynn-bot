@@ -9,10 +9,20 @@ exports.InitCron = async function (client) {
 		// cron.schedule('*/30 * * * * *', async () => {}, {
 		// 	scheduled: true
 		// });
-		// at 13h every day
+		//backup lottery
+		// cron.schedule(
+		// 	// '* * * * *',
+		// 	async () => {
+		// 		await lotteryCronInit(client);
+		// 	},
+		// 	{
+		// 		scheduled: true
+		// 	}
+		// );
+		// at 18h every day
 		cron.schedule(
 			// '* * * * *',
-			'0 13 * * *',
+			'0 18 * * *',
 			async () => {
 				await lotteryCronInit(client);
 			},
@@ -20,10 +30,10 @@ exports.InitCron = async function (client) {
 				scheduled: true
 			}
 		);
-		// at 18h every day
+		// at 19h every day
 		cron.schedule(
 			// '* * * * *',
-			'0 18 * * *',
+			'0 19 * * *',
 			async () => {
 				await lotteryCronResult(client);
 			},

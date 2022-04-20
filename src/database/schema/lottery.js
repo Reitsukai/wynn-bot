@@ -5,9 +5,9 @@ module.exports = mongoose.model(
 	'Lottery',
 	new mongoose.Schema(
 		{
-			discordId: { type: String, unique: true },
+			discordId: { type: String },
 			lotteryType: { type: Number },
-			code: { type: Number }
+			code: { type: Number, unique: true }
 		},
 		{
 			timestamps: true

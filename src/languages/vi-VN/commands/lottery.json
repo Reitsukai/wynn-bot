@@ -1,0 +1,18 @@
+{
+	"usage": "{{prefix}}lottery 5d",
+	"example": ["{{prefix}}lottery 1907"],
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}lottery",
+	"nomoney": "**{{user}}** không đủ tiền để chơi",
+	"description": "Xổ số kiến thiết _ Ích nước lợi nhà",
+	"exist": "**{{tag}}** Vé số {{code}} đã có người mua",
+	"sold": "**{{tag}}** Vé số loại {{type}} đã bán hết",
+	"soldout": "**{{tag}}** tất cả vé số đã bán hết",
+	"title": "**{{tag}}** hãy xác nhận để mua vé số",
+	"descrp": "Bấm 'Mua' để mua hoặc bấm 'Hủy' để hủy bỏ thao tác",
+	"content": "Bạn đồng ý mua vé số {{code}} loại {{type}} với giá {{price}} {{emoji}} không ?",
+	"accept": "Mua",
+	"cancel": "Hủy",
+	"acceptbuy": "Bạn đã mua vé số thành công.",
+	"cancelbuy": "Bạn đã hủy mua vé số.",
+	"notactive": "Hết thời gian nhưng bạn chưa quyết định mua ~~>_<~~ "
+}
