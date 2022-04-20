@@ -70,6 +70,10 @@ module.exports.setDailyInfo = async function (key, fieldUpdate) {
 };
 
 //lottery array
+module.exports.clearLotteryArray = async function () {
+	lotteryArraySchema.remove({});
+};
+
 module.exports.initLottery = async function (arrayInit, lotteryType) {
 	let lotteryDB = new lotteryArraySchema({
 		arrayInit: arrayInit,
@@ -84,6 +88,10 @@ module.exports.initLottery = async function (arrayInit, lotteryType) {
 
 module.exports.loadArrayLottery = async function () {
 	return await lotteryArraySchema.find().sort({ _id: -1 }).limit(4);
+};
+
+module.exports.saveArrayLottery = async function (array) {
+	return array.save().catch((err) => console.log(err));
 };
 
 //lottery result

@@ -67,22 +67,24 @@ exports.lotteryCronResult = async function (client) {
 			mapRes5.set(pick, 0);
 		}
 
-		await client.db.updateLotteryResult(
-			Array.from(mapRes2, ([code, prize]) => ({ code, prize })),
-			id2
-		);
-		await client.db.updateLotteryResult(
-			Array.from(mapRes3, ([code, prize]) => ({ code, prize })),
-			id3
-		);
-		await client.db.updateLotteryResult(
-			Array.from(mapRes4, ([code, prize]) => ({ code, prize })),
-			id4
-		);
-		await client.db.updateLotteryResult(
-			Array.from(mapRes5, ([code, prize]) => ({ code, prize })),
-			id5
-		);
+		await Promise.all([
+			client.db.updateLotteryResult(
+				Array.from(mapRes2, ([code, prize]) => ({ code, prize })),
+				id2
+			),
+			client.db.updateLotteryResult(
+				Array.from(mapRes3, ([code, prize]) => ({ code, prize })),
+				id3
+			),
+			client.db.updateLotteryResult(
+				Array.from(mapRes4, ([code, prize]) => ({ code, prize })),
+				id4
+			),
+			client.db.updateLotteryResult(
+				Array.from(mapRes5, ([code, prize]) => ({ code, prize })),
+				id5
+			)
+		]);
 	} catch (e) {
 		console.log(e);
 	}

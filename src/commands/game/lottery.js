@@ -171,12 +171,14 @@ class UserCommand extends WynnCommand {
 					await this.container.client.db.updateCountLotteryResult(lotteryResult._id, count);
 				}
 				this.container.client.options.lottery[index][count] = -1;
-				await this.container.client.db.updateUser(userId, {
-					$inc: {
-						money: -game.lottery.buy
-					}
-				});
-				await this.container.client.db.createNewLottery(userId, code);
+				await Promise.all([
+					this.container.client.db.updateUser(userId, {
+						$inc: {
+							money: -game.lottery.buy
+						}
+					}),
+					this.container.client.db.createNewLottery(userId, code)
+				]);
 				// row.components.forEach((e) => {
 				// 	e.setDisabled(true);
 				// });
