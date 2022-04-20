@@ -1,0 +1,18 @@
+{
+	"usage": "{{prefix}}lottery 5d",
+	"example": ["{{prefix}}lottery 1907"],
+	"inputerror": "**{{user}}** incorrect input format. Example : {{prefix}}lottery",
+	"nomoney": "**{{user}}** don't have enough money.",
+	"description": "Your Chance to Win Starts Here",
+	"exist": "**{{tag}}** lottery ticket {{code}} has been purchased",
+	"sold": "**{{tag}}** lottery tickets {{type}} sold out",
+	"soldout": "**{{tag}}** all lottery tickets sold out",
+	"title": "**{{tag}}** please confirm to buy lottery tickets",
+	"descrp": "Click 'Buy' to purchase or 'Cancel' to cancel the operation",
+	"content": "Do you agree to buy a {{code}} {{type}} lottery ticket for {{price}} {{emoji}} ?",
+	"accept": "Buy",
+	"cancel": "Cancel",
+	"acceptbuy": "You have successfully purchased a lottery ticket.",
+	"cancelbuy": "You have canceled your lottery ticket purchase.",
+	"notactive": "Time is up but you haven't decided to buy yet ~~>_<~~ "
+}

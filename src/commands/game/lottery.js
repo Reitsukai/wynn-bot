@@ -147,18 +147,15 @@ class UserCommand extends WynnCommand {
 	async embedConfirm(code, t, message, tag, userId, lotteryResult, count, index) {
 		const moneyEmoji = emoji.common.money;
 		const blank = emoji.common.blank;
-		let embedMSG = new MessageEmbed()
-			.setTitle(t('commands/lottery:title', { tag: tag }))
-			.setDescription(t('commands/lottery:descrp'))
-			.addField(
-				`${blank}`,
-				t('commands/lottery:content', {
-					code: code,
-					type: code.toString().length === 1 ? 2 : code.toString().length + 'd',
-					price: game.lottery.buy,
-					emoji: moneyEmoji
-				})
-			);
+		let embedMSG = new MessageEmbed().setTitle(t('commands/lottery:title', { tag: tag })).addField(
+			`${blank}`,
+			t('commands/lottery:content', {
+				code: code,
+				type: code.toString().length === 1 ? 2 : code.toString().length + 'd',
+				price: game.lottery.buy,
+				emoji: moneyEmoji
+			})
+		);
 		const row = new MessageActionRow().addComponents(
 			new MessageButton().setCustomId('accept').setLabel(t('commands/lottery:accept')).setStyle('SUCCESS'),
 			new MessageButton().setCustomId('cancel').setLabel(t('commands/lottery:cancel')).setStyle('DANGER')
