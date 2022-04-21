@@ -71,7 +71,7 @@ module.exports.setDailyInfo = async function (key, fieldUpdate) {
 
 //lottery array
 module.exports.clearLotteryArray = async function () {
-	lotteryArraySchema.remove({});
+	return await lotteryArraySchema.deleteMany({});
 };
 
 module.exports.initLottery = async function (arrayInit, lotteryType) {
@@ -82,7 +82,7 @@ module.exports.initLottery = async function (arrayInit, lotteryType) {
 	let lotteryResDB = new lotteryResultSchema({
 		lotteryType: lotteryType
 	});
-	lotteryResDB.save().catch((err) => console.log(err));
+	await lotteryResDB.save().catch((err) => console.log(err));
 	return await lotteryDB.save().catch((err) => console.log(err));
 };
 
@@ -91,7 +91,7 @@ module.exports.loadArrayLottery = async function () {
 };
 
 module.exports.saveArrayLottery = async function (array) {
-	return array.save().catch((err) => console.log(err));
+	return lotteryArraySchema.updateOne({ _id: array._id }, { arrayBackup: array.arrayBackup });
 };
 
 //lottery result
@@ -139,5 +139,24 @@ module.exports.createNewLottery = async function (discordId, code) {
 		lotteryType: code.toString().length,
 		code: code
 	});
-	await userLot.save().catch((err) => console.log(err));
+	return await userLot.save().catch((err) => console.log(err));
+};
+
+module.exports.getListWiner = async function (list) {
+	return await lotterySchema.find({ code: { $in: list } });
+};
+
+module.exports.updateListWinner = async function (list, reward) {
+	return await userSchema.updateMany(
+		{ discordId: { $in: list } },
+		{
+			$inc: {
+				money: reward
+			}
+		}
+	);
+};
+
+module.exports.clearLotteryUser = async function () {
+	return await lotterySchema.deleteMany({});
 };

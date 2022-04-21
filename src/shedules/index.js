@@ -12,8 +12,7 @@ exports.InitCron = async function (client) {
 		// });
 		//backup lottery At minute 0 past every 2nd hour
 		cron.schedule(
-			'* * * * *',
-			// '0 */2 * * *',
+			'0 */2 * * *',
 			async () => {
 				await lotteryShedulesBackupLotteryArray(client);
 			},
@@ -23,8 +22,8 @@ exports.InitCron = async function (client) {
 		);
 		// at 18h every day
 		cron.schedule(
-			// '* * * * *',
-			'0 18 * * *',
+			'* * * * *',
+			// '0 18 * * *',
 			async () => {
 				await lotteryCronResult(client);
 				await lotteryCronInit(client);

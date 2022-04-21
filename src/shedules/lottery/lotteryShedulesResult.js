@@ -1,4 +1,5 @@
 exports.lotteryCronResult = async function (client) {
+	const game = require('../../config/game');
 	try {
 		let lotteryResult = await client.db.getLotteryResult();
 
@@ -17,75 +18,84 @@ exports.lotteryCronResult = async function (client) {
 				id5 = lotteryResult[i]._id;
 			}
 		}
-		let mapRes2 = new Map(),
-			mapRes3 = new Map(),
-			mapRes4 = new Map(),
-			mapRes5 = new Map();
+		let giai7 = [],
+			giai6 = [],
+			giai5 = [],
+			giai4 = [],
+			giai3 = [],
+			giai2 = [],
+			giai1 = [],
+			giaidb = [];
 		/* 2x */
 		// giai 7 - 4 prize - 10k
-		console.log(mapRes2.size);
-		while (mapRes2.size < 4) {
-			mapRes2.set(Math.floor(Math.random() * 100), 7);
+		while (giai7.length < 4) {
+			giai7.push({ code: Math.floor(Math.random() * 100), prize: 7 });
 		}
 		/* 3x */
 		// giai 6 - 3 prize - 20k
-		while (mapRes3.size < 3) {
-			mapRes3.set(Math.floor(Math.random() * 900) + 100, 6);
+		while (giai6.length < 3) {
+			giai6.push({ code: Math.floor(Math.random() * 900) + 100, prize: 6 });
 		}
 		/* 4x */
 		// giai 5 - 6 prize - 40k
-		while (mapRes4.size < 6) {
-			mapRes4.set(Math.floor(Math.random() * 9000) + 1000, 5);
+		while (giai5.length < 6) {
+			giai5.push({ code: Math.floor(Math.random() * 9000) + 1000, prize: 5 });
 		}
 		// giai 4 - 4 prize - 80k
-		while (mapRes4.size < 10) {
-			let pick = Math.floor(Math.random() * 9000) + 1000;
-			if (mapRes4.has(pick)) continue;
-			mapRes4.set(pick, 4);
+		while (giai4.length < 4) {
+			giai4.push({ code: Math.floor(Math.random() * 9000) + 1000, prize: 4 });
 		}
 		/* 5x */
 		// giai 3 - 6 prize - 100k
-		while (mapRes5.size < 6) {
-			mapRes5.set(Math.floor(Math.random() * 90000) + 10000, 3);
+		while (giai3.length < 6) {
+			giai3.push({ code: Math.floor(Math.random() * 90000) + 10000, prize: 3 });
 		}
 		// giai 2 - 2 prize - 500k
-		while (mapRes5.size < 8) {
-			let pick = Math.floor(Math.random() * 90000) + 10000;
-			if (mapRes5.has(pick)) continue;
-			mapRes5.set(pick, 2);
+		while (giai2.length < 2) {
+			giai2.push({ code: Math.floor(Math.random() * 90000) + 10000, prize: 2 });
 		}
 		// giai 1 - 1 prize - 1000k
-		while (mapRes5.size < 9) {
-			let pick = Math.floor(Math.random() * 90000) + 10000;
-			if (mapRes5.has(pick)) continue;
-			mapRes5.set(pick, 1);
+		while (giai1.length < 1) {
+			giai1.push({ code: Math.floor(Math.random() * 90000) + 10000, prize: 1 });
 		}
 		// giai DB - 1 prize - 10000k
-		while (mapRes5.size < 10) {
-			let pick = Math.floor(Math.random() * 90000) + 10000;
-			if (mapRes5.has(pick)) continue;
-			mapRes5.set(pick, 0);
+		while (giaidb.length < 1) {
+			giaidb.push({ code: Math.floor(Math.random() * 90000) + 10000, prize: 0 });
 		}
 
 		await Promise.all([
-			client.db.updateLotteryResult(
-				Array.from(mapRes2, ([code, prize]) => ({ code, prize })),
-				id2
-			),
-			client.db.updateLotteryResult(
-				Array.from(mapRes3, ([code, prize]) => ({ code, prize })),
-				id3
-			),
-			client.db.updateLotteryResult(
-				Array.from(mapRes4, ([code, prize]) => ({ code, prize })),
-				id4
-			),
-			client.db.updateLotteryResult(
-				Array.from(mapRes5, ([code, prize]) => ({ code, prize })),
-				id5
-			)
+			getListAndReward(client, giai7, game.lottery.seventh),
+			getListAndReward(client, giai6, game.lottery.sixth),
+			getListAndReward(client, giai5, game.lottery.fifth),
+			getListAndReward(client, giai4, game.lottery.fourth),
+			getListAndReward(client, giai3, game.lottery.third),
+			getListAndReward(client, giai2, game.lottery.second),
+			getListAndReward(client, giai1, game.lottery.fisrt),
+			getListAndReward(client, giaidb, game.lottery.special)
+		]);
+		//clear collection
+		await client.db.clearLotteryUser();
+		await Promise.all([
+			client.db.updateLotteryResult(giai7, id2),
+			client.db.updateLotteryResult(giai6, id3),
+			client.db.updateLotteryResult(giai4.concat(giai5), id4),
+			client.db.updateLotteryResult(giaidb.concat(giai1).concat(giai2).concat(giai3), id5)
 		]);
 	} catch (e) {
 		console.log(e);
 	}
 };
+
+async function getListAndReward(client, giaiList, reward) {
+	let listWinner = await client.db.getListWiner(
+		giaiList.map(function (obj) {
+			return obj.code;
+		})
+	);
+	return await client.db.updateListWinner(
+		listWinner.map(function (obj) {
+			return obj.discordId;
+		}),
+		reward
+	);
+}

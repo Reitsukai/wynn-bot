@@ -16,7 +16,7 @@ exports.lotteryCronInit = async function (client) {
 		for (let i = 10000; i < 100000; i++) {
 			arrayType5.push(i);
 		}
-		await client.clearLotteryArray();
+		await client.db.clearLotteryArray();
 		await client.setArrayLottery(
 			await randomArray(client, arrayType2, 2),
 			await randomArray(client, arrayType3, 3),
