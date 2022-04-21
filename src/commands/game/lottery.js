@@ -65,7 +65,7 @@ class UserCommand extends WynnCommand {
 		mapLength.set(4, 9000);
 		mapLength.set(5, 90000);
 		//case 1 : find code
-		if (code) {
+		if (code !== null && code !== undefined) {
 			for (let i = 0; i < this.container.client.options.lottery.length; i++) {
 				if (this.container.client.options.lottery[i].length === mapLength.get(code.toString().length === 1 ? 2 : code.toString().length)) {
 					let location = this.container.client.options.lottery[i].indexOf(code);

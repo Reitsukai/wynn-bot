@@ -136,7 +136,7 @@ module.exports.updateLotteryResult = async function (array, id) {
 module.exports.createNewLottery = async function (discordId, code) {
 	let userLot = new lotterySchema({
 		discordId: discordId,
-		lotteryType: code.toString().length,
+		lotteryType: code.toString().length === 1 ? 2 : code.toString().length,
 		code: code
 	});
 	return await userLot.save().catch((err) => console.log(err));
@@ -147,14 +147,16 @@ module.exports.getListWiner = async function (list) {
 };
 
 module.exports.updateListWinner = async function (list, reward) {
-	return await userSchema.updateMany(
-		{ discordId: { $in: list } },
-		{
-			$inc: {
-				money: reward
+	for (let i = 0; i < list.length; i++) {
+		await userSchema.updateOne(
+			{ discordId: list[i] },
+			{
+				$inc: {
+					money: reward
+				}
 			}
-		}
-	);
+		);
+	}
 };
 
 module.exports.clearLotteryUser = async function () {
