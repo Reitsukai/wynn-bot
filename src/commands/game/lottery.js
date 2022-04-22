@@ -46,17 +46,16 @@ class UserCommand extends WynnCommand {
 			}
 		}
 		let userInfo = await this.container.client.db.fetchUser(message.author.id);
-		this.mainProcess(typeDigit, code, t, message, message.author.tag, userInfo);
+		return await this.mainProcess(typeDigit, code, t, message, message.author.tag, userInfo);
 	}
 
 	async mainProcess(typeDigit, code, t, message, tag, userInfo) {
 		if (userInfo.money - game.lottery.buy < 0) {
-			return await utils.returnForSlashWithLabelOrSendMessage(
+			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/lottery:nomoney', {
 					user: tag
-				}),
-				'end'
+				})
 			);
 		}
 		const mapLength = new Map();
@@ -71,16 +70,18 @@ class UserCommand extends WynnCommand {
 					let location = this.container.client.options.lottery[i].indexOf(code);
 					if (location === -1) {
 						//exist
-						return await utils.returnForSlashWithLabelOrSendMessage(
+						return await utils.returnSlashAndMessage(
 							message,
 							t('commands/lottery:exist', {
 								code: code,
 								tag: tag
-							}),
-							'end'
+							})
 						);
 					} else {
 						//ok
+						if (message.type === 'APPLICATION_COMMAND') {
+							await message.reply(t('commands/lottery:description'));
+						}
 						return await this.embedConfirm(code, t, message, tag, userInfo.discordId, null, location, i);
 					}
 				}
@@ -92,13 +93,12 @@ class UserCommand extends WynnCommand {
 			let count = lotteryResult.counter;
 			if (count === mapLength.get(typeDigit) - 1) {
 				// sold out this type
-				return await utils.returnForSlashWithLabelOrSendMessage(
+				return await utils.returnSlashAndMessage(
 					message,
 					t('commands/lottery:sold', {
 						type: typeDigit + 'd',
 						tag: tag
-					}),
-					'end'
+					})
 				);
 			}
 			let codeByType;
@@ -109,6 +109,9 @@ class UserCommand extends WynnCommand {
 					}
 					codeByType = this.container.client.options.lottery[i][count];
 					//ok
+					if (message.type === 'APPLICATION_COMMAND') {
+						await message.reply(t('commands/lottery:description'));
+					}
 					return await this.embedConfirm(codeByType, t, message, tag, userInfo.discordId, lotteryResult, count, i);
 				}
 			}
@@ -129,17 +132,19 @@ class UserCommand extends WynnCommand {
 						}
 						codeByType = this.container.client.options.lottery[i][count];
 						//ok
+						if (message.type === 'APPLICATION_COMMAND') {
+							await message.reply(t('commands/lottery:description'));
+						}
 						return await this.embedConfirm(codeByType, t, message, tag, userInfo.discordId, lotteryResult, count, i);
 					}
 				}
 			}
 			// sold out all
-			return await utils.returnForSlashWithLabelOrSendMessage(
+			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/lottery:soldout', {
 					tag: tag
-				}),
-				'end'
+				})
 			);
 		}
 	}
@@ -213,7 +218,17 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		return await interaction.reply(await this.messageRun(interaction));
+		const t = await fetchT(interaction);
+		//no cooldown :3
+		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
+		return await this.mainProcess(
+			interaction.options.getInteger('type'),
+			interaction.options.getInteger('code'),
+			t,
+			interaction,
+			interaction.user.tag,
+			userInfo
+		);
 	}
 }
 
@@ -221,15 +236,15 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('lottery')
 		.setDescription('lottery for lucky')
-		.addStringOption((option) =>
+		.addIntegerOption((option) =>
 			option
 				.setName('type')
 				.setDescription('Enter an integer that is the length of the lottery code')
 				.setRequired(false)
-				.addChoice('two-digit type', '2d')
-				.addChoice('three-digit type', '3d')
-				.addChoice('four-digit type', '4d')
-				.addChoice('five-digit type', '5d')
+				.addChoice('two-digit type', 2)
+				.addChoice('three-digit type', 3)
+				.addChoice('four-digit type', 4)
+				.addChoice('five-digit type', 5)
 		)
 		.addIntegerOption((option) =>
 			option.setName('code').setDescription('Enter the integer that is the lottery number you want').setRequired(false)

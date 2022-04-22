@@ -64,14 +64,14 @@ exports.lotteryCronResult = async function (client) {
 		}
 
 		await Promise.all([
-			getListAndReward(client, giai7, game.lottery.seventh),
-			getListAndReward(client, giai6, game.lottery.sixth),
-			getListAndReward(client, giai5, game.lottery.fifth),
-			getListAndReward(client, giai4, game.lottery.fourth),
-			getListAndReward(client, giai3, game.lottery.third),
-			getListAndReward(client, giai2, game.lottery.second),
-			getListAndReward(client, giai1, game.lottery.fisrt),
-			getListAndReward(client, giaidb, game.lottery.special)
+			getListAndReward(client, giai7, game.lottery.seventh, 'seventh prize'),
+			getListAndReward(client, giai6, game.lottery.sixth, 'sixth prize'),
+			getListAndReward(client, giai5, game.lottery.fifth, 'fifth prize'),
+			getListAndReward(client, giai4, game.lottery.fourth, 'fourth prize'),
+			getListAndReward(client, giai3, game.lottery.third, 'third prize'),
+			getListAndReward(client, giai2, game.lottery.second, 'second prize'),
+			getListAndReward(client, giai1, game.lottery.fisrt, 'first prize'),
+			getListAndReward(client, giaidb, game.lottery.special, 'special prize')
 		]);
 		//clear collection
 		await client.db.clearLotteryUser();
@@ -86,12 +86,24 @@ exports.lotteryCronResult = async function (client) {
 	}
 };
 
-async function getListAndReward(client, giaiList, reward) {
+async function getListAndReward(client, giaiList, reward, textPrize) {
 	let listWinner = await client.db.getListWiner(
 		giaiList.map(function (obj) {
 			return obj.code;
 		})
 	);
+	listWinner.forEach((element) => {
+		client.users.fetch(element.discordId).then((user) => {
+			try {
+				const emoji = require('../../config/emoji');
+				user.send(
+					`You win **${textPrize}** with the amount of **${reward} ${emoji.common.money}** from the lottery ticket **${element.code}**`
+				);
+			} catch (err) {
+				console.log('err');
+			}
+		});
+	});
 	return await client.db.updateListWinner(
 		listWinner.map(function (obj) {
 			return obj.discordId;
