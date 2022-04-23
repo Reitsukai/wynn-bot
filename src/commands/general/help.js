@@ -29,32 +29,32 @@ class UserCommand extends WynnCommand {
 				const command = await this.container.stores.get('commands').get(commandName);
 
 				if (!command) {
-					return await utils.returnForSlashOrSendMessage(
+					return await utils.returnContentForSlashOrSendMessage(
 						message,
 						t('commands/help:commandNotFound', { prefix: await this.container.client.fetchPrefix(message) })
 					);
 				}
 				const msg = await this.buildCommandEmbed(t, message, command);
-				return await utils.returnForSlashOrSendMessage(message, { embeds: [msg] });
+				return await utils.returnContentForSlashOrSendMessage(message, { embeds: [msg] });
 			}
 
-			return await utils.returnForSlashOrSendMessage(message, { embeds: [await this.buildHelp(t, message, 'owner')] });
+			return await utils.returnContentForSlashOrSendMessage(message, { embeds: [await this.buildHelp(t, message, 'owner')] });
 		}
 
 		if (commandName) {
 			const command = await this.container.stores.get('commands').get(commandName);
 			if (!command || command.category === 'ownerBot') {
-				return await utils.returnForSlashOrSendMessage(
+				return await utils.returnContentForSlashOrSendMessage(
 					message,
 					t('commands/help:commandNotFound', { prefix: await this.container.client.fetchPrefix(message) })
 				);
 			}
 
 			const msg = await this.buildCommandEmbed(t, message, command);
-			return await utils.returnForSlashOrSendMessage(message, { embeds: [msg] });
+			return await utils.returnContentForSlashOrSendMessage(message, { embeds: [msg] });
 		}
 
-		return await utils.returnForSlashOrSendMessage(message, { embeds: [await this.buildHelp(t, message, null)] });
+		return await utils.returnContentForSlashOrSendMessage(message, { embeds: [await this.buildHelp(t, message, null)] });
 	}
 
 	async buildCommandEmbed(t, message, command) {

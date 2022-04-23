@@ -65,7 +65,7 @@ class UserCommand extends WynnCommand {
 			const moneyEmoji = emoji.common.money;
 
 			if (userGiveInfo.money < money) {
-				return await utils.returnForSlashOrSendMessage(
+				return await utils.returnContentForSlashOrSendMessage(
 					message,
 					t('commands/give_money:nomoney', {
 						user: tag
@@ -88,7 +88,7 @@ class UserCommand extends WynnCommand {
 				}
 			);
 
-			return await utils.returnForSlashOrSendMessage(
+			return await utils.returnContentForSlashOrSendMessage(
 				message,
 				t('commands/give_money:result', {
 					user: tag,

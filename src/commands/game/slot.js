@@ -44,37 +44,7 @@ class UserCommand extends WynnCommand {
 				})
 			);
 		}
-		let result = await this.validateBetMoney(betMoney, message, t, userInfo, message.author.tag);
-		if (result !== undefined) {
-			return;
-		}
-		return this.mainProcess(betMoney, message, t, message.author.id, message.author.tag);
-	}
-
-	async validateBetMoney(betMoney, message, t, userInfo, tag) {
-		if (betMoney < minBet || betMoney > maxBet) {
-			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
-			return await utils.returnForSlashWithLabelOrSendMessage(
-				message,
-				t('commands/slot:rangeerror', {
-					user: tag,
-					min: minBet,
-					max: maxBet
-				}),
-				'end'
-			);
-		}
-
-		if (userInfo.money - betMoney < 0) {
-			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
-			return await utils.returnForSlashWithLabelOrSendMessage(
-				message,
-				t('commands/slot:nomoney', {
-					user: tag
-				}),
-				'end'
-			);
-		}
+		return this.mainProcess(betMoney, message, t, message.author.id, message.author.tag, userInfo);
 	}
 
 	async editSlotMsg(slotMsg, status, message, betMoney, tag, emoji1, emoji2, emoji3, emojiLoad, win, moneyEmoji, t, userId) {
@@ -128,7 +98,30 @@ class UserCommand extends WynnCommand {
 		return await slotMsg.edit(machine3);
 	}
 
-	async mainProcess(betMoney, message, t, userId, tag) {
+	async mainProcess(betMoney, message, t, userId, tag, userInfo) {
+		//validate bet money
+		if (betMoney < minBet || betMoney > maxBet) {
+			await this.container.client.resetCustomCooldown(userId, this.name);
+			return await utils.returnSlashAndMessage(
+				message,
+				t('commands/slot:rangeerror', {
+					user: tag,
+					min: minBet,
+					max: maxBet
+				})
+			);
+		}
+
+		if (userInfo.money - betMoney < 0) {
+			await this.container.client.resetCustomCooldown(userId, this.name);
+			return await utils.returnSlashAndMessage(
+				message,
+				t('commands/slot:nomoney', {
+					user: tag
+				})
+			);
+		}
+
 		try {
 			const moneyEmoji = emoji.common.money;
 			const emojiLoad = emoji.game.slot.load;
@@ -136,7 +129,7 @@ class UserCommand extends WynnCommand {
 			const emoji2 = emoji.game.slot.t2;
 			const emoji3 = emoji.game.slot.t3;
 
-			let slotMsg = await utils.returnForSlashOrSendMessage(
+			let slotMsg = await utils.returnContentForSlashOrSendMessage(
 				message,
 				t('commands/slot:process', {
 					icon1: emojiLoad,
@@ -265,11 +258,14 @@ class UserCommand extends WynnCommand {
 			return await interaction.reply(checkCoolDown);
 		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		let result = await this.validateBetMoney(Number(interaction.options.getInteger('betmoney')), interaction, t, userInfo, interaction.user.tag);
-		if (result !== undefined && result.status === 'end') {
-			return await interaction.reply(result.content);
-		}
-		return await this.mainProcess(Number(interaction.options.getInteger('betmoney')), interaction, t, interaction.user.id, interaction.user.tag);
+		return await this.mainProcess(
+			Number(interaction.options.getInteger('betmoney')),
+			interaction,
+			t,
+			interaction.user.id,
+			interaction.user.tag,
+			userInfo
+		);
 	}
 }
 

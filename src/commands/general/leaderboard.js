@@ -44,7 +44,7 @@ class UserCommand extends WynnCommand {
 				embedMSG.addField(`#${i + 1}. ${user.tag}`, `> ${lbmoney[i].money} ${moneyEmoji}`);
 			}
 
-			return await utils.returnForSlashOrSendMessage(message, { embeds: [embedMSG] });
+			return await utils.returnContentForSlashOrSendMessage(message, { embeds: [embedMSG] });
 		} catch (err) {
 			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));

@@ -62,25 +62,23 @@ class UserCommand extends WynnCommand {
 	async mainProcess(betMoney, betFace, message, t, userInfo, userId, tag) {
 		if (betMoney < game.cf.min || betMoney > game.cf.max) {
 			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
-			return await utils.returnForSlashWithLabelOrSendMessage(
+			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/coin_flip:rangeerror', {
 					user: tag,
 					min: game.cf.min,
 					max: game.cf.max
-				}),
-				'end'
+				})
 			);
 		}
 
 		if (userInfo.money - betMoney < 0) {
 			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
-			return await utils.returnForSlashWithLabelOrSendMessage(
+			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/coin_flip:nomoney', {
 					user: tag
-				}),
-				'end'
+				})
 			);
 		}
 
@@ -124,10 +122,9 @@ class UserCommand extends WynnCommand {
 			});
 
 			if (message.type === 'APPLICATION_COMMAND') {
-				return {
-					content1: content1,
-					content2: content2
-				};
+				await message.reply(content1);
+				await wait(1000);
+				return await message.editReply(content2);
 			}
 
 			let messageResult = await send(message, content1);
@@ -146,8 +143,7 @@ class UserCommand extends WynnCommand {
 			return await interaction.reply(checkCoolDown);
 		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		// interaction.reply(t('commands/coin_flip:description'));
-		let result = await this.mainProcess(
+		return await this.mainProcess(
 			Number(interaction.options.getInteger('betmoney')),
 			interaction.options.getString('betface'),
 			interaction,
@@ -156,12 +152,6 @@ class UserCommand extends WynnCommand {
 			interaction.user.id,
 			interaction.user.tag
 		);
-		if (result.status === 'end') {
-			return await interaction.reply(result.content);
-		}
-		await interaction.reply(result.content1);
-		await wait(1000);
-		return await interaction.editReply(result.content2);
 	}
 }
 

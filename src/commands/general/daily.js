@@ -25,7 +25,7 @@ class UserCommand extends WynnCommand {
 		let tag = message.type === 'APPLICATION_COMMAND' ? message.user.tag : message.author.tag;
 		const dailyInfo = await this.container.client.db.getDailyInfo(userId);
 		if (dailyInfo != null && dailyInfo.lastDaily.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)) {
-			return utils.returnForSlashOrSendMessage(
+			return utils.returnContentForSlashOrSendMessage(
 				message,
 				t('commands/daily:attendance', {
 					user: tag
@@ -51,7 +51,7 @@ class UserCommand extends WynnCommand {
 		await this.container.client.db.setDailyInfo(userId, {
 			$set: { dailyStreak: dailyStreak, lastDaily: new Date() }
 		});
-		return utils.returnForSlashOrSendMessage(
+		return utils.returnContentForSlashOrSendMessage(
 			message,
 			t('commands/daily:result', {
 				user: tag,

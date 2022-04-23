@@ -37,18 +37,18 @@ class UserCommand extends WynnCommand {
 		const langs = Array.from(languageMap.keys());
 
 		if (!arg) {
-			return await utils.returnForSlashOrSendMessage(message, t('commands/language:currentLanguage', { language: currentLanguage }));
+			return await utils.returnContentForSlashOrSendMessage(message, t('commands/language:currentLanguage', { language: currentLanguage }));
 		}
 
 		if (arg === 'list') {
-			return await utils.returnForSlashOrSendMessage(message, t('commands/language:listLanguage', { list: langs.join(', ') }));
+			return await utils.returnContentForSlashOrSendMessage(message, t('commands/language:listLanguage', { list: langs.join(', ') }));
 		}
 
 		const newCurrent = arg.split('-');
 		const newLang = [newCurrent[0].toLowerCase(), newCurrent[1]?.toUpperCase()].join('-');
 
 		if (newCurrent.length !== 2 || !langs.includes(newLang)) {
-			return await utils.returnForSlashOrSendMessage(
+			return await utils.returnContentForSlashOrSendMessage(
 				message,
 				t('commands/language:invalidInput', { prefix: await this.container.client.fetchPrefix(message) })
 			);
@@ -59,7 +59,7 @@ class UserCommand extends WynnCommand {
 
 			if (guildData) {
 				const newT = await fetchT(message);
-				return await utils.returnForSlashOrSendMessage(message, newT('commands/language:updateLanguage', { newLanguage: newLang }));
+				return await utils.returnContentForSlashOrSendMessage(message, newT('commands/language:updateLanguage', { newLanguage: newLang }));
 			}
 		} catch (err) {
 			logger.error(err);
