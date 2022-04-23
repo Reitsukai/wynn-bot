@@ -23,10 +23,11 @@ exports.InitCron = async function (client) {
 				scheduled: true
 			}
 		);
-		// at 18h every day
+		// at 18h every day - GMT+7
+		// GMT + 0 : 11h
 		cron.schedule(
 			// '* * * * *',
-			'0 18 * * *',
+			'0 11 * * *',
 			async () => {
 				await lotteryCronResult(client);
 				await lotteryCronInit(client);
