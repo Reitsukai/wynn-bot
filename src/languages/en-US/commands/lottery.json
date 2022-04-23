@@ -14,5 +14,14 @@
 	"cancel": "Cancel",
 	"acceptbuy": "You have successfully purchased a lottery ticket.",
 	"cancelbuy": "You have canceled your lottery ticket purchase.",
-	"notactive": "Time is up but you haven't decided to buy yet ~~>_<~~ "
+	"notactive": "Time is up but you haven't decided to buy yet ~~>_<~~ ",
+	"titleResult": "__Winning List__",
+	"text0": "Special Prize",
+	"text1": "First prize",
+	"text2": "Second Prize",
+	"text3": "Third Prize",
+	"text4": "Fourth Prize",
+	"text5": "Five Prize",
+	"text6": "Sixth prize",
+	"text7": "Seventh Prize"
 }

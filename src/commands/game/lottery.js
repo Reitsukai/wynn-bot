@@ -29,7 +29,9 @@ class UserCommand extends WynnCommand {
 		let code;
 		if (input !== null) {
 			if (typeof input === 'string' || input instanceof String) {
-				if (input === '2d' || input === '3d' || input === '4d' || input === '5d') {
+				if (input === 'results') {
+					return this.embedResultLottery(message, t);
+				} else if (input === '2d' || input === '3d' || input === '4d' || input === '5d') {
 					typeDigit = parseInt(input.charAt(0));
 				} else if (!isNaN(Number(input))) {
 					code = Number(input);
@@ -217,8 +219,44 @@ class UserCommand extends WynnCommand {
 		return;
 	}
 
+	async embedResultLottery(message, t) {
+		let mappingPrize = new Map();
+		mappingPrize.set(0, t('commands/lottery:text0'));
+		mappingPrize.set(1, t('commands/lottery:text1'));
+		mappingPrize.set(2, t('commands/lottery:text2'));
+		mappingPrize.set(3, t('commands/lottery:text3'));
+		mappingPrize.set(4, t('commands/lottery:text4'));
+		mappingPrize.set(5, t('commands/lottery:text5'));
+		mappingPrize.set(6, t('commands/lottery:text6'));
+		mappingPrize.set(7, t('commands/lottery:text7'));
+		const result = await this.container.client.db.getLastResultLottery();
+		let msgEmbed = new MessageEmbed().setTitle(t('commands/lottery:titleResult'));
+		for (let i = 0; i < result.length; i++) {
+			let listCode = '';
+			let checkChange = result[i].arrayResult[0].prize;
+			for (let j = 0; j < result[i].arrayResult.length; j++) {
+				if (checkChange !== result[i].arrayResult[j].prize) {
+					msgEmbed.addField(mappingPrize.get(checkChange), `*\`${listCode}\`*`);
+					listCode = '';
+				} else if (listCode.length > 0) {
+					listCode += ' - ';
+				}
+				checkChange = result[i].arrayResult[j].prize;
+				listCode += result[i].arrayResult[j].code;
+				if (j === result[i].arrayResult.length - 1) {
+					msgEmbed.addField(mappingPrize.get(checkChange), `*\`${listCode}\`*`);
+					break;
+				}
+			}
+		}
+		return await utils.returnSlashAndMessage(message, { embeds: [msgEmbed] });
+	}
+
 	async execute(interaction) {
 		const t = await fetchT(interaction);
+		if (interaction.options.getSubcommand() === 'results') {
+			return this.embedResultLottery(interaction, t);
+		}
 		//no cooldown :3
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 		return await this.mainProcess(
@@ -236,18 +274,24 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('lottery')
 		.setDescription('lottery for lucky')
-		.addIntegerOption((option) =>
-			option
-				.setName('type')
-				.setDescription('Enter an integer that is the length of the lottery code')
-				.setRequired(false)
-				.addChoice('two-digit type', 2)
-				.addChoice('three-digit type', 3)
-				.addChoice('four-digit type', 4)
-				.addChoice('five-digit type', 5)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('buy')
+				.setDescription('Buy lottery tickets')
+				.addIntegerOption((option) =>
+					option
+						.setName('type')
+						.setDescription('Enter an integer that is the length of the lottery code')
+						.setRequired(false)
+						.addChoice('two-digit type', 2)
+						.addChoice('three-digit type', 3)
+						.addChoice('four-digit type', 4)
+						.addChoice('five-digit type', 5)
+				)
+				.addIntegerOption((option) =>
+					option.setName('code').setDescription('Enter the integer that is the lottery number you want').setRequired(false)
+				)
 		)
-		.addIntegerOption((option) =>
-			option.setName('code').setDescription('Enter the integer that is the lottery number you want').setRequired(false)
-		),
+		.addSubcommand((subcommand) => subcommand.setName('results').setDescription('View lottery results')),
 	UserCommand
 };

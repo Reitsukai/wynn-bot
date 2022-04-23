@@ -99,6 +99,13 @@ module.exports.getLotteryResult = async function () {
 	return await lotteryResultSchema.find().sort({ createdAt: -1 }).limit(4);
 };
 
+module.exports.getLastResultLottery = async function () {
+	return await lotteryResultSchema
+		.find({ 'arrayResult.1': { $exists: true } })
+		.sort({ createdAt: -1 })
+		.limit(4);
+};
+
 module.exports.getLotteryResultByType = async function (lotteryType) {
 	return await lotteryResultSchema.findOne({ lotteryType: lotteryType }).sort({ createdAt: -1 });
 };
