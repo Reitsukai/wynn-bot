@@ -23,5 +23,6 @@
 	"text4": "Fourth Prize",
 	"text5": "Five Prize",
 	"text6": "Sixth prize",
-	"text7": "Seventh Prize"
+	"text7": "Seventh Prize",
+	"error": "Something went wrong, it looks like the lottery ticket was bought by someone else"
 }

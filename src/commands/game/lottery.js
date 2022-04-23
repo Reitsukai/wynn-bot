@@ -6,6 +6,7 @@ const game = require('../../config/game');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const { logger } = require('../../utils/index');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -21,34 +22,39 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
-		const t = await fetchT(message);
+		try {
+			const t = await fetchT(message);
 
-		let input = await args.next();
+			let input = await args.next();
 
-		let typeDigit;
-		let code;
-		if (input !== null) {
-			if (typeof input === 'string' || input instanceof String) {
-				if (input === 'results') {
-					return this.embedResultLottery(message, t);
-				} else if (input === '2d' || input === '3d' || input === '4d' || input === '5d') {
-					typeDigit = parseInt(input.charAt(0));
-				} else if (!isNaN(Number(input))) {
-					code = Number(input);
+			let typeDigit;
+			let code;
+			if (input !== null) {
+				if (typeof input === 'string' || input instanceof String) {
+					if (input === 'results') {
+						return this.embedResultLottery(message, t);
+					} else if (input === '2d' || input === '3d' || input === '4d' || input === '5d') {
+						typeDigit = parseInt(input.charAt(0));
+					} else if (!isNaN(Number(input))) {
+						code = Number(input);
+					}
+				} else {
+					//input error
+					return send(
+						message,
+						t('commands/lottery:inputerror', {
+							user: message.author.tag,
+							prefix: await this.container.client.fetchPrefix(message)
+						})
+					);
 				}
-			} else {
-				//input error
-				return send(
-					message,
-					t('commands/lottery:inputerror', {
-						user: message.author.tag,
-						prefix: await this.container.client.fetchPrefix(message)
-					})
-				);
 			}
+			let userInfo = await this.container.client.db.fetchUser(message.author.id);
+			return await this.mainProcess(typeDigit, code, t, message, message.author.tag, userInfo);
+		} catch (error) {
+			logger.error(err);
+			console.log(error);
 		}
-		let userInfo = await this.container.client.db.fetchUser(message.author.id);
-		return await this.mainProcess(typeDigit, code, t, message, message.author.tag, userInfo);
 	}
 
 	async mainProcess(typeDigit, code, t, message, tag, userInfo) {
@@ -171,21 +177,30 @@ class UserCommand extends WynnCommand {
 		const filter = (message) => {
 			return ['accept', 'cancel'].includes(message.customId) && message.user.id === userId;
 		};
-		const collector = newMsg.createMessageComponentCollector({ filter, time: 15000 });
+		const collector = newMsg.createMessageComponentCollector({ filter, time: 8000 });
 		collector.on('collect', async (message) => {
 			if (message.customId === 'accept') {
+				//try catch if duplicate lottery
+				try {
+					await this.container.client.db.createNewLottery(userId, code);
+				} catch (error) {
+					logger.error(err);
+					console.log(error);
+					embedMSG.setColor(0xff0000);
+					embedMSG.setFooter({ text: t('commands/lottery:error') });
+					await newMsg.edit({ embeds: [embedMSG], components: [] });
+					collector.stop('done');
+					return;
+				}
+				this.container.client.options.lottery[index][count] = -1;
 				if (lotteryResult) {
 					await this.container.client.db.updateCountLotteryResult(lotteryResult._id, count);
 				}
-				this.container.client.options.lottery[index][count] = -1;
-				await Promise.all([
-					this.container.client.db.updateUser(userId, {
-						$inc: {
-							money: -game.lottery.buy
-						}
-					}),
-					this.container.client.db.createNewLottery(userId, code)
-				]);
+				await this.container.client.db.updateUser(userId, {
+					$inc: {
+						money: -game.lottery.buy
+					}
+				});
 				// row.components.forEach((e) => {
 				// 	e.setDisabled(true);
 				// });
@@ -221,14 +236,39 @@ class UserCommand extends WynnCommand {
 
 	async embedResultLottery(message, t) {
 		let mappingPrize = new Map();
-		mappingPrize.set(0, t('commands/lottery:text0'));
-		mappingPrize.set(1, t('commands/lottery:text1'));
-		mappingPrize.set(2, t('commands/lottery:text2'));
-		mappingPrize.set(3, t('commands/lottery:text3'));
-		mappingPrize.set(4, t('commands/lottery:text4'));
-		mappingPrize.set(5, t('commands/lottery:text5'));
-		mappingPrize.set(6, t('commands/lottery:text6'));
-		mappingPrize.set(7, t('commands/lottery:text7'));
+		mappingPrize.set(0, {
+			text: t('commands/lottery:text0'),
+			money: game.lottery.special
+		});
+		mappingPrize.set(1, {
+			text: t('commands/lottery:text1'),
+			money: game.lottery.fisrt
+		});
+		mappingPrize.set(2, {
+			text: t('commands/lottery:text2'),
+			money: game.lottery.second
+		});
+		mappingPrize.set(3, {
+			text: t('commands/lottery:text3'),
+			money: game.lottery.third
+		});
+		mappingPrize.set(4, {
+			text: t('commands/lottery:text4'),
+			money: game.lottery.fourth
+		});
+		mappingPrize.set(5, {
+			text: t('commands/lottery:text5'),
+			money: game.lottery.fifth
+		});
+		mappingPrize.set(6, {
+			text: t('commands/lottery:text6'),
+			money: game.lottery.sixth
+		});
+		mappingPrize.set(7, {
+			text: t('commands/lottery:text7'),
+			money: game.lottery.seventh
+		});
+
 		const result = await this.container.client.db.getLastResultLottery();
 		let msgEmbed = new MessageEmbed().setTitle(t('commands/lottery:titleResult'));
 		for (let i = 0; i < result.length; i++) {
@@ -236,7 +276,10 @@ class UserCommand extends WynnCommand {
 			let checkChange = result[i].arrayResult[0].prize;
 			for (let j = 0; j < result[i].arrayResult.length; j++) {
 				if (checkChange !== result[i].arrayResult[j].prize) {
-					msgEmbed.addField(mappingPrize.get(checkChange), `*\`${listCode}\`*`);
+					msgEmbed.addField(
+						mappingPrize.get(checkChange).text + ` - ${mappingPrize.get(checkChange).money} ${emoji.common.money}`,
+						`*\`${listCode}\`*`
+					);
 					listCode = '';
 				} else if (listCode.length > 0) {
 					listCode += ' - ';
@@ -244,7 +287,10 @@ class UserCommand extends WynnCommand {
 				checkChange = result[i].arrayResult[j].prize;
 				listCode += result[i].arrayResult[j].code;
 				if (j === result[i].arrayResult.length - 1) {
-					msgEmbed.addField(mappingPrize.get(checkChange), `*\`${listCode}\`*`);
+					msgEmbed.addField(
+						mappingPrize.get(checkChange).text + ` - ${mappingPrize.get(checkChange).money} ${emoji.common.money}`,
+						`*\`${listCode}\`*`
+					);
 					break;
 				}
 			}
@@ -253,20 +299,25 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		const t = await fetchT(interaction);
-		if (interaction.options.getSubcommand() === 'results') {
-			return this.embedResultLottery(interaction, t);
+		try {
+			const t = await fetchT(interaction);
+			if (interaction.options.getSubcommand() === 'results') {
+				return this.embedResultLottery(interaction, t);
+			}
+			//no cooldown :3
+			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
+			return await this.mainProcess(
+				interaction.options.getInteger('type'),
+				interaction.options.getInteger('code'),
+				t,
+				interaction,
+				interaction.user.tag,
+				userInfo
+			);
+		} catch (error) {
+			logger.error(err);
+			console.log(error);
 		}
-		//no cooldown :3
-		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		return await this.mainProcess(
-			interaction.options.getInteger('type'),
-			interaction.options.getInteger('code'),
-			t,
-			interaction,
-			interaction.user.tag,
-			userInfo
-		);
 	}
 }
 
