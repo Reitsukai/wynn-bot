@@ -1,0 +1,8 @@
+{
+	"description": "View/change prefix in server",
+	"usage": "{{prefix}}prefix [new prefix]",
+	"example": ["{{prefix}}prefix", "{{prefix}}prefix w"],
+	"currentPrefix": "My prefix is `{{prefix}}`",
+	"updatePrefix": "My prefix has been changed to `{{newPrefix}}`",
+	"error": "> Cannot update prefix for bot. Please try again or join support server\n **Support Server: ** {{supportServer}}"
+}

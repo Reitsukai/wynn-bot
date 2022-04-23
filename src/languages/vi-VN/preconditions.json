@@ -1,0 +1,6 @@
+{
+	"AdminOnly": "Lệnh này chỉ có thể được thực hiện bởi người quản lí máy chủ.",
+	"preconditionCooldown": "Bạn vừa sử dụng lệnh này. Vui lòng thử lại sau {{remaining}}.",
+	"preconditionGuildOnly": "Bạn không thể sử dụng lệnh này ở tin nhắn riêng.",
+	"preconditionClientPermissions": "Tôi bị thiếu các quyền sau để chạy lệnh này: {{perm}}."
+}

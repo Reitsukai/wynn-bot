@@ -1,0 +1,20 @@
+{
+	"usage": "{{prefix}}bc 1000",
+	"example": ["{{prefix}}bc 1000"],
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}bc 1000",
+	"rangeerror": "**{{user}}** vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
+	"nomoney": "**{{user}}** không đủ tiền để chơi Tôm Cua Cá",
+	"description": "Trò chơi Tôm 🦐 Cua 🦀 Cá 🐟, sau 40 giây sẽ tự động quay nếu bạn không bấm quay",
+	"title": "===>🎲   Tôm 🦐 Cua 🦀 Cá 🐟   🎲<===",
+	"descrp": "**{{author}}** bấm để chọn ô bạn muốn đặt",
+	"footer": "Lưu ý: Mỗi react bằng **{{bet}} {{emoji}}** đã đặt",
+	"win": "Kết quả: ║{{icon1}}║{{icon2}}║{{icon3}}║\n**{{author}}** đặt **{{bet}} {{emoji}}** và kiếm được **{{win}} {{emoji}}**",
+	"lose": "Kết quả: ║{{icon1}}║{{icon2}}║{{icon3}}║\n**{{author}}** đặt **{{bet}} {{emoji}}** và bị mất **{{lose}} {{emoji}}**",
+	"bau": "{{emo}} Bầu",
+	"cua": "{{emo}} Cua",
+	"ca": "{{emo}} Cá",
+	"ga": "{{emo}} Gà",
+	"tom": "{{emo}} Tôm",
+	"nai": "{{emo}} Nai",
+	"notactive": "Hết thời gian đặt cược nhưng bạn chưa quyết định chơi ~~>_<~~ "
+}

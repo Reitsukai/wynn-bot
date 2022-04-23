@@ -1,0 +1,4 @@
+{
+	"forgotPrefix": "Ôi không! Bạn đã quên prefix sao? Prefix là `{{prefix}}`",
+	"error": "Đã có lỗi xảy ra. Vui lòng thử lại hoặc tham gia máy chủ hỗ trợ.\n**Support Server**: {{supportServer}}"
+}

@@ -1,0 +1,16 @@
+{
+	"title": "Help for {{cN}}",
+	"description": "Help",
+	"descriptionTitle": "Description",
+	"category": "Category",
+	"aliases": "Aliases",
+	"cooldown": "Cooldown",
+	"usageTitle": "Usage",
+	"usage": "{{prefix}}help [command]",
+	"exampleTitle": "Example",
+	"example": ["{{prefix}}help", "{{prefix}}help ping"],
+	"buildTitle": "List Commands",
+	"buildDescription": "Use {{prefix}}help [command] to view more information",
+	"commandNotFound": "Cannot find this command. View more help for other command by `{{prefix}}help`",
+	"footer": "[]: optional, {}: required"
+}

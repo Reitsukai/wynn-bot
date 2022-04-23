@@ -1,0 +1,7 @@
+{
+	"before": "Ping?",
+	"after": "Pong! Độ trễ {{latency}}ms. Độ trễ API {{latency1}}ms",
+	"description": "Ping pong",
+	"usage": "{{prefix}}ping",
+	"example": ["{{prefix}}ping"]
+}

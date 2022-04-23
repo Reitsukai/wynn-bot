@@ -1,0 +1,14 @@
+{
+	"description": "Tung đồng xu trong không khí và kiểm tra xem nó úp hay ngửa",
+	"usage": "{{prefix}}cf 1000 h",
+	"example": ["{{prefix}}cf 1000 t"],
+	"betting": "**{{user}}** đặt {{bet}} {{emoji}} vào mặt **{{face}}** và ... {{emojispin}}",
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}cf 1000 h",
+	"rangeerror": "**{{user}}** vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
+	"nomoney": "**{{user}}** không đủ tiền để tung đồng xu",
+	"result": "**{{user}}** đặt {{money}} {{emoji}} vào mặt **{{face}}**. Đồng xu rơi mặt **{{value}}** {{emojiResult}} và bạn **{{status}}** {{result}} {{emoji}}",
+	"heads": "ngửa",
+	"tails": "sấp",
+	"win": "thắng",
+	"lost": "mất"
+}

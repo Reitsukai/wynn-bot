@@ -1,0 +1,4 @@
+{
+	"forgotPrefix": "Uh-Oh! You forgot the prefix? It's `{{prefix}}`",
+	"error": "An error has occurred. Please try again or join the support server.\n**Support Server**: {{supportServer}} "
+}

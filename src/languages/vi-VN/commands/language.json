@@ -1,0 +1,10 @@
+{
+	"description": "Xem/thay đổi ngôn ngữ hiển thị của bot ở máy chủ",
+	"usage": "{{prefix}}language [ngôn ngữ mới | list]",
+	"example": ["{{prefix}}language", "{{prefix}}language en-US", "{{prefix}}language list"],
+	"currentLanguage": "Ngôn ngữ hiển thị đang được sử dụng là `{{language}}`",
+	"updateLanguage": "Ngôn ngữ hiển thị của bot đã được cập nhật thành `{{newLanguage}}`",
+	"listLanguage": "```diff\n- DANH SÁCH NGÔN NGỮ CÓ THỂ THAY ĐỔI\n+ {{list}}```",
+	"invalidInput": "Ngôn ngữ mới không hợp lệ. Vui lòng xem danh sách ngôn ngữ có sẵn bằng lệnh `{{prefix}}language list`",
+	"error": "> Không thể cập nhật ngôn ngữ hiển thị cho bot, vui lòng thử lại hoặc tham gia máy chủ hỗ trợ.\n **Máy chủ hỗ trợ: ** {{supportServer}}"
+}

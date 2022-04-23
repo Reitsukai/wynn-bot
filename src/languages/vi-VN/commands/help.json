@@ -1,0 +1,16 @@
+{
+	"title": "Trợ giúp cho {{cN}}",
+	"description": "Hiển thị danh sách các lệnh",
+	"descriptionTitle": "Mô tả",
+	"category": "Nhóm lệnh",
+	"aliases": "Lệnh rút gọn",
+	"cooldown": "Thời gian chờ",
+	"usageTitle": "Cách sử dụng",
+	"usage": "{{prefix}}help [lệnh]",
+	"exampleTitle": "Ví dụ",
+	"example": ["{{prefix}}help", "{{prefix}}help ping"],
+	"buildTitle": "Danh sách lệnh",
+	"buildDescription": "Sử dụng {{prefix}}help [lệnh] để xem thêm thông tin",
+	"commandNotFound": "Không thể tìm thấy giúp đỡ cho lệnh này. Xem các lệnh khác bằng cách `{{prefix}}help`",
+	"footer": "[]: tuỳ chọn, {}: bắt buộc"
+}
