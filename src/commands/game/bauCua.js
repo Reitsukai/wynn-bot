@@ -56,40 +56,37 @@ class UserCommand extends WynnCommand {
 				})
 			);
 		}
-		let result = await this.validateBetMoney(betMoney, message, t, userInfo, message.author.tag);
-		if (result !== undefined) {
-			return;
-		}
 		return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
 	}
 
-	async validateBetMoney(betMoney, message, t, userInfo, tag) {
+	async mainProcess(betMoney, message, t, userInfo, userId, tag) {
+		//validate bet money
 		if (betMoney < minBet || betMoney > maxBet) {
 			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
-			return await utils.returnForSlashWithLabelOrSendMessage(
+			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/baucua:rangeerror', {
 					user: tag,
 					min: minBet,
 					max: maxBet
-				}),
-				'end'
+				})
 			);
 		}
 
 		if (userInfo.money - betMoney < 0) {
 			await this.container.client.resetCustomCooldown(userInfo.discordId, this.name);
-			return await utils.returnForSlashWithLabelOrSendMessage(
+			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/baucua:nomoney', {
 					user: tag
-				}),
-				'end'
+				})
 			);
 		}
-	}
 
-	async mainProcess(betMoney, message, t, userInfo, userId, tag) {
+		if (message.type === 'APPLICATION_COMMAND') {
+			await message.reply(t('commands/baucua:description'));
+		}
+
 		try {
 			let numOfBet = [0, 0, 0, 0, 0, 0];
 			//create message
@@ -322,11 +319,6 @@ class UserCommand extends WynnCommand {
 			return await interaction.reply(checkCoolDown);
 		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		let result = await this.validateBetMoney(Number(interaction.options.getInteger('betmoney')), interaction, t, userInfo, interaction.user.tag);
-		if (result !== undefined && result.status === 'end') {
-			return await interaction.reply(result.content);
-		}
-		await interaction.reply(t('commands/baucua:description'));
 		return await this.mainProcess(
 			Number(interaction.options.getInteger('betmoney')),
 			interaction,

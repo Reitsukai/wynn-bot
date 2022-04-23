@@ -34,14 +34,14 @@ class UserCommand extends WynnCommand {
 		const currentPrefix = await this.container.client.fetchPrefix(message);
 
 		if (!prefix) {
-			return await utils.returnForSlashOrSendMessage(message, t('commands/prefix:currentPrefix', { prefix: currentPrefix }));
+			return await utils.returnContentForSlashOrSendMessage(message, t('commands/prefix:currentPrefix', { prefix: currentPrefix }));
 		}
 
 		try {
 			const guildData = await this.container.client.db.updateGuild(message.guild.id, { prefix: prefix });
 
 			if (guildData) {
-				return await utils.returnForSlashOrSendMessage(message, t('commands/prefix:updatePrefix', { newPrefix: prefix }));
+				return await utils.returnContentForSlashOrSendMessage(message, t('commands/prefix:updatePrefix', { newPrefix: prefix }));
 			}
 		} catch (err) {
 			logger.error(err);
