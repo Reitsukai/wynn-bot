@@ -15,7 +15,7 @@
 	"acceptbuy": "Bạn đã mua vé số thành công.",
 	"cancelbuy": "Bạn đã hủy mua vé số.",
 	"notactive": "Hết thời gian nhưng bạn chưa quyết định mua ~~>_<~~ ",
-	"titleResult": "__Danh sách trúng thưởng__",
+	"titleResult": "__Danh sách trúng thưởng ngày {{date}}__",
 	"text0": "Giải đặc biệt",
 	"text1": "Giải nhất",
 	"text2": "Giải nhì",
