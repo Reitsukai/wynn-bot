@@ -41,3 +41,8 @@ module.exports.updateLotteryResult = updateLotteryResult;
 module.exports.createNewLottery = createNewLottery;
 module.exports.getListWiner = getListWiner;
 module.exports.clearLotteryUser = clearLotteryUser;
+
+const { fetchGuild, updateChannel } = require('./query/channel');
+
+module.exports.fetchGuild = fetchGuild;
+module.exports.updateChannel = updateChannel;
