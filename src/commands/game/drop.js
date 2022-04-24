@@ -66,7 +66,7 @@ class UserCommand extends WynnCommand {
 
 		try {
 			const moneyEmoji = emoji.common.money;
-			let channelInfo = await this.container.client.db.fetchGuild(message.channel.id);
+			let channelInfo = await this.container.client.db.fetchChannel(message.channel.id);
 			await Promise.all([
 				this.container.client.db.updateUser(userId, {
 					$inc: {

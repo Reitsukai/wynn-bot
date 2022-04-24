@@ -1,0 +1,10 @@
+{
+	"usage": "{{prefix}}pick 1000",
+	"example": ["{{prefix}}pick 1000"],
+	"inputerror": "**{{user}}** wrong input. Example: {{prefix}}pick 1000",
+	"rangeerror": "**{{user}}** please pick up an amount greater than {{min}}",
+	"nomoney": "**{{user}}** not enough money to play",
+	"description": "Pick up money",
+	"fail": "**{{user}}** greedy and crashed {{amount}} {{emoji}}",
+	"done": "**{{user}}** didn't work but still got {{amount}} {{emoji}}"
+}

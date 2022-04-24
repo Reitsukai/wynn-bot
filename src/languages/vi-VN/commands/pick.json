@@ -1,0 +1,10 @@
+{
+	"usage": "{{prefix}}pick 1000",
+	"example": ["{{prefix}}pick 1000"],
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}pick 1000",
+	"rangeerror": "**{{user}}** vui lòng nhặt số tiền lớn hơn {{min}}",
+	"nomoney": "**{{user}}** không đủ tiền để chơi",
+	"description": "Nhặt rơi tiền",
+	"fail": "**{{user}}** tham lam và bị rơi {{amount}} {{emoji}}",
+	"done": "**{{user}}** không làm mà vẫn nhặt được {{amount}} {{emoji}}"
+}

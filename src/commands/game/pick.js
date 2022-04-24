@@ -57,7 +57,7 @@ class UserCommand extends WynnCommand {
 
 		try {
 			const moneyEmoji = emoji.common.money;
-			let channelInfo = await this.container.client.db.fetchGuild(message.channel.id);
+			let channelInfo = await this.container.client.db.fetchChannel(message.channel.id);
 
 			if (channelInfo.money - pickmoney < 0) {
 				//rơi
