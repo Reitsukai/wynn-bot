@@ -1,0 +1,9 @@
+{
+	"usage": "{{prefix}}drop 1000",
+	"example": ["{{prefix}}drop 1000"],
+	"inputerror": "**{{user}}** wrong input. Example: {{prefix}}drop 1000",
+	"rangeerror": "**{{user}}** please drop an amount greater than {{min}}",
+	"nomoney": "**{{user}}** not enough money to play",
+	"description": "Drop money",
+	"result": "**{{user}}** dropped {{amount}} {{emoji}}"
+}

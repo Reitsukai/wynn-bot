@@ -1,0 +1,9 @@
+{
+	"usage": "{{prefix}}drop 1000",
+	"example": ["{{prefix}}drop 1000"],
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}drop 1000",
+	"rangeerror": "**{{user}}** vui lòng đánh rơi số tiền lớn hơn {{min}}",
+	"nomoney": "**{{user}}** không đủ tiền để chơi",
+	"description": "Đánh rơi tiền",
+	"result": "**{{user}}** đã đánh rơi {{amount}} {{emoji}}"
+}
