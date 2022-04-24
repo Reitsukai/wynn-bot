@@ -18,6 +18,10 @@ class UserEvent extends Listener {
 			error.context = { ...error.context, remaining: `\`${(error.context.remaining / 1000).toFixed(2)}s\`` };
 		}
 
+		if (error.identifier === 'commandDisabled') {
+			return send(message, t('preconditions:commandDisabled'));
+		}
+
 		if (error.identifier === 'preconditionClientPermissions') {
 			return send(
 				message,
