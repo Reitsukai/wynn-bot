@@ -2,10 +2,8 @@ const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 const WynnCommand = require('../../lib/Structures/WynnCommand');
 const emoji = require('../../config/emoji');
-const game = require('../../config/game');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { logger } = require('../../utils/index');
 
 class UserCommand extends WynnCommand {
@@ -26,15 +24,12 @@ class UserCommand extends WynnCommand {
 			const t = await fetchT(message);
 			let input1 = await args.next();
 			let input2 = await args.next();
-			console.log(input1);
-			console.log(input2);
 			let userInfo = await this.container.client.db.fetchUser(message.author.id);
 			let betMoney = input1 === 'all' ? userInfo.money : Number(input1);
-
-			return await this.mainProcess(betMoney, arrayResult, t, message, message.author.tag, userInfo);
-		} catch (error) {
+			return await this.mainProcess(betMoney, input2, t, message, message.author.tag, userInfo);
+		} catch (err) {
 			logger.error(err);
-			console.log(error);
+			console.log(err);
 		}
 	}
 
@@ -42,18 +37,17 @@ class UserCommand extends WynnCommand {
 		if (userInfo.money - betMoney < 0) {
 			return await utils.returnSlashAndMessage(
 				message,
-				t('commands/lottery:nomoney', {
+				t('commands/lucky:nomoney', {
 					user: tag
 				})
 			);
 		}
 		const regex = new RegExp('^([0-9]{2}-+)+$');
 		if (!regex.test(input2 + '-') || isNaN(betMoney) || betMoney < 1) {
-			await this.container.client.resetCustomCooldown(message.author.id, this.name);
-			return send(
+			return await utils.returnSlashAndMessage(
 				message,
-				t('commands/baucua:inputerror', {
-					user: message.author.tag,
+				t('commands/lucky:inputerror', {
+					user: tag,
 					prefix: await this.container.client.fetchPrefix(message)
 				})
 			);
@@ -68,7 +62,8 @@ class UserCommand extends WynnCommand {
 			t('commands/lucky:result', {
 				user: tag,
 				arrayBet: arrayBet,
-				betMoney: betMoney
+				betMoney: betMoney,
+				emoji: emoji.common.money
 			})
 		);
 	}
@@ -90,7 +85,7 @@ class UserCommand extends WynnCommand {
 				userInfo
 			);
 		} catch (error) {
-			logger.error(err);
+			logger.error(error);
 			console.log(error);
 		}
 	}
@@ -99,11 +94,11 @@ class UserCommand extends WynnCommand {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('lucky')
-		.setDescription('lucky88')
+		.setDescription('Test your luck by guessing the sequence of numbers')
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('bet')
-				.setDescription('Test your luck')
+				.setDescription('bet money on numbers')
 				.addIntegerOption((option) => option.setName('betmoney').setDescription('Enter an integer that is bet money').setRequired(true))
 				.addStringOption((option) =>
 					option.setName('numbersequence').setDescription('Enter the integer that is the number sequence you want').setRequired(true)

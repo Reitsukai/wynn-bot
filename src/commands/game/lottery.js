@@ -52,7 +52,7 @@ class UserCommand extends WynnCommand {
 			let userInfo = await this.container.client.db.fetchUser(message.author.id);
 			return await this.mainProcess(typeDigit, code, t, message, message.author.tag, userInfo);
 		} catch (error) {
-			logger.error(err);
+			logger.error(error);
 			console.log(error);
 		}
 	}
@@ -184,7 +184,7 @@ class UserCommand extends WynnCommand {
 				try {
 					await this.container.client.db.createNewLottery(userId, code);
 				} catch (error) {
-					logger.error(err);
+					logger.error(error);
 					console.log(error);
 					embedMSG.setColor(0xff0000);
 					embedMSG.setFooter({ text: t('commands/lottery:error') });
@@ -319,7 +319,7 @@ class UserCommand extends WynnCommand {
 				userInfo
 			);
 		} catch (error) {
-			logger.error(err);
+			logger.error(error);
 			console.log(error);
 		}
 	}
