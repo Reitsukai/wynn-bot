@@ -270,9 +270,16 @@ class UserCommand extends WynnCommand {
 		});
 
 		const result = await this.container.client.db.getLastResultLottery();
+		let monthEmbedResult = Number(result[0].updatedAt.getMonth()) + 1;
+		let dateEmbedResult = result[0].updatedAt.getDate();
 		let msgEmbed = new MessageEmbed().setTitle(
 			t('commands/lottery:titleResult', {
-				date: result[0].updatedAt.getFullYear() + '/' + (Number(result[0].updatedAt.getMonth()) + 1) + '/' + result[0].updatedAt.getDate()
+				date:
+					result[0].updatedAt.getFullYear() +
+					'/' +
+					(monthEmbedResult.toString().length < 2 ? '0' + monthEmbedResult : monthEmbedResult) +
+					'/' +
+					(dateEmbedResult.toString().length < 2 ? '0' + dateEmbedResult : dateEmbedResult)
 			})
 		);
 		for (let i = 0; i < result.length; i++) {
