@@ -6,7 +6,7 @@
 	"scripts": {
 		"register": "node -r dotenv/config src/slash/register.js",
 		"watch": "nodemon -L --watch src",
-		"start": "nodemon src/index.js",
+		"start": "node src/index.js",
 		"lint": "eslint --fix --ext .js, .",
 		"format": "prettier --write \"src/**/*.js\""
 	},
