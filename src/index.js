@@ -5,7 +5,6 @@ const { LogLevel, err } = require('@sapphire/framework'),
 const WynnClient = require('./lib/Structures/WynnClient');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-require('dotenv').config({ path: './src/.env' });
 const fs = require('node:fs');
 let cronJob = require('./shedules/index');
 
