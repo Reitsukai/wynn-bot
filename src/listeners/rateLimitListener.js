@@ -1,4 +1,4 @@
-const { Listener } = require('@sapphire/ratelimits');
+const { Listener } = require('@sapphire/framework');
 const { logger } = require('../utils/index');
 require('dotenv').config({ path: './src/.env' });
 
