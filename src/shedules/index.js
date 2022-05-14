@@ -2,6 +2,7 @@ var cron = require('node-cron');
 const { lotteryCronResult } = require('./lottery/lotteryShedulesResult');
 const { lotteryCronInit } = require('./lottery/lotteryShedulesInit');
 const { lotteryShedulesBackupLotteryArray } = require('./lottery/lotteryShedulesBackupLotteryArray');
+const { luckyCron } = require('./lucky/luckySchedules');
 const logger = require('../utils/logger');
 
 exports.InitCron = async function (client) {
@@ -31,6 +32,7 @@ exports.InitCron = async function (client) {
 			async () => {
 				await lotteryCronResult(client);
 				await lotteryCronInit(client);
+				await luckyCron(client);
 			},
 			{
 				scheduled: true
