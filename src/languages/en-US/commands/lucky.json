@@ -1,0 +1,9 @@
+{
+	"usage": "{{prefix}}lucky 1000 [A sequence of two-digit numbers separated by a -]",
+	"example": ["{{prefix}}lucky 1000 15-46-89", "{{prefix}}lucky 1000 15"],
+	"inputerror": "**{{user}}** incorrect input format. Example : {{prefix}}lucky 1000 15-46-89",
+	"nomoney": "**{{user}}** don't have enough money.",
+	"description": "Test your luck by guessing the sequence of numbers",
+	"result": "**{{user}}** bet {{betMoney}} {{emoji}} in the sequence {{arrayBet}}",
+	"titleResult": "__Lucky numbers on {{date}}__"
+}

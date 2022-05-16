@@ -46,3 +46,9 @@ const { fetchChannel, updateChannel } = require('./query/channel');
 
 module.exports.fetchChannel = fetchChannel;
 module.exports.updateChannel = updateChannel;
+
+const { addNewBetLucky, getAllBetLucky, clearBetLucky } = require('./query/lucky');
+
+module.exports.addNewBetLucky = addNewBetLucky;
+module.exports.getAllBetLucky = getAllBetLucky;
+module.exports.clearBetLucky = clearBetLucky;

@@ -2,14 +2,21 @@ var cron = require('node-cron');
 const { lotteryCronResult } = require('./lottery/lotteryShedulesResult');
 const { lotteryCronInit } = require('./lottery/lotteryShedulesInit');
 const { lotteryShedulesBackupLotteryArray } = require('./lottery/lotteryShedulesBackupLotteryArray');
+const { luckyCron } = require('./lucky/luckySchedules');
 const logger = require('../utils/logger');
 
 exports.InitCron = async function (client) {
 	try {
 		// every min
-		// cron.schedule('*/30 * * * * *', async () => {}, {
-		// 	scheduled: true
-		// });
+		// cron.schedule(
+		// 	'*/30 * * * * *',
+		// 	async () => {
+		// 		await luckyCron(client);
+		// 	},
+		// 	{
+		// 		scheduled: true
+		// 	}
+		// );
 		//backup lottery At :30 in every 2nd hour from 1am through 11pm
 		cron.schedule(
 			// '* * * * *',
@@ -30,6 +37,7 @@ exports.InitCron = async function (client) {
 			'0 11 * * *',
 			async () => {
 				await lotteryCronResult(client);
+				await luckyCron(client);
 				await lotteryCronInit(client);
 			},
 			{

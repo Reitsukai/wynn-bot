@@ -1,6 +1,6 @@
 {
 	"usage": "{{prefix}}lottery 5d",
-	"example": ["{{prefix}}lottery 1907"],
+	"example": ["{{prefix}}lottery 1907", "{{prefix}}lottery 4d", "{{prefix}}lottery"],
 	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}lottery",
 	"nomoney": "**{{user}}** không đủ tiền để chơi",
 	"description": "Xổ số kiến thiết _ Ích nước lợi nhà",
