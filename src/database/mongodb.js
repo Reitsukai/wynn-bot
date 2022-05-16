@@ -26,7 +26,8 @@ const {
 	updateLotteryResult,
 	createNewLottery,
 	getListWiner,
-	clearLotteryUser
+	clearLotteryUser,
+	findAllLotteryByDiscordId
 } = require('./query/lottery');
 
 module.exports.clearLotteryArray = clearLotteryArray;
@@ -41,14 +42,16 @@ module.exports.updateLotteryResult = updateLotteryResult;
 module.exports.createNewLottery = createNewLottery;
 module.exports.getListWiner = getListWiner;
 module.exports.clearLotteryUser = clearLotteryUser;
+module.exports.findAllLotteryByDiscordId = findAllLotteryByDiscordId;
 
 const { fetchChannel, updateChannel } = require('./query/channel');
 
 module.exports.fetchChannel = fetchChannel;
 module.exports.updateChannel = updateChannel;
 
-const { addNewBetLucky, getAllBetLucky, clearBetLucky } = require('./query/lucky');
+const { addNewBetLucky, getAllBetLucky, clearBetLucky, findAllLuckyByDiscordId } = require('./query/lucky');
 
 module.exports.addNewBetLucky = addNewBetLucky;
 module.exports.getAllBetLucky = getAllBetLucky;
 module.exports.clearBetLucky = clearBetLucky;
+module.exports.findAllLuckyByDiscordId = findAllLuckyByDiscordId;
