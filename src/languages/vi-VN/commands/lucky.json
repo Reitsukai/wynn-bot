@@ -4,5 +4,6 @@
 	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}lucky 1000 15-46-89",
 	"nomoney": "**{{user}}** không đủ tiền để chơi.",
 	"description": "Thử độ may mắn của bạn bằng cách đoán dãy số",
-	"result": "**{{user}}** đặt {{betMoney}} {{emoji}} vào dãy số {{arrayBet}}"
+	"result": "**{{user}}** đặt {{betMoney}} {{emoji}} vào dãy số {{arrayBet}}",
+	"titleResult": "__Dãy số may mắn ngày {{date}}__"
 }

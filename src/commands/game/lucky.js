@@ -5,6 +5,8 @@ const emoji = require('../../config/emoji');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 const { logger } = require('../../utils/index');
+const blank = emoji.common.blank;
+const { MessageEmbed } = require('discord.js');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -23,6 +25,9 @@ class UserCommand extends WynnCommand {
 		try {
 			const t = await fetchT(message);
 			let input1 = await args.next();
+			if (input1 === 'results') {
+				return this.embedResultLucky(message, t);
+			}
 			let input2 = await args.next();
 			let userInfo = await this.container.client.db.fetchUser(message.author.id);
 			let betMoney = input1 === 'all' ? userInfo.money : Number(input1);
@@ -75,11 +80,40 @@ class UserCommand extends WynnCommand {
 		);
 	}
 
+	async embedResultLucky(message, t) {
+		const result = await this.container.client.db.getLastResultLottery();
+		let monthEmbedResult = Number(result[0].updatedAt.getMonth()) + 1;
+		let dateEmbedResult = result[0].updatedAt.getDate();
+		let listCode = new Array();
+		for (let i = 0; i < result.length; i++) {
+			for (let j = 0; j < result[i].arrayResult.length; j++) {
+				listCode.push(result[i].arrayResult[j].code % 100);
+			}
+		}
+		let msgEmbed = new MessageEmbed().setTitle(
+			t('commands/lucky:titleResult', {
+				date:
+					result[0].updatedAt.getFullYear() +
+					'/' +
+					(monthEmbedResult.toString().length < 2 ? '0' + monthEmbedResult : monthEmbedResult) +
+					'/' +
+					(dateEmbedResult.toString().length < 2 ? '0' + dateEmbedResult : dateEmbedResult)
+			})
+		);
+		msgEmbed.addField(
+			`${blank}`,
+			`*\`${listCode.sort(function (a, b) {
+				return a - b;
+			})}\`*`
+		);
+		return await utils.returnSlashAndMessage(message, { embeds: [msgEmbed] });
+	}
+
 	async execute(interaction) {
 		try {
 			const t = await fetchT(interaction);
 			if (interaction.options.getSubcommand() === 'results') {
-				return this.embedResultLottery(interaction, t);
+				return this.embedResultLucky(interaction, t);
 			}
 			//no cooldown :3
 			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
