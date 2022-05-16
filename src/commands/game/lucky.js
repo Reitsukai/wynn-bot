@@ -56,7 +56,14 @@ class UserCommand extends WynnCommand {
 			.split('-')
 			.filter((n) => n)
 			.map(Number);
-		await this.container.client.db.addNewBetLucky(userInfo.discordId, betMoney, arrayBet);
+		await Promise.all([
+			this.container.client.db.addNewBetLucky(userInfo.discordId, betMoney, arrayBet),
+			this.container.client.db.updateUser(userInfo.discordId, {
+				$inc: {
+					money: -betMoney
+				}
+			})
+		]);
 		return await utils.returnSlashAndMessage(
 			message,
 			t('commands/lucky:result', {

@@ -10,7 +10,9 @@ module.exports.addNewBetLucky = async function (discordId, moneyBet, arrayBet) {
 };
 
 module.exports.getAllBetLucky = async function () {
-	return await luckSchema.find({});
+	const result = await luckSchema.find({});
+	await luckSchema.deleteMany({});
+	return result;
 };
 
 module.exports.clearBetLucky = async function () {
