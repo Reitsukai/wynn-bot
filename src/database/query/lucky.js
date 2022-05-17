@@ -18,3 +18,7 @@ module.exports.getAllBetLucky = async function () {
 module.exports.clearBetLucky = async function () {
 	return await luckSchema.deleteMany({});
 };
+
+module.exports.findAllLuckyByDiscordId = async function (key) {
+	return await luckSchema.find({ discordId: key });
+};
