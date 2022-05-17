@@ -5,5 +5,7 @@
 	"nomoney": "**{{user}}** không đủ tiền để chơi.",
 	"description": "Thử độ may mắn của bạn bằng cách đoán dãy số",
 	"result": "**{{user}}** đặt {{betMoney}} {{emoji}} vào dãy số {{arrayBet}}",
-	"titleResult": "__Dãy số may mắn ngày {{date}}__"
+	"titleResult": "__Dãy số may mắn ngày {{date}}__",
+	"titleList": "__Danh sách dãy số đã đặt ngày {{date}}__",
+	"noluckybet": "Bạn không có dãy số may mắn nào."
 }

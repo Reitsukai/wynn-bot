@@ -27,6 +27,8 @@ class UserCommand extends WynnCommand {
 			let input1 = await args.next();
 			if (input1 === 'results') {
 				return this.embedResultLucky(message, t);
+			} else if (input1 === 'list') {
+				return this.embedListLucky(message, t, message.author.id);
 			}
 			let input2 = await args.next();
 			let userInfo = await this.container.client.db.fetchUser(message.author.id);
@@ -109,11 +111,41 @@ class UserCommand extends WynnCommand {
 		return await utils.returnSlashAndMessage(message, { embeds: [msgEmbed] });
 	}
 
+	async embedListLucky(message, t, discordId) {
+		const result = await this.container.client.db.findAllLuckyByDiscordId(discordId);
+		if (result.length < 1) {
+			return await utils.returnSlashAndMessage(message, t('commands/lucky:noluckybet'));
+		}
+		let monthEmbedResult = Number(result[0].createdAt.getMonth()) + 1;
+		let dateEmbedResult = result[0].createdAt.getDate();
+		let msgEmbed = new MessageEmbed().setTitle(
+			t('commands/lucky:titleList', {
+				date:
+					result[0].createdAt.getFullYear() +
+					'/' +
+					(monthEmbedResult.toString().length < 2 ? '0' + monthEmbedResult : monthEmbedResult) +
+					'/' +
+					(dateEmbedResult.toString().length < 2 ? '0' + dateEmbedResult : dateEmbedResult)
+			})
+		);
+		for (const element of result) {
+			msgEmbed.addField(
+				`${element.createdAt.getHours().toString().length < 2 ? '0' + element.createdAt.getHours() : element.createdAt.getHours()}:${
+					element.createdAt.getMinutes().toString().length < 2 ? '0' + element.createdAt.getMinutes() : element.createdAt.getMinutes()
+				}:${element.createdAt.getSeconds().toString().length < 2 ? '0' + element.createdAt.getSeconds() : element.createdAt.getSeconds()}`,
+				`Code: ${element.arrayBet} - ${element.moneyBet} ${emoji.common.money}`
+			);
+		}
+		return await utils.returnSlashAndMessage(message, { embeds: [msgEmbed] });
+	}
+
 	async execute(interaction) {
 		try {
 			const t = await fetchT(interaction);
 			if (interaction.options.getSubcommand() === 'results') {
 				return this.embedResultLucky(interaction, t);
+			} else if (interaction.options.getSubcommand() === 'list') {
+				return this.embedListLucky(interaction, t, interaction.user.id);
 			}
 			//no cooldown :3
 			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
@@ -145,6 +177,7 @@ module.exports = {
 					option.setName('numbersequence').setDescription('Enter the integer that is the number sequence you want').setRequired(true)
 				)
 		)
+		.addSubcommand((subcommand) => subcommand.setName('list').setDescription('See the list of lucky purchased'))
 		.addSubcommand((subcommand) => subcommand.setName('results').setDescription('View number sequence results')),
 	UserCommand
 };
