@@ -5,5 +5,7 @@
 	"nomoney": "**{{user}}** don't have enough money.",
 	"description": "Test your luck by guessing the sequence of numbers",
 	"result": "**{{user}}** bet {{betMoney}} {{emoji}} in the sequence {{arrayBet}}",
-	"titleResult": "__Lucky numbers on {{date}}__"
+	"titleResult": "__Lucky numbers on {{date}}__",
+	"titleList": "__List of lucky numbers purchased in {{date}}__",
+	"noluckybet": "You are not lucky number."
 }

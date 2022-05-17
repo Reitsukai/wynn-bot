@@ -89,3 +89,7 @@ module.exports.getListWiner = async function (list) {
 module.exports.clearLotteryUser = async function () {
 	return await lotterySchema.deleteMany({});
 };
+
+module.exports.findAllLotteryByDiscordId = async function (key) {
+	return await lotterySchema.find({ discordId: key });
+};

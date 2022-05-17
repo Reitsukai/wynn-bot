@@ -33,6 +33,8 @@ class UserCommand extends WynnCommand {
 				if (typeof input === 'string' || input instanceof String) {
 					if (input === 'results') {
 						return this.embedResultLottery(message, t);
+					} else if (input === 'list') {
+						return this.embedListLottery(message, t, message.author.id);
 					} else if (input === '2d' || input === '3d' || input === '4d' || input === '5d') {
 						typeDigit = parseInt(input.charAt(0));
 					} else if (!isNaN(Number(input))) {
@@ -309,11 +311,41 @@ class UserCommand extends WynnCommand {
 		return await utils.returnSlashAndMessage(message, { embeds: [msgEmbed] });
 	}
 
+	async embedListLottery(message, t, discordId) {
+		const result = await this.container.client.db.findAllLotteryByDiscordId(discordId);
+		if (result.length < 1) {
+			return await utils.returnSlashAndMessage(message, 'No lottery');
+		}
+		let monthEmbedResult = Number(result[0].createdAt.getMonth()) + 1;
+		let dateEmbedResult = result[0].createdAt.getDate();
+		let msgEmbed = new MessageEmbed().setTitle(
+			t('commands/lottery:titleList', {
+				date:
+					result[0].createdAt.getFullYear() +
+					'/' +
+					(monthEmbedResult.toString().length < 2 ? '0' + monthEmbedResult : monthEmbedResult) +
+					'/' +
+					(dateEmbedResult.toString().length < 2 ? '0' + dateEmbedResult : dateEmbedResult)
+			})
+		);
+		for (const element of result) {
+			msgEmbed.addField(
+				`${element.createdAt.getHours().toString().length < 2 ? '0' + element.createdAt.getHours() : element.createdAt.getHours()}:${
+					element.createdAt.getMinutes().toString().length < 2 ? '0' + element.createdAt.getMinutes() : element.createdAt.getMinutes()
+				}:${element.createdAt.getSeconds().toString().length < 2 ? '0' + element.createdAt.getSeconds() : element.createdAt.getSeconds()}`,
+				`Code: ${element.code}`
+			);
+		}
+		return await utils.returnSlashAndMessage(message, { embeds: [msgEmbed] });
+	}
+
 	async execute(interaction) {
 		try {
 			const t = await fetchT(interaction);
 			if (interaction.options.getSubcommand() === 'results') {
 				return this.embedResultLottery(interaction, t);
+			} else if (interaction.options.getSubcommand() === 'list') {
+				return this.embedListLottery(interaction, t, interaction.user.id);
 			}
 			//no cooldown :3
 			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
@@ -354,6 +386,7 @@ module.exports = {
 					option.setName('code').setDescription('Enter the integer that is the lottery number you want').setRequired(false)
 				)
 		)
+		.addSubcommand((subcommand) => subcommand.setName('list').setDescription('See the list of lottery purchased'))
 		.addSubcommand((subcommand) => subcommand.setName('results').setDescription('View lottery results')),
 	UserCommand
 };
