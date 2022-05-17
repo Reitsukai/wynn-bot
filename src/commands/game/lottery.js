@@ -316,9 +316,25 @@ class UserCommand extends WynnCommand {
 		if (result.length < 1) {
 			return await utils.returnSlashAndMessage(message, 'No lottery');
 		}
-		let msgEmbed = new MessageEmbed().setTitle(t('commands/lottery:titleResult'));
+		let monthEmbedResult = Number(result[0].createdAt.getMonth()) + 1;
+		let dateEmbedResult = result[0].createdAt.getDate();
+		let msgEmbed = new MessageEmbed().setTitle(
+			t('commands/lottery:titleList', {
+				date:
+					result[0].createdAt.getFullYear() +
+					'/' +
+					(monthEmbedResult.toString().length < 2 ? '0' + monthEmbedResult : monthEmbedResult) +
+					'/' +
+					(dateEmbedResult.toString().length < 2 ? '0' + dateEmbedResult : dateEmbedResult)
+			})
+		);
 		for (const element of result) {
-			msgEmbed.addField(`${element.createdAt}`, `${element.code}`);
+			msgEmbed.addField(
+				`${element.createdAt.getHours().toString().length < 2 ? '0' + element.createdAt.getHours() : element.createdAt.getHours()}:${
+					element.createdAt.getMinutes().toString().length < 2 ? '0' + element.createdAt.getMinutes() : element.createdAt.getMinutes()
+				}:${element.createdAt.getSeconds().toString().length < 2 ? '0' + element.createdAt.getSeconds() : element.createdAt.getSeconds()}`,
+				`Code: ${element.code}`
+			);
 		}
 		return await utils.returnSlashAndMessage(message, { embeds: [msgEmbed] });
 	}
