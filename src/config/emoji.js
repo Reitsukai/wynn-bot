@@ -26,5 +26,14 @@ module.exports = {
 			t3: '<:z_slot:963626850129698816>',
 			load: '<a:gifslot:963666340596568114>'
 		}
+	},
+	collect: {
+		fishing: {
+			gobies: '😑',
+			eel: '😑',
+			carp: '😑',
+			shark: '😑',
+			whale: '😑'
+		}
 	}
 };

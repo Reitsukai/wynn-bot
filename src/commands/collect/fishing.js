@@ -5,13 +5,12 @@ const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 
-const game = require('../../config/game');
 const emoji = require('../../config/emoji');
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const collect = require('../../config/collect');
+const { MessageEmbed } = require('discord.js');
 const moneyEmoji = emoji.common.money;
 const blank = emoji.common.blank;
-const maxBet = game.baucua.max;
-const minBet = game.baucua.min;
+const locationFishing = collect.fishing;
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -35,29 +34,27 @@ class UserCommand extends WynnCommand {
 		if (input1 === 'config') {
 			let input2 = await args.next();
 			if (['tub', 'lake', 'river', 'sea'].includes(input2)) {
-				return this.configLocation(interaction, t, input2);
+				return this.configLocation(message, t, input2);
 			}
 			// sai type return ...;
+		} else if (input1 === 'buy') {
+			return this.buyBait(message, t);
 		}
-		let userInfo = await this.container.client.db.fetchUser(message.author.id);
-		return this.mainProcess(message, t, userInfo, message.author.id, message.author.tag);
+		return this.mainProcess(message, t, message.author.id, message.author.tag);
 	}
 
-	async mainProcess(message, t, userInfo, userId, tag) {
+	async mainProcess(message, t, userId, tag) {
 		try {
+			const itemFish = this.container.client.db.getItemFishByDiscordId(userId);
 		} catch (err) {
 			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}
 
-	async configLocation(message, t, type) {
-		return await this.container.client.db.updateUser(userId, {
-			$inc: {
-				money: money
-			}
-		});
-	}
+	async configLocation(message, t, type) {}
+
+	async buyBait(message, t) {}
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
@@ -67,9 +64,10 @@ class UserCommand extends WynnCommand {
 		}
 		if (interaction.options.getSubcommand() === 'config') {
 			return this.configLocation(interaction, t, interaction.options.getString('location'));
+		} else if (interaction.options.getSubcommand() === 'buy') {
+			return this.buyBait(interaction, t);
 		}
-		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		return await this.mainProcess(interaction, t, userInfo, interaction.user.id, interaction.user.tag);
+		return await this.mainProcess(interaction, t, interaction.user.id, interaction.user.tag);
 	}
 }
 
@@ -78,6 +76,7 @@ module.exports = {
 		.setName('fishing')
 		.setDescription('Fishing, fishing, fishing ...')
 		.addSubcommand((subcommand) => subcommand.setName('now').setDescription('go to fishing now'))
+		.addSubcommand((subcommand) => subcommand.setName('buy').setDescription('buy bait'))
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('config')
