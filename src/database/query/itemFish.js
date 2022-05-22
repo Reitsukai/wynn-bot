@@ -12,5 +12,5 @@ module.exports.getItemFishByDiscordId = async function (key) {
 };
 
 module.exports.updateItemFish = async function (key, fieldUpdate) {
-	return await itemFishSchema.findOneAndUpdate({ discordId: key }, fieldUpdate, { new: true });
+	return await itemFishSchema.updateOne({ discordId: key }, fieldUpdate, { upsert: true });
 };

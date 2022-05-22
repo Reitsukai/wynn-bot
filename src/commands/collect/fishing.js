@@ -10,7 +10,6 @@ const collect = require('../../config/collect');
 const { MessageEmbed } = require('discord.js');
 const moneyEmoji = emoji.common.money;
 const blank = emoji.common.blank;
-const locationFishing = collect.fishing;
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -34,27 +33,114 @@ class UserCommand extends WynnCommand {
 		if (input1 === 'config') {
 			let input2 = await args.next();
 			if (['tub', 'lake', 'river', 'sea'].includes(input2)) {
-				return this.configLocation(message, t, input2);
+				return await this.configLocation(message, t, message.author.id, input2, message.author.tag);
 			}
 			// sai type return ...;
 		} else if (input1 === 'buy') {
-			return this.buyBait(message, t);
+			let userInfo = await this.container.client.db.fetchUser(message.author.id);
+			let input2 = await args.next();
+			if (isNaN(input2) && input2 !== null) {
+				input2 = 1;
+			}
+			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
 		}
-		return this.mainProcess(message, t, message.author.id, message.author.tag);
+		return await this.mainProcess(message, t, message.author.id, message.author.tag);
 	}
 
 	async mainProcess(message, t, userId, tag) {
 		try {
-			const itemFish = this.container.client.db.getItemFishByDiscordId(userId);
+			const itemFish = await this.container.client.db.getItemFishByDiscordId(userId);
+			if (itemFish.bait < 1) {
+				return await utils.returnSlashAndMessage(
+					message,
+					t('commands/fishing:nobait', {
+						user: tag,
+						prefix: await this.container.client.fetchPrefix(message)
+					})
+				);
+			}
+			const locationFishing = collect.fishing;
+			let map = new Map();
+			map.set('tub', locationFishing.tub);
+			map.set('lake', locationFishing.lake);
+			map.set('river', locationFishing.river);
+			map.set('sea', locationFishing.sea);
+			if (Math.floor(Math.random() * 10) === 0) {
+				return await utils.returnSlashAndMessage(
+					message,
+					t('commands/fishing:fishingfail', {
+						user: tag
+					})
+				);
+			}
+			let fishReceive = await this.container.client.db.getFishByName(utils.pickRandom(map.get(itemFish.location)));
+			let newArray = itemFish.arrayFish.slice();
+			newArray.push({
+				name: fishReceive.name,
+				rarity: fishReceive.rarity
+			});
+			await this.container.client.db.updateItemFish(userId, {
+				$inc: {
+					bait: -1
+				},
+				arrayFish: newArray
+			});
+			return await utils.returnSlashAndMessage(
+				message,
+				t('commands/fishing:fishingdone', {
+					user: tag,
+					name: fishReceive.name,
+					emoji: blank,
+					rarity: fishReceive.rarity
+				})
+			);
 		} catch (err) {
 			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
 	}
 
-	async configLocation(message, t, type) {}
+	async configLocation(message, t, userId, type, tag) {
+		await this.container.client.db.updateItemFish(userId, {
+			location: type
+		});
+		return await utils.returnSlashAndMessage(
+			message,
+			t('commands/fishing:config', {
+				user: tag,
+				location: type
+			})
+		);
+	}
 
-	async buyBait(message, t) {}
+	async buyBait(message, userInfo, t, amount, tag) {
+		if (userInfo.money - collect.fishing.buy < 0) {
+			return await utils.returnSlashAndMessage(
+				message,
+				t('commands/fishing:nomoney', {
+					user: tag
+				})
+			);
+		}
+		await Promise.all([
+			this.container.client.db.updateUser(userInfo.discordId, {
+				$inc: {
+					money: -collect.fishing.buy * amount
+				}
+			}),
+			this.container.client.db.updateItemFish(userInfo.discordId, {
+				$inc: {
+					bait: amount === 0 ? 1 : amount
+				}
+			})
+		]);
+		return await utils.returnSlashAndMessage(
+			message,
+			t('commands/fishing:buy', {
+				user: tag
+			})
+		);
+	}
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
@@ -63,9 +149,10 @@ class UserCommand extends WynnCommand {
 			return await interaction.reply(checkCoolDown);
 		}
 		if (interaction.options.getSubcommand() === 'config') {
-			return this.configLocation(interaction, t, interaction.options.getString('location'));
+			return await this.configLocation(interaction, t, interaction.user.id, interaction.options.getString('location'), interaction.user.tag);
 		} else if (interaction.options.getSubcommand() === 'buy') {
-			return this.buyBait(interaction, t);
+			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
+			return await this.buyBait(interaction, userInfo, t, Number(interaction.options.getInteger('amount')), interaction.user.tag);
 		}
 		return await this.mainProcess(interaction, t, interaction.user.id, interaction.user.tag);
 	}
@@ -76,7 +163,12 @@ module.exports = {
 		.setName('fishing')
 		.setDescription('Fishing, fishing, fishing ...')
 		.addSubcommand((subcommand) => subcommand.setName('now').setDescription('go to fishing now'))
-		.addSubcommand((subcommand) => subcommand.setName('buy').setDescription('buy bait'))
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('buy')
+				.setDescription('buy bait')
+				.addIntegerOption((option) => option.setName('amount').setDescription('Enter an integer').setRequired(true))
+		)
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('config')
