@@ -66,6 +66,11 @@ class UserCommand extends WynnCommand {
 			map.set('river', locationFishing.river);
 			map.set('sea', locationFishing.sea);
 			if (Math.floor(Math.random() * 10) === 0) {
+				await this.container.client.db.updateItemFish(userId, {
+					$inc: {
+						bait: -1
+					}
+				});
 				return await utils.returnSlashAndMessage(
 					message,
 					t('commands/fishing:fishingfail', {
@@ -89,9 +94,9 @@ class UserCommand extends WynnCommand {
 				message,
 				t('commands/fishing:fishingdone', {
 					user: tag,
-					name: fishReceive.name,
+					name: t(`commands/fishing:${fishReceive.name}`),
 					emoji: blank,
-					rarity: fishReceive.rarity
+					rarity: t(`commands/fishing:${fishReceive.rarity}`)
 				})
 			);
 		} catch (err) {
@@ -108,7 +113,7 @@ class UserCommand extends WynnCommand {
 			message,
 			t('commands/fishing:config', {
 				user: tag,
-				location: type
+				location: t(`commands/fishing:${type}`)
 			})
 		);
 	}
@@ -137,7 +142,8 @@ class UserCommand extends WynnCommand {
 		return await utils.returnSlashAndMessage(
 			message,
 			t('commands/fishing:buy', {
-				user: tag
+				user: tag,
+				amount: amount
 			})
 		);
 	}

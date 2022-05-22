@@ -53,9 +53,10 @@ module.exports.getAllBetLucky = getAllBetLucky;
 module.exports.clearBetLucky = clearBetLucky;
 module.exports.findAllLuckyByDiscordId = findAllLuckyByDiscordId;
 /* Fish */
-const { getFishByName, getAllFish } = require('./query/fish');
+const { getFishByName, getAllFish, addNewFish } = require('./query/fish');
 module.exports.getFishByName = getFishByName;
 module.exports.getAllFish = getAllFish;
+module.exports.addNewFish = addNewFish;
 /* ItemFish */
 const { getItemFishByDiscordId, updateItemFish } = require('./query/itemFish');
 module.exports.getItemFishByDiscordId = getItemFishByDiscordId;
