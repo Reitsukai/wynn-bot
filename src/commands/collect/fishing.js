@@ -88,6 +88,7 @@ class UserCommand extends WynnCommand {
 			if (flag === 0) {
 				newArray.push({
 					id: fishReceive.id,
+					name: fishReceive.name,
 					emoji: fishReceive.emoji,
 					amount: 1
 				});

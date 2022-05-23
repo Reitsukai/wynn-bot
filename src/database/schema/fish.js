@@ -8,7 +8,6 @@ module.exports = mongoose.model(
 			id: { type: Number, unique: true },
 			name: { type: String },
 			rarity: { type: String },
-			price: { type: Number, default: 0 },
 			emoji: { type: String }
 		},
 		{

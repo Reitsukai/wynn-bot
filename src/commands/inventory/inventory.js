@@ -6,7 +6,6 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 
 const emoji = require('../../config/emoji');
-const blank = emoji.common.blank;
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -63,8 +62,6 @@ class UserCommand extends WynnCommand {
 							arrayFish: allFish
 						})
 					);
-				default:
-					break;
 			}
 		} catch (err) {
 			logger.error(err);
