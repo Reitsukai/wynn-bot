@@ -36,13 +36,21 @@ class UserCommand extends WynnCommand {
 				case 'fish':
 					const itemFish = await this.container.client.db.getItemFishByDiscordId(userId);
 					let arrayFish = itemFish.arrayFish.slice();
-					arrayFish.sort(function (a, b) {
-						return a.id - b.id;
-					});
+					let maxCount = 0;
+					// sort and get max
+					for (let i = 0; i < arrayFish.length - 1; i++) {
+						for (let j = 0; j < arrayFish.length - 1 - i; j++) {
+							if (arrayFish[j].amount > maxCount) maxCount = arrayFish[j].amount;
+							if (arrayFish[j].id > arrayFish[j + 1].id) {
+								swap(arrayFish, j, j + 1);
+							}
+						}
+					}
+					let digits = Math.trunc(Math.log10(maxCount) + 1);
 					let allFish = '';
 					for (let i = 0; i < arrayFish.length; i++) {
-						allFish += `\`${arrayFish[i].id}\` ${arrayFish[i].emoji}: ${arrayFish[i].amount} `;
-						if (i % 2 === 1) {
+						allFish += `\`${arrayFish[i].id}\`${arrayFish[i].emoji}${utils.smallNumberDisplay(arrayFish[i].amount, digits)}   `;
+						if (i > 1 && i % 3 === 0) {
 							allFish += '\n';
 						}
 					}
@@ -50,7 +58,7 @@ class UserCommand extends WynnCommand {
 						message,
 						t('commands/inventory:fish', {
 							user: tag,
-							baitAmount: itemFish.bait,
+							baitAmount: utils.smallNumberDisplay(itemFish.bait, digits),
 							baitEmoji: emoji.collect.fishing.bait,
 							arrayFish: allFish
 						})
@@ -72,6 +80,12 @@ class UserCommand extends WynnCommand {
 		}
 		return await this.mainProcess(interaction, t, interaction.user.id, interaction.user.tag, interaction.options.getSubcommand());
 	}
+}
+
+function swap(arr, xp, yp) {
+	var temp = arr[xp];
+	arr[xp] = arr[yp];
+	arr[yp] = temp;
 }
 
 module.exports = {

@@ -7,9 +7,6 @@ const utils = require('../../lib/utils');
 
 const emoji = require('../../config/emoji');
 const collect = require('../../config/collect');
-const { MessageEmbed } = require('discord.js');
-const moneyEmoji = emoji.common.money;
-const blank = emoji.common.blank;
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -107,7 +104,7 @@ class UserCommand extends WynnCommand {
 				t('commands/fishing:fishingdone', {
 					user: tag,
 					name: t(`commands/fishing:${fishReceive.name}`),
-					emoji: blank,
+					emoji: fishReceive.emoji,
 					rarity: t(`commands/fishing:${fishReceive.rarity}`)
 				})
 			);
