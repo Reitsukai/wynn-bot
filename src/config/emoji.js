@@ -33,7 +33,8 @@ module.exports = {
 			eel: '😑',
 			carp: '😑',
 			shark: '😑',
-			whale: '😑'
+			whale: '😑',
+			bait: '😑'
 		}
 	}
 };

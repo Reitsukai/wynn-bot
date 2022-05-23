@@ -5,9 +5,11 @@ module.exports = mongoose.model(
 	'Fish',
 	new mongoose.Schema(
 		{
-			name: { type: String, unique: true },
+			id: { type: Number, unique: true },
+			name: { type: String },
 			rarity: { type: String },
-			price: { type: Number, default: 0 }
+			price: { type: Number, default: 0 },
+			emoji: { type: String }
 		},
 		{
 			timestamps: true

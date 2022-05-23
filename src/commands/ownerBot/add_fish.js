@@ -18,15 +18,21 @@ class UserCommand extends WynnCommand {
 		const t = await fetchT(message);
 		try {
 			if (process.env.OWNER_IDS.split(',').includes(message.author.id)) {
+				const id = await args.next();
 				const name = await args.next();
 				const rarity = await args.next();
 				const price = await args.next();
-				if (name === null || rarity === null || price === null || isNaN(price)) {
+				const emoji = await args.next();
+				if (name === null || rarity === null || price === null || isNaN(price) || id === null || isNaN(id) || emoji === null) {
 					return message.channel.send('Error input');
 				}
-				await this.container.client.db.addNewFish(name, rarity, price);
-				logger.warn(`User ${message.author.id} add new fish ... name: ${name} - rarity: ${rarity} - price: ${price}`);
-				return message.channel.send(`Success add new fish ... name: ${name} - rarity: ${rarity} - price: ${price}`);
+				await this.container.client.db.addNewFish(id, name, rarity, price, emoji);
+				logger.warn(
+					`User ${message.author.id} add new fish ... id: ${id} - name: ${name} - rarity: ${rarity} - price: ${price} - emoji: ${emoji}`
+				);
+				return message.channel.send(
+					`Success add new fish ... id: ${id} - name: ${name} - rarity: ${rarity} - price: ${price} - emoji: ${emoji}`
+				);
 			}
 		} catch (err) {
 			logger.error(err);

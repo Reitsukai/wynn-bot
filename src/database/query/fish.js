@@ -8,8 +8,8 @@ module.exports.getAllFish = async function () {
 	return await fishSchema.find({});
 };
 
-module.exports.addNewFish = async function (name, rarity, price) {
-	let fish = new fishSchema({ name: name, rarity: rarity, price: price });
+module.exports.addNewFish = async function (id, name, rarity, price, emoji) {
+	let fish = new fishSchema({ id: id, name: name, rarity: rarity, price: price, emoji: emoji });
 	await fish.save().catch((err) => console.log(err));
 	return fish;
 };
