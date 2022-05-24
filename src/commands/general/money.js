@@ -1,7 +1,7 @@
 const { send } = require('@sapphire/plugin-editable-commands');
 const { fetchT } = require('@sapphire/plugin-i18next');
 const WynnCommand = require('../../lib/Structures/WynnCommand');
-const mUser = require('../../database/schema/user');
+const coolDown = require('../../config/cooldown');
 const emoji = require('../../config/emoji');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -22,7 +22,7 @@ class UserCommand extends WynnCommand {
 		const moneyEmoji = emoji.common.money;
 		const t = await fetchT(message);
 		if (message.type === 'APPLICATION_COMMAND') {
-			const checkCoolDown = await this.container.client.checkTimeCoolDown(message.user.id, this.name, 15000, t);
+			const checkCoolDown = await this.container.client.checkTimeCoolDown(message.user.id, this.name, coolDown.general.money, t);
 			if (checkCoolDown) {
 				return checkCoolDown;
 			}
@@ -33,7 +33,7 @@ class UserCommand extends WynnCommand {
 				emoji: moneyEmoji
 			});
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 15000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.general.money, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}

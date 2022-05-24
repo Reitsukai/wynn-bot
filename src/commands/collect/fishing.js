@@ -5,7 +5,7 @@ const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 
-const emoji = require('../../config/emoji');
+const coolDown = require('../../config/cooldown');
 const collect = require('../../config/collect');
 
 class UserCommand extends WynnCommand {
@@ -37,7 +37,7 @@ class UserCommand extends WynnCommand {
 			}
 			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 300000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -166,7 +166,7 @@ class UserCommand extends WynnCommand {
 			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 			return await this.buyBait(interaction, userInfo, t, Number(interaction.options.getInteger('amount')), interaction.user.tag);
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 300000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
