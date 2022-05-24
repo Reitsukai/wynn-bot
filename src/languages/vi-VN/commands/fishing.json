@@ -1,6 +1,6 @@
 {
 	"usage": "{{prefix}}fishing",
-	"example": ["{{prefix}}fishing", "{{prefix}}fishing config", "{{prefix}}fishing buy 5"],
+	"example": ["{{prefix}}fishing", "{{prefix}}fishing config sea", "{{prefix}}fishing buy 5"],
 	"description": "Câu cá thư giãn 🎣",
 	"nobait": "**{{user}}** đã hết mồi để câu. Mua mồi câu bằng lệnh `{{prefix}}fishing buy 5`",
 	"fishingfail": "**{{user}}** không câu được gì cả :<",
