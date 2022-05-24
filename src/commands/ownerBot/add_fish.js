@@ -10,7 +10,7 @@ class UserCommand extends WynnCommand {
 			name: 'add_fish',
 			description: 'add new fish',
 			usage: 'wadd_fish <name> <rarity> <price>',
-			example: 'wadd_fish gobies normal 120'
+			example: 'wadd_fish frog normal 120'
 		});
 	}
 

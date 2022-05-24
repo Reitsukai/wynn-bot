@@ -1,9 +1,9 @@
 module.exports = {
 	fishing: {
 		buy: 100,
-		tub: ['gobies'],
-		lake: ['gobies', 'gobies', 'gobies', 'eel', 'eel'],
-		river: ['gobies', 'gobies', 'gobies', 'carp'],
+		tub: ['frog'],
+		lake: ['frog', 'frog', 'frog', 'eel', 'eel'],
+		river: ['frog', 'frog', 'frog', 'carp'],
 		sea: ['eel', 'eel', 'eel', 'eel', 'eel', 'shark', 'shark', 'whale']
 	}
 };

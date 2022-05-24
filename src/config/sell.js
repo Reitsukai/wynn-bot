@@ -1,6 +1,6 @@
 module.exports = {
 	// fishing: {
-	// 	100: 100, //gobies
+	// 	100: 100, //frog
 	// 	101: 100, //eel
 	// 	102: 100, //carp
 	// 	103: 100, //shark

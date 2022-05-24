@@ -29,12 +29,12 @@ module.exports = {
 	},
 	collect: {
 		fishing: {
-			gobies: '😑',
-			eel: '😑',
-			carp: '😑',
-			shark: '😑',
-			whale: '😑',
-			bait: '😑'
+			frog: '🐸',
+			eel: '<:luon:978360831626600548>',
+			carp: '<:cachep:978360832205410366>',
+			shark: '<:camap:978360831861469234>',
+			whale: '<:cavoi:978363105815982171>',
+			bait: '🐛'
 		}
 	}
 };
