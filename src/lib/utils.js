@@ -24,7 +24,19 @@ async function returnSlashAndMessage(message, content) {
 	return await send(message, content);
 }
 
+function smallNumberDisplay(count, digits) {
+	const numbers = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+	var result = '';
+	for (i = 0; i < digits; i++) {
+		var digit = count % 10;
+		count = Math.trunc(count / 10);
+		result = numbers[digit] + result;
+	}
+	return result;
+}
+
 module.exports.pickRandom = pickRandom;
 module.exports.sendLoadingMessage = sendLoadingMessage;
 module.exports.returnContentForSlashOrSendMessage = returnContentForSlashOrSendMessage;
 module.exports.returnSlashAndMessage = returnSlashAndMessage;
+module.exports.smallNumberDisplay = smallNumberDisplay;
