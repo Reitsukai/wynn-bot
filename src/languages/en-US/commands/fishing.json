@@ -4,7 +4,7 @@
 	"description": "Fishing relax",
 	"nobait": "**{{user}}** has run out of lures. Buy bait with command `{{prefix}}fishing buy 5`",
 	"fishingfail": "**{{user}}** did not catch anything :<",
-	"fishingdone": "**{{user}}** caught {{name}} {{emoji}}, rarity {{rarity}}",
+	"fishingdone": "**{{user}}** caught `{{name}}` {{emoji}}, rarity `{{rarity}}`",
 	"config": "**{{user}}** has moved the sentence location to {{location}}.",
 	"nomoney": "**{{user}}** not enough money to buy bait.",
 	"buy": "**{{user}}** successfully purchased {{amount}} bait.",

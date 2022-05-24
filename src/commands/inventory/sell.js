@@ -21,36 +21,48 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
-		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 35000, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
+		//check subcommand
 		let input = await args.next();
 		if (!['fish'].includes(input)) {
 			return send(
 				message,
-				t('commands/sell:inputerror', {
+				t('commands/sell:fisherrorinput', {
 					user: message.author.tag,
 					prefix: await this.container.client.fetchPrefix(message)
 				})
 			);
 		}
+		const t = await fetchT(message);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 35000, t);
+		if (checkCoolDown) {
+			return send(message, checkCoolDown);
+		}
+		//valid
 		let name = await args.next();
 		let amount;
 		if (name === 'all') {
 			amount = 'all';
 			name = null;
+		} else if (name === null) {
+			return send(
+				message,
+				t('commands/sell:fisherrorinput', {
+					user: message.author.tag,
+					prefix: await this.container.client.fetchPrefix(message)
+				})
+			);
 		} else {
 			amount = await args.next();
-			if (amount !== 'all' && (amount === null || isNaN(amount))) {
+			if (amount !== 'all' && isNaN(amount)) {
 				return send(
 					message,
-					t('commands/sell:inputerror', {
+					t('commands/sell:fisherrorinput', {
 						user: message.author.tag,
 						prefix: await this.container.client.fetchPrefix(message)
 					})
 				);
+			} else if (amount === null) {
+				amount = 1;
 			}
 		}
 		switch (input) {
@@ -64,7 +76,7 @@ class UserCommand extends WynnCommand {
 			if (Number(amount) < 1) {
 				return await utils.returnSlashAndMessage(
 					message,
-					t('commands/sell:inputerror', {
+					t('commands/sell:fisherrorinput', {
 						user: message.author.tag,
 						prefix: await this.container.client.fetchPrefix(message)
 					})
@@ -78,22 +90,19 @@ class UserCommand extends WynnCommand {
 				map.set(object.name, object.price);
 			});
 			let allFishSell = '';
-			/*
-
-			check case không đúng tên
-
-			*/
 			if (name === null) {
 				for (let i = 0; i < arrayFish.length; i++) {
 					if (arrayFish[i].amount > 0) {
-						allFishSell += `${arrayFish[i].name} x ${arrayFish[i].amount} `;
+						allFishSell += `${arrayFish[i].emoji} x ${arrayFish[i].amount} `;
 						moneyReceive += arrayFish[i].amount * map.get(arrayFish[i].id);
 						arrayFish[i].amount = 0;
 					}
 				}
 			} else {
+				let flag = 0;
 				for (let i = 0; i < arrayFish.length; i++) {
 					if (arrayFish[i].name === name) {
+						flag = 1;
 						if (amount === 'all') {
 							arrayFish[i].amount = 0;
 						} else if (arrayFish[i].amount < Number(amount)) {
@@ -106,10 +115,18 @@ class UserCommand extends WynnCommand {
 						} else {
 							arrayFish[i].amount = arrayFish[i].amount - Number(amount);
 						}
-						allFishSell += `${arrayFish[i].name} x ${arrayFish[i].amount} `;
+						allFishSell += `${arrayFish[i].emoji} x ${amount} `;
 						moneyReceive += Number(amount) * map.get(arrayFish[i].id);
 						break;
 					}
+				}
+				if (flag === 0) {
+					return await utils.returnSlashAndMessage(
+						message,
+						t('commands/sell:noitem', {
+							user: tag
+						})
+					);
 				}
 			}
 			await Promise.all([
@@ -143,8 +160,18 @@ class UserCommand extends WynnCommand {
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
+
 		switch (interaction.options.getSubcommand()) {
 			case 'fish':
+				if (interaction.options.getString('amountfish') !== 'all' && isNaN(interaction.options.getString('amountfish'))) {
+					return send(
+						message,
+						t('commands/sell:fisherrorinput', {
+							user: message.author.tag,
+							prefix: await this.container.client.fetchPrefix(message)
+						})
+					);
+				}
 				return await this.sellFish(
 					interaction,
 					t,

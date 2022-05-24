@@ -4,5 +4,6 @@
 	"example": ["{{prefix}}sell fish frog 5"],
 	"fisherrorinput": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}sell fish all",
 	"fishdone": "**{{user}}** đã bán {{arrayFish}} và nhận được {{amount}} {{moneyEmo}}",
+	"noitem": "**{{user}}** không có vật phẩm này",
 	"notenoughamout": "**{{user}}** không đủ số lượng để bán"
 }

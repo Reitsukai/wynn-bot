@@ -20,12 +20,15 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		let input = await args.next();
+		if (!['fish'].includes(input)) {
+			return;
+		}
 		const t = await fetchT(message);
 		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 35000, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
-		let input = await args.next();
 		return await this.mainProcess(message, t, message.author.id, message.author.tag, input);
 	}
 
@@ -35,7 +38,7 @@ class UserCommand extends WynnCommand {
 				case 'fish':
 					const itemFish = await this.container.client.db.getItemFishByDiscordId(userId);
 					let arrayFish = itemFish.arrayFish.slice();
-					let maxCount = 0;
+					let maxCount = 1;
 					// sort and get max
 					for (let i = 0; i < arrayFish.length - 1; i++) {
 						for (let j = 0; j < arrayFish.length - 1 - i; j++) {
