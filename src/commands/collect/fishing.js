@@ -62,7 +62,8 @@ class UserCommand extends WynnCommand {
 			map.set('lake', locationFishing.lake);
 			map.set('river', locationFishing.river);
 			map.set('sea', locationFishing.sea);
-			if (Math.floor(Math.random() * 10) === 0) {
+			let resultFishing = utils.pickRandom(map.get(itemFish.location));
+			if (resultFishing === 'fail') {
 				await this.container.client.db.updateItemFish(userId, {
 					$inc: {
 						bait: -1
@@ -75,7 +76,7 @@ class UserCommand extends WynnCommand {
 					})
 				);
 			}
-			let fishReceive = await this.container.client.db.getFishByName(utils.pickRandom(map.get(itemFish.location)));
+			let fishReceive = await this.container.client.db.getFishByName(resultFishing);
 			let newArray = itemFish.arrayFish.slice();
 			let flag = 0;
 			for (let i = 0; i < newArray.length; i++) {
