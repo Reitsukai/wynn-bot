@@ -4,6 +4,7 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
+const coolDown = require('../../config/cooldown');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const betFaces = ['h', 'heads', 't', 'tails'];
 const wait = require('node:timers/promises').setTimeout;
@@ -24,7 +25,7 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 15000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.cf, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -138,7 +139,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 15000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.cf, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
