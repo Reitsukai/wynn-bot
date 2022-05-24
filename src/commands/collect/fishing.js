@@ -22,10 +22,6 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 300000, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		let input1 = await args.next();
 		if (input1 === 'config') {
 			let input2 = await args.next();
@@ -40,6 +36,10 @@ class UserCommand extends WynnCommand {
 				input2 = 1;
 			}
 			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
+		}
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 300000, t);
+		if (checkCoolDown) {
+			return send(message, checkCoolDown);
 		}
 		return await this.mainProcess(message, t, message.author.id, message.author.tag);
 	}
@@ -160,15 +160,15 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 300000, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		if (interaction.options.getSubcommand() === 'config') {
 			return await this.configLocation(interaction, t, interaction.user.id, interaction.options.getString('location'), interaction.user.tag);
 		} else if (interaction.options.getSubcommand() === 'buy') {
 			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 			return await this.buyBait(interaction, userInfo, t, Number(interaction.options.getInteger('amount')), interaction.user.tag);
+		}
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 300000, t);
+		if (checkCoolDown) {
+			return await interaction.reply(checkCoolDown);
 		}
 		return await this.mainProcess(interaction, t, interaction.user.id, interaction.user.tag);
 	}
