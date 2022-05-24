@@ -62,7 +62,7 @@ class UserCommand extends WynnCommand {
 			map.set('lake', locationFishing.lake);
 			map.set('river', locationFishing.river);
 			map.set('sea', locationFishing.sea);
-			if (Math.floor(Math.random() * 15) === 0) {
+			if (Math.floor(Math.random() * 10) === 0) {
 				await this.container.client.db.updateItemFish(userId, {
 					$inc: {
 						bait: -1
