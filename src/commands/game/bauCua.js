@@ -7,6 +7,7 @@ const utils = require('../../lib/utils');
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
+const coolDown = require('../../config/cooldown');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const moneyEmoji = emoji.common.money;
 const dices = {
@@ -38,7 +39,7 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 22000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.baucua, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -314,7 +315,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 22000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.baucua, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}

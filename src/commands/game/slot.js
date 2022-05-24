@@ -8,6 +8,7 @@ const wait = require('node:timers/promises').setTimeout;
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
+const coolDown = require('../../config/cooldown');
 const maxBet = game.slot.max;
 const minBet = game.slot.min;
 
@@ -26,7 +27,7 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 15000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.slot, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -253,7 +254,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 15000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.slot, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}

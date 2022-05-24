@@ -5,6 +5,7 @@ const { logger } = require('../../utils/index');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 const { Permissions } = require('discord.js');
+const coolDown = require('../../config/cooldown');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -22,7 +23,7 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, 10000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.guild.lang, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -69,7 +70,7 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, 10000, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.guild.lang, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
