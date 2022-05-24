@@ -22,6 +22,7 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		//check subcommand
+		const t = await fetchT(message);
 		let input = await args.next();
 		if (!['fish'].includes(input)) {
 			return send(
@@ -32,7 +33,6 @@ class UserCommand extends WynnCommand {
 				})
 			);
 		}
-		const t = await fetchT(message);
 		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.inventory.sell, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
