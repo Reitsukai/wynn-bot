@@ -1,6 +1,6 @@
 module.exports = {
 	collect: {
-		fishing: 180000
+		fishing: 420000
 	},
 	game: {
 		baucua: 22000,
