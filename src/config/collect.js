@@ -1,9 +1,31 @@
 module.exports = {
 	fishing: {
 		buy: 100,
+		allelement: ['frog', 'eel', 'carp', 'shark', 'whale'],
 		tub: ['frog'],
-		lake: ['frog', 'frog', 'frog', 'eel', 'eel'],
-		river: ['frog', 'frog', 'frog', 'frog', 'frog', 'frog', 'carp'],
-		sea: ['eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'eel', 'shark', 'shark', 'whale']
+		lake: ['fail', 'frog', 'frog', 'eel'],
+		river: ['fail', 'fail', 'frog', 'frog', 'frog', 'frog', 'carp'],
+		sea: [
+			'fail',
+			'fail',
+			'fail',
+			'fail',
+			'fail',
+			'fail',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'eel',
+			'shark',
+			'shark',
+			'whale'
+		]
 	}
 };

@@ -22,12 +22,17 @@ class UserCommand extends WynnCommand {
 				const name = await args.next();
 				const rarity = await args.next();
 				const emoji = await args.next();
-				if (name === null || rarity === null || id === null || isNaN(id) || emoji === null) {
+				const description = await args.next();
+				if (name === null || rarity === null || id === null || isNaN(id) || emoji === null || description === null) {
 					return message.channel.send('Error input');
 				}
-				await this.container.client.db.addNewFish(id, name, rarity, emoji);
-				logger.warn(`User ${message.author.id} add new fish ... id: ${id} - name: ${name} - rarity: ${rarity} - emoji: ${emoji}`);
-				return message.channel.send(`Success add new fish ... id: ${id} - name: ${name} - rarity: ${rarity} - emoji: ${emoji}`);
+				await this.container.client.db.addNewFish(id, name, rarity, emoji, description);
+				logger.warn(
+					`User ${message.author.id} add new fish ... id: ${id} - name: ${name} - rarity: ${rarity} - emoji: ${emoji} - description: ${description}`
+				);
+				return message.channel.send(
+					`Success add new fish ... id: ${id} - name: ${name} - rarity: ${rarity} - emoji: ${emoji} - description: ${description}`
+				);
 			}
 		} catch (err) {
 			logger.error(err);

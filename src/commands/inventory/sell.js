@@ -94,7 +94,7 @@ class UserCommand extends WynnCommand {
 				for (let i = 0; i < arrayFish.length; i++) {
 					if (arrayFish[i].amount > 0) {
 						allFishSell += `${arrayFish[i].emoji} x ${arrayFish[i].amount} `;
-						moneyReceive += arrayFish[i].amount * map.get(arrayFish[i].id);
+						moneyReceive += arrayFish[i].amount * map.get(arrayFish[i].name);
 						arrayFish[i].amount = 0;
 					}
 				}
@@ -116,7 +116,7 @@ class UserCommand extends WynnCommand {
 							arrayFish[i].amount = arrayFish[i].amount - Number(amount);
 						}
 						allFishSell += `${arrayFish[i].emoji} x ${amount} `;
-						moneyReceive += Number(amount) * map.get(arrayFish[i].id);
+						moneyReceive += Number(amount) * map.get(arrayFish[i].name);
 						break;
 					}
 				}

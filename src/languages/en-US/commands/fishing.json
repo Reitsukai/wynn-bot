@@ -1,6 +1,6 @@
 {
 	"usage": "{{prefix}}fishing",
-	"example": ["{{prefix}}fishing", "{{prefix}}fishing config", "{{prefix}}fishing buy 5"],
+	"example": ["{{prefix}}fishing", "{{prefix}}fishing config sea", "{{prefix}}fishing buy 5"],
 	"description": "Fishing relax 🎣",
 	"nobait": "**{{user}}** has run out of lures. Buy bait with command `{{prefix}}fishing buy 5`",
 	"fishingfail": "**{{user}}** did not catch anything :<",

@@ -1,9 +1,9 @@
 module.exports = {
 	fishing: [
-		{ name: 100, price: 200 },
-		{ name: 101, price: 300 },
-		{ name: 102, price: 5000 },
-		{ name: 103, price: 10000 },
-		{ name: 104, price: 25000 }
+		{ name: 'frog', price: 200 },
+		{ name: 'eel', price: 300 },
+		{ name: 'carp', price: 5000 },
+		{ name: 'shark', price: 10000 },
+		{ name: 'whale', price: 25000 }
 	]
 };
