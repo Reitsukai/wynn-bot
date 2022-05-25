@@ -60,7 +60,7 @@ class UserCommand extends WynnCommand {
 						message,
 						t('commands/inventory:fish', {
 							user: tag,
-							baitAmount: utils.smallNumberDisplay(itemFish.bait, digits),
+							baitAmount: utils.smallNumberDisplay(itemFish.bait, Math.trunc(Math.log10(itemFish.bait) + 1)),
 							baitEmoji: emoji.collect.fishing.bait,
 							arrayFish: allFish
 						})
