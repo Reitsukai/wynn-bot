@@ -40,12 +40,19 @@ class UserCommand extends WynnCommand {
 					let arrayFish = itemFish.arrayFish.slice();
 					let maxCount = 1;
 					// sort and get max
+					let haveSwap = 0;
 					for (let i = 0; i < arrayFish.length - 1; i++) {
+						haveSwap = 0;
 						for (let j = 0; j < arrayFish.length - 1 - i; j++) {
 							if (arrayFish[j].amount > maxCount) maxCount = arrayFish[j].amount;
+							if (arrayFish[j + 1].amount > maxCount) maxCount = arrayFish[j + 1].amount;
 							if (arrayFish[j].id > arrayFish[j + 1].id) {
 								swap(arrayFish, j, j + 1);
+								haveSwap = 1;
 							}
+						}
+						if (haveSwap === 0) {
+							break;
 						}
 					}
 					let digits = Math.trunc(Math.log10(maxCount) + 1);
