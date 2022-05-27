@@ -37,8 +37,21 @@ class UserCommand extends WynnCommand {
 			}
 			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.collect.fishing, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
+			if (checkCoolDown.image !== null) {
+				await this.container.client.db.updateCaptcha(message.author.id, {
+					discordId: message.author.id,
+					captcha: checkCoolDown.text
+				});
+				utils.sendCaptcha(
+					checkCoolDown.image,
+					message,
+					t('commands/captcha:require', {
+						user: message.author.tag
+					})
+				);
+			}
 			return send(message, checkCoolDown);
 		}
 		return await this.mainProcess(message, t, message.author.id, message.author.tag);
@@ -167,7 +180,7 @@ class UserCommand extends WynnCommand {
 			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 			return await this.buyBait(interaction, userInfo, t, Number(interaction.options.getInteger('amount')), interaction.user.tag);
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.collect.fishing, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(interaction.user.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
