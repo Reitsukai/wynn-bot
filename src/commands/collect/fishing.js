@@ -44,7 +44,7 @@ class UserCommand extends WynnCommand {
 					discordId: message.author.id,
 					captcha: checkCoolDown.text
 				});
-				utils.sendCaptcha(
+				return await utils.sendCaptcha(
 					checkCoolDown.image,
 					message,
 					t('commands/captcha:require', {

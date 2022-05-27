@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 
 module.exports = mongoose.model(
-	'Channel',
+	'Captcha',
 	new mongoose.Schema(
 		{
 			discordId: { type: String, unique: true },

@@ -108,6 +108,7 @@ class WynnClient extends SapphireClient {
 		this.fetchPrefix = fetchPrefix.bind(this);
 		//cooldown
 		this.checkTimeCoolDown = checkTimeCoolDown.bind(this);
+		this.checkTimeCoolDownWithCheckSpam = checkTimeCoolDownWithCheckSpam.bind(this);
 		this.resetCooldown = resetCooldown.bind(this);
 		this.resetCustomCooldown = resetCustomCooldown.bind(this);
 		//cache array lottery
