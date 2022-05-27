@@ -130,7 +130,7 @@ class UserCommand extends WynnCommand {
 	}
 
 	async buyBait(message, userInfo, t, amount, tag) {
-		if (userInfo.money - collect.fishing.buy < 0) {
+		if (userInfo.money - collect.fishing.buy * amount < 0) {
 			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/fishing:nomoney', {
