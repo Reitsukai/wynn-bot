@@ -23,9 +23,9 @@ class UserCommand extends WynnCommand {
 
 	async messageRun(message, args) {
 		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
-		if (isBlock) return;
-		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn') {
-			return await reminderCaptcha(message, this.container.client);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
 		}
 		const t = await fetchT(message);
 		let input1 = await args.next();
@@ -182,6 +182,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
+		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
+		}
 		const t = await fetchT(interaction);
 		if (interaction.options.getSubcommand() === 'config') {
 			return await this.configLocation(interaction, t, interaction.user.id, interaction.options.getString('location'), interaction.user.tag);

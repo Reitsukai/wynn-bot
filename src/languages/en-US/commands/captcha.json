@@ -1,7 +1,7 @@
 {
-	"require": "⚠ {{user}} Are you a real human? Please DM me with the following word so I can check! (You will have 10 minutes)",
-	"reminder": "⚠ {{user}} ! Please complete your captcha to verify that you are human! ({{turn}}/5)",
+	"require": "⚠ **{{user}}** Are you a real human? Please DM me with the following word so I can check! (You will have 10 minutes)",
+	"reminder": "⚠ **{{user}}** ! Please complete your captcha to verify that you are human! **({{turn}}/5)**",
 	"resolve": "😊 I have verified that you are human! Thank you",
-	"wrong": "🚫 Wrong verification code! Please try again ({{turn}}/3)",
-	"ban": "☠ {{user}} ! You have been banned for 3H for macros or botting!"
+	"wrong": "🚫 Wrong verification code! Please try again **({{turn}}/3)**",
+	"ban": "☠ **{{user}}** ! You have been banned for 3H for macros or botting!"
 }
