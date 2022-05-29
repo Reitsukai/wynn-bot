@@ -68,70 +68,70 @@ class UserCommand extends WynnCommand {
 
 	async mainProcess(message, t, userId, tag) {
 		try {
-			// const itemFish = await this.container.client.db.getItemFishByDiscordId(userId);
-			// if (itemFish.bait < 1) {
-			// 	return await utils.returnSlashAndMessage(
-			// 		message,
-			// 		t('commands/fishing:nobait', {
-			// 			user: tag,
-			// 			prefix: await this.container.client.fetchPrefix(message)
-			// 		})
-			// 	);
-			// }
-			// const locationFishing = collect.fishing;
-			// let map = new Map();
-			// map.set('tub', locationFishing.tub);
-			// map.set('lake', locationFishing.lake);
-			// map.set('river', locationFishing.river);
-			// map.set('sea', locationFishing.sea);
-			// let resultFishing = utils.pickRandom(map.get(itemFish.location));
-			// if (resultFishing === 'fail') {
-			// 	await this.container.client.db.updateItemFish(userId, {
-			// 		$inc: {
-			// 			bait: -1
-			// 		}
-			// 	});
-			// 	return await utils.returnSlashAndMessage(
-			// 		message,
-			// 		t('commands/fishing:fishingfail', {
-			// 			user: tag
-			// 		})
-			// 	);
-			// }
-			// let fishReceive = await this.container.client.db.getFishByName(resultFishing);
-			// let newArray = itemFish.arrayFish.slice();
-			// let flag = 0;
-			// for (let i = 0; i < newArray.length; i++) {
-			// 	if (newArray[i].id === fishReceive.id) {
-			// 		newArray[i].amount += 1;
-			// 		flag = 1;
-			// 		break;
-			// 	}
-			// }
-			// if (flag === 0) {
-			// 	newArray.push({
-			// 		id: fishReceive.id,
-			// 		name: fishReceive.name,
-			// 		emoji: fishReceive.emoji,
-			// 		amount: 1
-			// 	});
-			// }
+			const itemFish = await this.container.client.db.getItemFishByDiscordId(userId);
+			if (itemFish.bait < 1) {
+				return await utils.returnSlashAndMessage(
+					message,
+					t('commands/fishing:nobait', {
+						user: tag,
+						prefix: await this.container.client.fetchPrefix(message)
+					})
+				);
+			}
+			const locationFishing = collect.fishing;
+			let map = new Map();
+			map.set('tub', locationFishing.tub);
+			map.set('lake', locationFishing.lake);
+			map.set('river', locationFishing.river);
+			map.set('sea', locationFishing.sea);
+			let resultFishing = utils.pickRandom(map.get(itemFish.location));
+			if (resultFishing === 'fail') {
+				await this.container.client.db.updateItemFish(userId, {
+					$inc: {
+						bait: -1
+					}
+				});
+				return await utils.returnSlashAndMessage(
+					message,
+					t('commands/fishing:fishingfail', {
+						user: tag
+					})
+				);
+			}
+			let fishReceive = await this.container.client.db.getFishByName(resultFishing);
+			let newArray = itemFish.arrayFish.slice();
+			let flag = 0;
+			for (let i = 0; i < newArray.length; i++) {
+				if (newArray[i].id === fishReceive.id) {
+					newArray[i].amount += 1;
+					flag = 1;
+					break;
+				}
+			}
+			if (flag === 0) {
+				newArray.push({
+					id: fishReceive.id,
+					name: fishReceive.name,
+					emoji: fishReceive.emoji,
+					amount: 1
+				});
+			}
 
-			// await this.container.client.db.updateItemFish(userId, {
-			// 	$inc: {
-			// 		bait: -1
-			// 	},
-			// 	arrayFish: newArray
-			// });
+			await this.container.client.db.updateItemFish(userId, {
+				$inc: {
+					bait: -1
+				},
+				arrayFish: newArray
+			});
 			return await utils.returnSlashAndMessage(
 				message,
-				'Tính năng đang bảo trì tạm thời'
-				// t('commands/fishing:fishingdone', {
-				// 	user: tag,
-				// 	name: t(`commands/fishing:${fishReceive.name}`),
-				// 	emoji: fishReceive.emoji,
-				// 	rarity: t(`commands/fishing:${fishReceive.rarity}`)
-				// })
+				// 'Tính năng đang bảo trì tạm thời'
+				t('commands/fishing:fishingdone', {
+					user: tag,
+					name: t(`commands/fishing:${fishReceive.name}`),
+					emoji: fishReceive.emoji,
+					rarity: t(`commands/fishing:${fishReceive.rarity}`)
+				})
 			);
 		} catch (err) {
 			logger.error(err);
