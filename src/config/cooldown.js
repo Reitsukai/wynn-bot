@@ -4,7 +4,7 @@ module.exports = {
 		species: 10000
 	},
 	game: {
-		baucua: 22000,
+		baucua: 25000,
 		cf: 15000,
 		drop: 15000,
 		pick: 15000,
