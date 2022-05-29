@@ -1,0 +1,7 @@
+{
+	"require": "⚠ **{{user}}** Bạn có phải là người thật không? Vui lòng gửi tin nhắn cho tôi bằng từ sau để tôi có thể kiểm tra! (Bạn sẽ có 10 phút)",
+	"reminder": "⚠ **{{user}}** ! Vui lòng hoàn thành hình ảnh xác thực của bạn để xác minh rằng bạn là con người! **({{turn}}/5)**",
+	"resolve": "😊 Tôi đã xác minh rằng bạn là con người! Cảm ơn bạn",
+	"wrong": "🚫 Nhập sai mã xác thực! Vui lòng thử lại **({{turn}}/3)**",
+	"ban": "☠ **{{user}}** ! Bạn đã bị cấm trong 3H vì macro hoặc botting!"
+}

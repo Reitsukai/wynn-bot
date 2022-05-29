@@ -32,6 +32,7 @@ const client = new WynnClient({
 	logger: {
 		level: LogLevel.Debug
 	},
+	partials: ['CHANNEL'],
 	shards: 'auto',
 	intents: [
 		'GUILDS',

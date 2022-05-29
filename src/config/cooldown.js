@@ -1,10 +1,10 @@
 module.exports = {
 	collect: {
-		fishing: 420000,
+		fishing: 300000,
 		species: 10000
 	},
 	game: {
-		baucua: 22000,
+		baucua: 25000,
 		cf: 15000,
 		drop: 15000,
 		pick: 15000,
@@ -20,7 +20,7 @@ module.exports = {
 		prefix: 10000
 	},
 	inventory: {
-		inv: 35000,
-		sell: 18000
+		inv: 30000,
+		sell: 10000
 	}
 };

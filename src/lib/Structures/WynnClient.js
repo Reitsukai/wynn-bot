@@ -1,7 +1,9 @@
 const { SapphireClient, container } = require('@sapphire/framework');
 const Discord = require('discord.js');
+const { createCaptcha } = require('../../utils/index');
 
 async function fetchPrefix(message) {
+	if (message.guild === null) return process.env.PREFIX;
 	const guild = await this.db.fetchGuild(message.guild.id);
 	return guild.prefix;
 }
@@ -9,6 +11,27 @@ async function fetchPrefix(message) {
 async function checkTimeCoolDown(id, name, delay, t) {
 	if (process.env.OWNER_IDS.split(',').includes(id)) {
 		return;
+	}
+	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
+	if (Date.now() - getTimeout < 0) {
+		return t('preconditions:preconditionCooldown', {
+			remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
+		});
+	}
+	container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
+}
+
+async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
+	if (process.env.OWNER_IDS.split(',').includes(id)) {
+		return;
+	}
+	let countSpam = container.client.options.spams.get(`${id}`) || 0;
+	if (countSpam > 40) {
+		//sent captcha
+		return await createCaptcha(true);
+	} else {
+		countSpam++;
+		container.client.options.spams.set(`${id}`, countSpam);
 	}
 	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
 	if (Date.now() - getTimeout < 0) {
@@ -78,6 +101,7 @@ class WynnClient extends SapphireClient {
 				}
 			},
 			timeouts: new Discord.Collection(),
+			spams: new Discord.Collection(),
 			lottery: new Array()
 		});
 		this.db = require('./../../database/mongodb');
@@ -85,6 +109,7 @@ class WynnClient extends SapphireClient {
 		this.fetchPrefix = fetchPrefix.bind(this);
 		//cooldown
 		this.checkTimeCoolDown = checkTimeCoolDown.bind(this);
+		this.checkTimeCoolDownWithCheckSpam = checkTimeCoolDownWithCheckSpam.bind(this);
 		this.resetCooldown = resetCooldown.bind(this);
 		this.resetCustomCooldown = resetCustomCooldown.bind(this);
 		//cache array lottery

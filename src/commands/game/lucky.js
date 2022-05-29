@@ -8,6 +8,8 @@ const { logger } = require('../../utils/index');
 const blank = emoji.common.blank;
 const { MessageEmbed } = require('discord.js');
 
+const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
+
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
 		super(context, {
@@ -22,6 +24,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
+		}
 		try {
 			const t = await fetchT(message);
 			let input1 = await args.next();
@@ -140,6 +147,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
+		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
+		}
 		try {
 			const t = await fetchT(interaction);
 			if (interaction.options.getSubcommand() === 'results') {

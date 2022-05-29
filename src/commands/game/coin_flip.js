@@ -10,6 +10,8 @@ const betFaces = ['h', 'heads', 't', 'tails'];
 const wait = require('node:timers/promises').setTimeout;
 const utils = require('../../lib/utils');
 
+const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
+
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
 		super(context, {
@@ -24,6 +26,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
+		}
 		const t = await fetchT(message);
 		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.cf, t);
 		if (checkCoolDown) {
@@ -138,6 +145,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
+		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
+		}
 		const t = await fetchT(interaction);
 		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.cf, t);
 		if (checkCoolDown) {
