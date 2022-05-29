@@ -22,9 +22,6 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
-		/* 
-		case xóa ban
-		 */
 		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
 		if (isBlock) return;
 		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn') {
