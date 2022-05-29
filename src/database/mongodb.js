@@ -62,6 +62,7 @@ const { getItemFishByDiscordId, updateItemFish } = require('./query/itemFish');
 module.exports.getItemFishByDiscordId = getItemFishByDiscordId;
 module.exports.updateItemFish = updateItemFish;
 /* Captcha */
-const { getCaptchaByDiscordId, updateCaptcha } = require('./query/captcha');
+const { getCaptchaByDiscordId, updateCaptcha, checkIsBlock } = require('./query/captcha');
 module.exports.getCaptchaByDiscordId = getCaptchaByDiscordId;
 module.exports.updateCaptcha = updateCaptcha;
+module.exports.checkIsBlock = checkIsBlock;

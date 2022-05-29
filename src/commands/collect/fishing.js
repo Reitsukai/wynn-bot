@@ -22,10 +22,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
-		/* case nhập sai và case quá lượt
+		/* 
 		case xóa ban
 		 */
-
+		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
+		if (isBlock) return;
 		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn') {
 			return await reminderCaptcha(message, this.container.client);
 		}
@@ -52,6 +53,7 @@ class UserCommand extends WynnCommand {
 				await this.container.client.db.updateCaptcha(message.author.id, {
 					discordId: message.author.id,
 					captcha: checkCoolDown.text,
+					deadline: new Date(Date.now() + 600000),
 					isResolve: false
 				});
 				return await utils.sendCaptcha(
