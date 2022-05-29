@@ -5,6 +5,7 @@ const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 
+const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
 const coolDown = require('../../config/cooldown');
 const collect = require('../../config/collect');
 
@@ -21,6 +22,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
+		}
 		const t = await fetchT(message);
 		let input1 = await args.next();
 		if (input1 === 'config') {
@@ -37,8 +43,24 @@ class UserCommand extends WynnCommand {
 			}
 			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.collect.fishing, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
+			if (checkCoolDown.image !== undefined) {
+				this.container.client.options.spams.set(`${message.author.id}`, 'warn');
+				await this.container.client.db.updateCaptcha(message.author.id, {
+					discordId: message.author.id,
+					captcha: checkCoolDown.text,
+					deadline: new Date(Date.now() + 600000),
+					isResolve: false
+				});
+				return await utils.sendCaptcha(
+					checkCoolDown.image,
+					message,
+					t('commands/captcha:require', {
+						user: message.author.tag
+					})
+				);
+			}
 			return send(message, checkCoolDown);
 		}
 		return await this.mainProcess(message, t, message.author.id, message.author.tag);
@@ -130,7 +152,7 @@ class UserCommand extends WynnCommand {
 	}
 
 	async buyBait(message, userInfo, t, amount, tag) {
-		if (userInfo.money - collect.fishing.buy < 0) {
+		if (userInfo.money - collect.fishing.buy * amount < 0) {
 			return await utils.returnSlashAndMessage(
 				message,
 				t('commands/fishing:nomoney', {
@@ -160,6 +182,11 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
+		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
+		if (isBlock === true) return;
+		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
+			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
+		}
 		const t = await fetchT(interaction);
 		if (interaction.options.getSubcommand() === 'config') {
 			return await this.configLocation(interaction, t, interaction.user.id, interaction.options.getString('location'), interaction.user.tag);
@@ -167,7 +194,7 @@ class UserCommand extends WynnCommand {
 			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 			return await this.buyBait(interaction, userInfo, t, Number(interaction.options.getInteger('amount')), interaction.user.tag);
 		}
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.collect.fishing, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(interaction.user.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}

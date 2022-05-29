@@ -44,6 +44,16 @@ exports.InitCron = async function (client) {
 				scheduled: true
 			}
 		);
+		// At minute 45 past every 4th hour
+		cron.schedule(
+			'45 */4 * * *',
+			() => {
+				client.options.spams.clear();
+			},
+			{
+				scheduled: true
+			}
+		);
 	} catch (e) {
 		logger.error(e);
 	}
