@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const { createCaptcha } = require('../../utils/index');
 
 async function fetchPrefix(message) {
+	if (message.guild === null) return process.env.PREFIX;
 	const guild = await this.db.fetchGuild(message.guild.id);
 	return guild.prefix;
 }
