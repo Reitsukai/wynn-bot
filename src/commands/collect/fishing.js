@@ -5,6 +5,7 @@ const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 
+const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
 const coolDown = require('../../config/cooldown');
 const collect = require('../../config/collect');
 
@@ -21,6 +22,13 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		/* case nhập sai và case quá lượt
+		case xóa ban
+		 */
+
+		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn') {
+			return await reminderCaptcha(message, this.container.client);
+		}
 		const t = await fetchT(message);
 		let input1 = await args.next();
 		if (input1 === 'config') {
@@ -39,10 +47,12 @@ class UserCommand extends WynnCommand {
 		}
 		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
-			if (checkCoolDown.image !== null) {
+			if (checkCoolDown.image !== undefined) {
+				this.container.client.options.spams.set(`${message.author.id}`, 'warn');
 				await this.container.client.db.updateCaptcha(message.author.id, {
 					discordId: message.author.id,
-					captcha: checkCoolDown.text
+					captcha: checkCoolDown.text,
+					isResolve: false
 				});
 				return await utils.sendCaptcha(
 					checkCoolDown.image,
