@@ -1,42 +1,28 @@
 module.exports = {
 	fishing: {
 		buy: 100,
-		allelement: ['frog', 'eel', 'carp', 'shark', 'whale'],
-		tub: ['frog'],
-		lake: ['fail', 'frog', 'frog', 'eel', 'frog', 'frog', 'eel'], //fail 1/7 = 14,2
-		river: ['fail', 'fail', 'frog', 'frog', 'frog', 'carp', 'carp'], //fail 2/7 = 28.5
+		allelement: ['frog', 'eel', 'carp', 'shark', 'whale', 'crocodile', 'squid', 'kraken', 'mermaid'],
+		tub: [{ rate: 1, name: 'frog' }],
+		lake: [
+			{ rate: 0.45, name: 'frog' },
+			{ rate: 0.9, name: 'eel' },
+			{ rate: 1, name: 'fail' }
+		],
+		river: [
+			{ rate: 0.5, name: 'frog' },
+			{ rate: 0.75, name: 'carp' },
+			{ rate: 0.85, name: 'crocodile' },
+			{ rate: 1, name: 'fail' }
+		],
 		sea: [
-			//fail 10/30 = 33.33
-			'fail',
-			'fail',
-			'fail',
-			'fail',
-			'fail',
-			'fail',
-			'fail',
-			'fail',
-			'fail',
-			'fail',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'eel',
-			'shark',
-			'shark',
-			'whale'
+			{ rate: 0.25, name: 'eel' },
+			{ rate: 0.6, name: 'squid' },
+			{ rate: 0.72, name: 'shark' },
+			{ rate: 0.78, name: 'crocodile' },
+			{ rate: 0.8, name: 'whale' },
+			{ rate: 0.80005, name: 'kraken' },
+			{ rate: 0.800051, name: 'mermaid' },
+			{ rate: 1, name: 'fail' }
 		]
 	}
 };

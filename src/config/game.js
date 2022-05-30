@@ -1,7 +1,7 @@
 module.exports = {
 	cf: {
 		min: 1,
-		max: 150000
+		max: 20000
 	},
 	baucua: {
 		min: 1,
@@ -9,7 +9,7 @@ module.exports = {
 	},
 	slot: {
 		min: 1,
-		max: 150000
+		max: 20000
 	},
 	lottery: {
 		buy: 1000,
