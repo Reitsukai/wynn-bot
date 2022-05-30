@@ -68,6 +68,14 @@ class UserCommand extends WynnCommand {
 						{ name: t(`commands/species:price`), value: '`' + map.get(infoFish.name).toString() + '`' }
 					);
 				return await utils.returnSlashAndMessage(message, { embeds: [embedMSG] });
+			} else if (input === 'listfish') {
+				const infoFish = await this.container.client.db.getAllFish();
+				let result = '';
+				for (let i = 0; i < infoFish.length; i++) {
+					result += '`' + infoFish[i].id.toString() + '`' + '....' + infoFish[i].emoji + ' ' + infoFish[i].name + '\n';
+				}
+				let embedMSG = new MessageEmbed().setDescription(t(`commands/species:seedetails`) + ': `vspec {name}`').addField('ID___Name', result);
+				return await utils.returnSlashAndMessage(message, { embeds: [embedMSG] });
 			} else {
 				return await utils.returnSlashAndMessage(
 					message,
