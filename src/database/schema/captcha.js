@@ -12,6 +12,7 @@ module.exports = mongoose.model(
 		wrong: { type: Number, default: 0 },
 		reminder: { type: Number, default: 0 },
 		isBlock: { type: Boolean, default: false },
-		timeBlock: { type: Date }
+		timeBlock: { type: Date },
+		amount: { type: Number, default: 1 }
 	})
 );

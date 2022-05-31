@@ -17,7 +17,8 @@ module.exports.checkIsBlock = async function (discordId) {
 				await captchaSchema.updateOne(
 					{ discordId: discordId },
 					{
-						isBlock: false
+						isBlock: false,
+						isResolve: true
 					}
 				);
 				return false;

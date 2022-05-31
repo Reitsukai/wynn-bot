@@ -3,5 +3,5 @@
 	"reminder": "⚠ **{{user}}** ! Please complete your captcha to verify that you are human! **({{turn}}/5)**",
 	"resolve": "😊 I have verified that you are human! Thank you",
 	"wrong": "🚫 Wrong verification code! Please try again **({{turn}}/3)**",
-	"ban": "☠ **{{user}}** ! You have been banned for 3H for macros or botting!"
+	"ban": "☠ **{{user}}** ! You have been banned for {{time}}H for macros or botting!"
 }
