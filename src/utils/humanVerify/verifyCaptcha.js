@@ -10,9 +10,13 @@ module.exports = async function verifyCaptcha(message, client) {
 			wrong: 0,
 			reminder: 0,
 			isBlock: true,
-			timeBlock: new Date(Date.now() + 10800000)
+			timeBlock: new Date(Date.now() + 10800000 * captchaUser.amount),
+			$inc: {
+				amount: 1
+			}
 		});
-		return await send(message, `☠ ${message.author.username} ! You have been banned for 3H for macros or botting!`);
+		client.options.spams.set(`${message.author.id}`, 0);
+		return await send(message, `☠ ${message.author.username} ! You have been banned for ${3 * captchaUser.amount}H for macros or botting!`);
 	} else if (captchaUser.captcha === message.content) {
 		// ok
 		client.options.spams.set(`${message.author.id}`, 0);
@@ -30,9 +34,13 @@ module.exports = async function verifyCaptcha(message, client) {
 				wrong: 0,
 				reminder: 0,
 				isBlock: true,
-				timeBlock: new Date(Date.now() + 10800000)
+				timeBlock: new Date(Date.now() + 10800000 * captchaUser.amount),
+				$inc: {
+					amount: 1
+				}
 			});
-			return await send(message, `☠ ${message.author.username} ! You have been banned for 3H for macros or botting!`);
+			client.options.spams.set(`${message.author.id}`, 0);
+			return await send(message, `☠ ${message.author.username} ! You have been banned for ${3 * captchaUser.amount}H for macros or botting!`);
 		}
 		await client.db.updateCaptcha(message.author.id, {
 			$inc: {

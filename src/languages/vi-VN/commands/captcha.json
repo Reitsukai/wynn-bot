@@ -3,5 +3,5 @@
 	"reminder": "⚠ **{{user}}** ! Vui lòng hoàn thành hình ảnh xác thực của bạn để xác minh rằng bạn là con người! **({{turn}}/5)**",
 	"resolve": "😊 Tôi đã xác minh rằng bạn là con người! Cảm ơn bạn",
 	"wrong": "🚫 Nhập sai mã xác thực! Vui lòng thử lại **({{turn}}/3)**",
-	"ban": "☠ **{{user}}** ! Bạn đã bị cấm trong 3H vì macro hoặc botting!"
+	"ban": "☠ **{{user}}** ! Bạn đã bị cấm trong {{time}}H vì macro hoặc botting!"
 }
