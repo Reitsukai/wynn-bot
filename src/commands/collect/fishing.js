@@ -46,15 +46,11 @@ class UserCommand extends WynnCommand {
 		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
 			if (checkCoolDown.image !== undefined) {
-				this.container.client.options.spams.set(`${message.author.id}`, 'warn');
-				await this.container.client.db.updateCaptcha(message.author.id, {
-					discordId: message.author.id,
-					captcha: checkCoolDown.text,
-					deadline: new Date(Date.now() + 600000),
-					isResolve: false
-				});
-				return await utils.sendCaptcha(
+				return await utils.sendCaptchaImage(
+					message.author.id,
+					this.container.client,
 					checkCoolDown.image,
+					checkCoolDown.text,
 					message,
 					t('commands/captcha:require', {
 						user: message.author.tag
@@ -205,6 +201,18 @@ class UserCommand extends WynnCommand {
 		}
 		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(interaction.user.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
+			if (checkCoolDown.image !== undefined) {
+				return await utils.sendCaptchaImage(
+					interaction.user.id,
+					this.container.client,
+					checkCoolDown.image,
+					checkCoolDown.text,
+					interaction,
+					t('commands/captcha:require', {
+						user: interaction.user.tag
+					})
+				);
+			}
 			return await interaction.reply(checkCoolDown);
 		}
 		return await this.mainProcess(interaction, t, interaction.user.id, interaction.user.tag);
