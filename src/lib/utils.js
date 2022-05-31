@@ -35,7 +35,39 @@ function smallNumberDisplay(count, digits) {
 	return result;
 }
 
-async function sendCaptcha(image, message, content) {
+// async function sendCaptcha(image, message, content) {
+// 	if (message.type === 'APPLICATION_COMMAND') {
+// 		return await message.reply({
+// 			embeds: [
+// 				new MessageEmbed()
+// 					.setTitle('⚠ CAPTCHA ⚠ CAPTCHA ⚠ CAPTCHA')
+// 					.setDescription(content)
+// 					.setColor('#FF0000')
+// 					.setImage('attachment://captcha.png')
+// 			],
+// 			files: [{ name: 'captcha.png', attachment: image }]
+// 		});
+// 	}
+// 	return await send(message, {
+// 		embeds: [
+// 			new MessageEmbed()
+// 				.setTitle('⚠ CAPTCHA ⚠ CAPTCHA ⚠ CAPTCHA')
+// 				.setDescription(content)
+// 				.setColor('#FF0000')
+// 				.setImage('attachment://captcha.png')
+// 		],
+// 		files: [{ name: 'captcha.png', attachment: image }]
+// 	});
+// }
+
+async function sendCaptchaImage(userId, client, image, text, message, content) {
+	client.options.spams.set(`${userId}`, 'warn');
+	await client.db.updateCaptcha(userId, {
+		discordId: userId,
+		captcha: text,
+		deadline: new Date(Date.now() + 600000),
+		isResolve: false
+	});
 	if (message.type === 'APPLICATION_COMMAND') {
 		return await message.reply({
 			embeds: [
@@ -65,4 +97,4 @@ module.exports.sendLoadingMessage = sendLoadingMessage;
 module.exports.returnContentForSlashOrSendMessage = returnContentForSlashOrSendMessage;
 module.exports.returnSlashAndMessage = returnSlashAndMessage;
 module.exports.smallNumberDisplay = smallNumberDisplay;
-module.exports.sendCaptcha = sendCaptcha;
+module.exports.sendCaptchaImage = sendCaptchaImage;
