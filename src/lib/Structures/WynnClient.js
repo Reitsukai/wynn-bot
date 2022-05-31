@@ -26,7 +26,7 @@ async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
 		return;
 	}
 	let countSpam = container.client.options.spams.get(`${id}`) || 0;
-	if (countSpam > 40) {
+	if (countSpam > 25) {
 		//sent captcha
 		return await createCaptcha(true);
 	} else {

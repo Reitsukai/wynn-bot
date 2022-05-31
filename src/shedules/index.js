@@ -44,9 +44,9 @@ exports.InitCron = async function (client) {
 				scheduled: true
 			}
 		);
-		// At minute 45 past every 4th hour
+		// At minute 45 past every 3th hour
 		cron.schedule(
-			'45 */4 * * *',
+			'45 */3 * * *',
 			() => {
 				client.options.spams.clear();
 			},
