@@ -66,7 +66,7 @@ class UserCommand extends WynnCommand {
 					let allFish = '';
 					for (let i = 0; i < arrayFish.length; i++) {
 						allFish += `\`${arrayFish[i].id}\`${arrayFish[i].emoji}${utils.smallNumberDisplay(arrayFish[i].amount, digits)}   `;
-						if (i > 1 && i % 3 === 0) {
+						if (i > 1 && (i + 1) % 4 === 0) {
 							allFish += '\n';
 						}
 					}
