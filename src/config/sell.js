@@ -7,7 +7,7 @@ module.exports = {
 		{ name: 'whale', price: 25000 },
 		{ name: 'crocodile', price: 10000 },
 		{ name: 'squid', price: 500 },
-		{ name: 'kraken', price: 2000000 },
-		{ name: 'mermaid', price: 10000000 }
+		{ name: 'kraken', price: 500000 },
+		{ name: 'mermaid', price: 2000000 }
 	]
 };
