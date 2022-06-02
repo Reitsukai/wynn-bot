@@ -32,8 +32,20 @@ class UserCommand extends WynnCommand {
 			return;
 		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.inventory.inv, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.inventory.inv, t);
 		if (checkCoolDown) {
+			if (checkCoolDown.image !== undefined) {
+				return await utils.sendCaptchaImage(
+					message.author.id,
+					this.container.client,
+					checkCoolDown.image,
+					checkCoolDown.text,
+					message,
+					t('commands/captcha:require', {
+						user: message.author.tag
+					})
+				);
+			}
 			return send(message, checkCoolDown);
 		}
 		return await this.mainProcess(message, t, message.author.id, message.author.tag, input);

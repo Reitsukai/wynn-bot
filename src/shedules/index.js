@@ -22,10 +22,14 @@ exports.InitCron = async function (client) {
 			// '* * * * *',
 			'30 1-23/2 * * *',
 			async () => {
+				console.log('Start clear cooldown and spam');
 				await lotteryShedulesBackupLotteryArray(client);
 				//clear cooldown
 				client.options.timeouts.clear();
 				console.log('Clear cooldown success');
+				client.options.spamTime.clear();
+				client.options.spams.clear();
+				console.log('Clear spam success');
 			},
 			{
 				scheduled: true
@@ -46,16 +50,9 @@ exports.InitCron = async function (client) {
 			}
 		);
 		// At minute 45 past every 3th hour
-		cron.schedule(
-			'45 */3 * * *',
-			() => {
-				client.options.spams.clear();
-				console.log('Clear spam success');
-			},
-			{
-				scheduled: true
-			}
-		);
+		// cron.schedule('45 */3 * * *', () => {}, {
+		// 	scheduled: true
+		// });
 	} catch (e) {
 		logger.error(e);
 	}

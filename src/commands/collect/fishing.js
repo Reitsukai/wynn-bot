@@ -28,21 +28,6 @@ class UserCommand extends WynnCommand {
 			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
 		}
 		const t = await fetchT(message);
-		let input1 = await args.next();
-		if (input1 === 'config') {
-			let input2 = await args.next();
-			if (['tub', 'lake', 'river', 'sea'].includes(input2)) {
-				return await this.configLocation(message, t, message.author.id, input2, message.author.tag);
-			}
-			// sai type return ...;
-		} else if (input1 === 'buy') {
-			let userInfo = await this.container.client.db.fetchUser(message.author.id);
-			let input2 = await args.next();
-			if (isNaN(input2) && input2 !== null) {
-				input2 = 1;
-			}
-			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
-		}
 		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
 			if (checkCoolDown.image !== undefined) {
@@ -58,6 +43,21 @@ class UserCommand extends WynnCommand {
 				);
 			}
 			return send(message, checkCoolDown);
+		}
+		let input1 = await args.next();
+		if (input1 === 'config') {
+			let input2 = await args.next();
+			if (['tub', 'lake', 'river', 'sea'].includes(input2)) {
+				return await this.configLocation(message, t, message.author.id, input2, message.author.tag);
+			}
+			// sai type return ...;
+		} else if (input1 === 'buy') {
+			let userInfo = await this.container.client.db.fetchUser(message.author.id);
+			let input2 = await args.next();
+			if (isNaN(input2) && input2 !== null) {
+				input2 = 1;
+			}
+			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
 		}
 		return await this.mainProcess(message, t, message.author.id, message.author.tag);
 	}
@@ -129,6 +129,7 @@ class UserCommand extends WynnCommand {
 			});
 			return await utils.returnSlashAndMessage(
 				message,
+				// 'Tính năng đang bảo trì tạm thời'
 				t('commands/fishing:fishingdone', {
 					user: tag,
 					name: t(`commands/fishing:${fishReceive.name}`),
