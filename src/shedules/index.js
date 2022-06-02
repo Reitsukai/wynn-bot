@@ -27,6 +27,7 @@ exports.InitCron = async function (client) {
 				//clear cooldown
 				client.options.timeouts.clear();
 				console.log('Clear cooldown success');
+				client.options.spamTime.clear();
 				client.options.spams.clear();
 				console.log('Clear spam success');
 			},
