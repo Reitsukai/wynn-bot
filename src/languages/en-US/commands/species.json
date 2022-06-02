@@ -1,6 +1,6 @@
 {
 	"usage": "{{prefix}}species frog",
-	"example": ["{{prefix}}species frog"],
+	"example": ["{{prefix}}species frog", "{{prefix}}species listfish"],
 	"description": "See everything information ...",
 	"name": "Name",
 	"rarity": "Rarity",
