@@ -25,6 +25,27 @@ async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
 	if (process.env.OWNER_IDS.split(',').includes(id)) {
 		return;
 	}
+	//spamTime
+	let spamTime = container.client.options.spamTime.get(`${id}_${name}`);
+	let dateNow = Date.now();
+	if (spamTime !== undefined) {
+		// check
+		let arraySpamTime = spamTime.split('_');
+		if (arraySpamTime.length > 9) {
+			let subRequest = Number(arraySpamTime[2]) - Number(arraySpamTime[1]);
+			let point = 0;
+			for (let i = 2; i < arraySpamTime.length - 1; i++) {
+				if (Math.abs(Number(arraySpamTime[i + 1]) - Number(arraySpamTime[i]) - subRequest) < 2000) {
+					point++;
+				}
+			}
+			if (point > 5) {
+				return await createCaptcha(true);
+			}
+		}
+	}
+	container.client.options.spamTime.set(`${id}_${name}`, spamTime + '_' + dateNow.toString());
+	//spams
 	let countSpam = container.client.options.spams.get(`${id}`) || 0;
 	if (countSpam > 22) {
 		//sent captcha
@@ -33,13 +54,14 @@ async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
 		countSpam++;
 		container.client.options.spams.set(`${id}`, countSpam);
 	}
+	//timeout cooldown
 	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
-	if (Date.now() - getTimeout < 0) {
+	if (dateNow - getTimeout < 0) {
 		return t('preconditions:preconditionCooldown', {
-			remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
+			remaining: `\`${(getTimeout - dateNow) / 1000}s\``
 		});
 	}
-	container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
+	container.client.options.timeouts.set(`${id}_${name}`, dateNow + (delay || 0));
 }
 
 async function resetCooldown(idUser, command) {
@@ -101,6 +123,7 @@ class WynnClient extends SapphireClient {
 				}
 			},
 			timeouts: new Discord.Collection(),
+			spamTime: new Discord.Collection(),
 			spams: new Discord.Collection(),
 			lottery: new Array()
 		});

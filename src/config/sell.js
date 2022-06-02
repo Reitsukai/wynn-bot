@@ -1,7 +1,7 @@
 module.exports = {
 	fishing: [
-		{ name: 'frog', price: 200 },
-		{ name: 'eel', price: 300 },
+		{ name: 'frog', price: 100 },
+		{ name: 'eel', price: 120 },
 		{ name: 'carp', price: 2000 },
 		{ name: 'shark', price: 7500 },
 		{ name: 'whale', price: 25000 },
