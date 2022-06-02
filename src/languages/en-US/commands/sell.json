@@ -4,6 +4,6 @@
 	"example": ["{{prefix}}sell fish frog 5"],
 	"fisherrorinput": "**{{user}}** wrong input. Example: {{prefix}}sell fish all",
 	"fishdone": "**{{user}}** sold {{arrayFish}} and received {{amount}} {{moneyEmo}}",
-	"noitem": "**{{user}}** does not have this item",
+	"noitem": "**{{user}}** does not have this item or can't sell",
 	"notenoughamout": "**{{user}}** not enough quantity to sell"
 }

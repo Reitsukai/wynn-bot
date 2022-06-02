@@ -2,10 +2,12 @@ module.exports = {
 	fishing: {
 		buy: 100,
 		allelement: ['frog', 'eel', 'carp', 'shark', 'whale', 'crocodile', 'squid', 'kraken', 'mermaid', 'cá 3 tủi'],
+		special: ['cá 3 tủi'],
 		tub: [{ rate: 1, name: 'frog' }],
 		lake: [
 			{ rate: 0.45, name: 'frog' },
 			{ rate: 0.9, name: 'eel' },
+			{ rate: 0.92, name: 'cá 3 tủi' },
 			{ rate: 1, name: 'fail' }
 		],
 		river: [

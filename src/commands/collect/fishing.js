@@ -132,7 +132,7 @@ class UserCommand extends WynnCommand {
 				// 'Tính năng đang bảo trì tạm thời'
 				t('commands/fishing:fishingdone', {
 					user: tag,
-					name: t(`commands/fishing:${fishReceive.name}`),
+					name: collect.fishing.special.includes(fishReceive.name) ? `${fishReceive.name}` : t(`commands/fishing:${fishReceive.name}`),
 					emoji: fishReceive.emoji,
 					rarity: t(`commands/fishing:${fishReceive.rarity}`)
 				})
