@@ -2,5 +2,6 @@
 	"AdminOnly": "This command can only be used by server admins.",
 	"preconditionCooldown": "You have just used this command. Try again in {{remaining}}.",
 	"preconditionGuildOnly": "You cannot run this command in DMs.",
-	"preconditionClientPermissions": "I am missing the following permissions to run this command: {{perm}}."
+	"preconditionClientPermissions": "I am missing the following permissions to run this command: {{perm}}.",
+	"commandDisabled": "This command has been disabled"
 }

@@ -1,0 +1,10 @@
+{
+	"usage": "{{prefix}}species frog",
+	"example": ["{{prefix}}species frog", "{{prefix}}species listfish"],
+	"description": "Xem thông tin mọi thứ ...",
+	"name": "Tên",
+	"rarity": "Độ hiếm",
+	"price": "Giá bán",
+	"nospecies": "Không tìm thấy thông tin về {{input}}.",
+	"seedetails": "Xem chi tiết"
+}

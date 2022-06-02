@@ -1,6 +1,6 @@
 {
 	"usage": "{{prefix}}lottery 5d",
-	"example": ["{{prefix}}lottery 1907"],
+	"example": ["{{prefix}}lottery 1907", "{{prefix}}lottery 4d", "{{prefix}}lottery"],
 	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}lottery",
 	"nomoney": "**{{user}}** không đủ tiền để chơi",
 	"description": "Xổ số kiến thiết _ Ích nước lợi nhà",
@@ -24,5 +24,6 @@
 	"text5": "Giải năm",
 	"text6": "Giải sáu",
 	"text7": "Giải bảy",
-	"error": "Đã có lỗi xảy ra, có vẻ như vé số đã bị người khác mua mất."
+	"error": "Đã có lỗi xảy ra, có vẻ như vé số đã bị người khác mua mất.",
+	"titleList": "__Danh sách vé số mua ngày {{date}}__"
 }

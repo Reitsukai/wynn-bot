@@ -1,6 +1,6 @@
 {
 	"usage": "{{prefix}}lottery 5d",
-	"example": ["{{prefix}}lottery 1907"],
+	"example": ["{{prefix}}lottery 1907", "{{prefix}}lottery 4d", "{{prefix}}lottery"],
 	"inputerror": "**{{user}}** incorrect input format. Example : {{prefix}}lottery",
 	"nomoney": "**{{user}}** don't have enough money.",
 	"description": "Your Chance to Win Starts Here",
@@ -24,5 +24,6 @@
 	"text5": "Five Prize",
 	"text6": "Sixth prize",
 	"text7": "Seventh Prize",
-	"error": "Something went wrong, it looks like the lottery ticket was bought by someone else"
+	"error": "Something went wrong, it looks like the lottery ticket was bought by someone else",
+	"titleList": "__List of lottery purchased in {{date}}__"
 }

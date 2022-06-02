@@ -1,0 +1,10 @@
+{
+	"usage": "{{prefix}}species frog",
+	"example": ["{{prefix}}species frog", "{{prefix}}species listfish"],
+	"description": "See everything information ...",
+	"name": "Name",
+	"rarity": "Rarity",
+	"price": "Price",
+	"nospecies": "No information found for {{input}}.",
+	"seedetails": "See details"
+}

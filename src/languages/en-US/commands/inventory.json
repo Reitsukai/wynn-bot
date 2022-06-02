@@ -1,0 +1,6 @@
+{
+	"description": "Xem kho đồ của bạn",
+	"usage": "{{prefix}}inventory fish",
+	"example": ["{{prefix}}inventory fish"],
+	"fish": "**{{user}}'s Fish Inventory**\n Bait {{baitEmoji}} {{baitAmount}}\n{{arrayFish}}"
+}

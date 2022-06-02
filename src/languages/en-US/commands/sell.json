@@ -1,0 +1,9 @@
+{
+	"description": "Sell items you don't need",
+	"usage": "{{prefix}}sell <type> <name> <quantity>",
+	"example": ["{{prefix}}sell fish frog 5"],
+	"fisherrorinput": "**{{user}}** wrong input. Example: {{prefix}}sell fish all",
+	"fishdone": "**{{user}}** sold {{arrayFish}} and received {{amount}} {{moneyEmo}}",
+	"noitem": "**{{user}}** does not have this item",
+	"notenoughamout": "**{{user}}** not enough quantity to sell"
+}
