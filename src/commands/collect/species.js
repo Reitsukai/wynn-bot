@@ -28,6 +28,10 @@ class UserCommand extends WynnCommand {
 		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
 			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
 		}
+		let input = await args.rest('string');
+		if (input === null) {
+			return;
+		}
 		const t = await fetchT(message);
 		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.species, t);
 		if (checkCoolDown) {
@@ -45,16 +49,12 @@ class UserCommand extends WynnCommand {
 			}
 			return send(message, checkCoolDown);
 		}
-		let input = await args.next();
-		if (input === null) {
-			return;
-		}
 		return await this.mainProcess(message, t, input);
 	}
 
 	async mainProcess(message, t, input) {
 		try {
-			if (collect.fishing.allelement.includes(input)) {
+			if (collect.fishing.allelement.includes(input.toLowerCase())) {
 				const infoFish = await this.container.client.db.getFishByName(input);
 				let emoji = infoFish.emoji;
 				let temp;
@@ -75,9 +75,15 @@ class UserCommand extends WynnCommand {
 					.setDescription('`' + infoFish.description + '`')
 					.setThumbnail(emoji)
 					.addFields(
-						{ name: t(`commands/species:name`), value: '`' + t(`commands/fishing:${infoFish.name}`) + '`' },
+						{
+							name: t(`commands/species:name`),
+							value: '`' + (map.has(infoFish.name) === true ? t(`commands/fishing:${infoFish.name}`) : `${infoFish.name}`) + '`'
+						},
 						{ name: t(`commands/species:rarity`), value: '`' + t(`commands/fishing:${infoFish.rarity}`) + '`' },
-						{ name: t(`commands/species:price`), value: '`' + map.get(infoFish.name).toString() + '`' }
+						{
+							name: t(`commands/species:price`),
+							value: '`' + (map.has(infoFish.name) === true ? map.get(infoFish.name).toString() : '???') + '`'
+						}
 					);
 				return await utils.returnSlashAndMessage(message, { embeds: [embedMSG] });
 			} else if (input === 'listfish') {

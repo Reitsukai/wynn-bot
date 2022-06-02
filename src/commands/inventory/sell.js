@@ -99,7 +99,7 @@ class UserCommand extends WynnCommand {
 			let allFishSell = '';
 			if (name === null) {
 				for (let i = 0; i < arrayFish.length; i++) {
-					if (arrayFish[i].amount > 0) {
+					if (arrayFish[i].amount > 0 && map.has(arrayFish[i].name)) {
 						allFishSell += `${arrayFish[i].emoji} x ${arrayFish[i].amount} `;
 						moneyReceive += arrayFish[i].amount * map.get(arrayFish[i].name);
 						arrayFish[i].amount = 0;
@@ -108,7 +108,7 @@ class UserCommand extends WynnCommand {
 			} else {
 				let flag = 0;
 				for (let i = 0; i < arrayFish.length; i++) {
-					if (arrayFish[i].name === name) {
+					if (arrayFish[i].name === name && map.has(arrayFish[i].name)) {
 						flag = 1;
 						if (amount === 'all') {
 							arrayFish[i].amount = 0;
