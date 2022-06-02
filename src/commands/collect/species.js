@@ -29,7 +29,7 @@ class UserCommand extends WynnCommand {
 			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
 		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.fishing, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(message.author.id, this.name, coolDown.collect.species, t);
 		if (checkCoolDown) {
 			if (checkCoolDown.image !== undefined) {
 				return await utils.sendCaptchaImage(
