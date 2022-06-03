@@ -48,7 +48,10 @@ class UserCommand extends WynnCommand {
 		if (input1 === 'config') {
 			let input2 = await args.next();
 			if (['tub', 'lake', 'river', 'sea'].includes(input2)) {
-				return await this.configLocation(message, t, message.author.id, input2, message.author.tag);
+				return await Promise.all([
+					this.container.client.resetCustomCooldown(message.author.id, this.name),
+					this.configLocation(message, t, message.author.id, input2, message.author.tag)
+				]);
 			}
 			// sai type return ...;
 		} else if (input1 === 'buy') {
@@ -57,7 +60,10 @@ class UserCommand extends WynnCommand {
 			if (isNaN(input2) && input2 !== null) {
 				input2 = 1;
 			}
-			return await this.buyBait(message, userInfo, t, input2, message.author.tag);
+			return await Promise.all([
+				this.container.client.resetCustomCooldown(message.author.id, this.name),
+				this.buyBait(message, userInfo, t, input2, message.author.tag)
+			]);
 		}
 		return await this.mainProcess(message, t, message.author.id, message.author.tag);
 	}
