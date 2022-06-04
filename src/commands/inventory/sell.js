@@ -80,7 +80,7 @@ class UserCommand extends WynnCommand {
 
 	async sellFish(message, t, userId, tag, name, amount) {
 		try {
-			if (Number(amount) < 1) {
+			if (amount !== 'all' && NaN(amount) && Number(amount) < 1) {
 				return await utils.returnSlashAndMessage(
 					message,
 					t('commands/sell:fisherrorinput', {
@@ -98,6 +98,7 @@ class UserCommand extends WynnCommand {
 			});
 			let allFishSell = '';
 			if (name === null) {
+				//case sell all fish
 				for (let i = 0; i < arrayFish.length; i++) {
 					if (arrayFish[i].amount > 0 && map.has(arrayFish[i].name)) {
 						allFishSell += `${arrayFish[i].emoji} x ${arrayFish[i].amount} `;
@@ -111,6 +112,15 @@ class UserCommand extends WynnCommand {
 					if (arrayFish[i].name === name && map.has(arrayFish[i].name)) {
 						flag = 1;
 						if (amount === 'all') {
+							if (arrayFish[i].amount === 0) {
+								return await utils.returnSlashAndMessage(
+									message,
+									t('commands/sell:notenoughamout', {
+										user: tag
+									})
+								);
+							}
+							amount = arrayFish[i].amount;
 							arrayFish[i].amount = 0;
 						} else if (arrayFish[i].amount < Number(amount)) {
 							return await utils.returnSlashAndMessage(
