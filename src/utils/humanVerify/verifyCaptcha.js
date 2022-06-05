@@ -15,6 +15,7 @@ module.exports = async function verifyCaptcha(message, client) {
 				amount: 1
 			}
 		});
+		client.options.spamTime.set(`${message.author.id}`, 0);
 		client.options.spams.set(`${message.author.id}`, 0);
 		return await send(
 			message,
@@ -22,6 +23,7 @@ module.exports = async function verifyCaptcha(message, client) {
 		);
 	} else if (captchaUser.captcha === message.content) {
 		// ok
+		client.options.spamTime.set(`${message.author.id}`, 0);
 		client.options.spams.set(`${message.author.id}`, 0);
 		await client.db.updateCaptcha(message.author.id, {
 			isResolve: true,
@@ -42,6 +44,7 @@ module.exports = async function verifyCaptcha(message, client) {
 					amount: 1
 				}
 			});
+			client.options.spamTime.set(`${message.author.id}`, 0);
 			client.options.spams.set(`${message.author.id}`, 0);
 			return await send(
 				message,
