@@ -22,8 +22,8 @@ module.exports = async function reminderCaptcha(message, client, userId, tag) {
 				amount: 1
 			}
 		});
-		client.options.spamTime.set(`${userId}`, 0);
-		client.options.spams.set(`${userId}`, 0);
+		// client.options.spamTime.set(`${userId}`, 0);
+		// client.options.spams.set(`${userId}`, 0);
 		return await utils.returnSlashAndMessage(
 			message,
 			t('commands/captcha:ban', {
