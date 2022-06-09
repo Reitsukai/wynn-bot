@@ -55,7 +55,7 @@ class UserCommand extends WynnCommand {
 	async mainProcess(message, t, input) {
 		try {
 			if (collect.fishing.allelement.includes(input.toLowerCase())) {
-				const infoFish = await this.container.client.db.getFishByName(input);
+				const infoFish = await this.container.client.db.getFishByName(input.toLowerCase());
 				let emoji = infoFish.emoji;
 				let temp;
 				if ((temp = emoji.match(/:[0-9]+>/))) {
@@ -86,7 +86,7 @@ class UserCommand extends WynnCommand {
 						}
 					);
 				return await utils.returnSlashAndMessage(message, { embeds: [embedMSG] });
-			} else if (input === 'listfish') {
+			} else if (input.toLowerCase() === 'listfish') {
 				const infoFish = await this.container.client.db.getAllFish();
 				let result = '';
 				for (let i = 0; i < infoFish.length; i++) {
@@ -98,7 +98,7 @@ class UserCommand extends WynnCommand {
 				return await utils.returnSlashAndMessage(
 					message,
 					t(`commands/species:nospecies`, {
-						input: input
+						input: input.toLowerCase()
 					})
 				);
 			}
