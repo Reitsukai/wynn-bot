@@ -51,7 +51,15 @@ class UserCommand extends WynnCommand {
 			betFace = next || 'heads';
 		} else {
 			betFace = first;
-			betMoney = next ? (next === 'all' ? game.cf.max : Number.isNaN(Number(next)) ? undefined : Number(next)) : game.cf.min;
+			betMoney = next
+				? next === 'all'
+					? userInfo.money > game.cf.max
+						? game.cf.max
+						: userInfo.money
+					: Number.isNaN(Number(next))
+					? undefined
+					: Number(next)
+				: game.cf.min;
 		}
 
 		if (!betFaces.includes(betFace) || !betMoney) {
