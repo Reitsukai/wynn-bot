@@ -17,7 +17,7 @@ module.exports = {
 			{ rate: 1, name: 'fail' }
 		],
 		sea: [
-			{ rate: 0.45, name: 'eel' },
+			{ rate: 0.38, name: 'eel' },
 			{ rate: 0.77, name: 'squid' }, // 0.32
 			{ rate: 0.785, name: 'shark' }, // 0.015
 			{ rate: 0.795, name: 'crocodile' }, // 0.01
