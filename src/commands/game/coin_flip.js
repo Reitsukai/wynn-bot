@@ -182,7 +182,11 @@ module.exports = {
 		.setDescription('Coin flipping, coin tossing, or head or tail')
 		.addIntegerOption((option) => option.setName('betmoney').setDescription('Enter an integer').setRequired(true))
 		.addStringOption((option) =>
-			option.setName('betface').setDescription('Enter a string').setRequired(true).addChoice('heads', 'heads').addChoice('tails', 'tails')
+			option
+				.setName('betface')
+				.setDescription('Enter a string')
+				.setRequired(true)
+				.addChoices({ name: 'heads', value: 'heads' }, { name: 'tails', value: 'tails' })
 		),
 	UserCommand
 };
