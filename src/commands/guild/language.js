@@ -90,8 +90,7 @@ module.exports = {
 				.setName('language')
 				.setDescription('Enter your language to set')
 				.setRequired(false)
-				.addChoice('Tiếng Việt', 'vi-VN')
-				.addChoice('English - US', 'en-US')
+				.addChoices({ name: 'Tiếng Việt', value: 'vi-VN' }, { name: 'English - US', value: 'en-US' })
 		),
 	UserCommand
 };

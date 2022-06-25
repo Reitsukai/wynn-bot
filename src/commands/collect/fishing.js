@@ -245,10 +245,12 @@ module.exports = {
 						.setName('location')
 						.setDescription('Enter location to fishing')
 						.setRequired(true)
-						.addChoice('tub', 'tub')
-						.addChoice('lake', 'lake')
-						.addChoice('river', 'river')
-						.addChoice('sea', 'sea')
+						.addChoices(
+							{ name: 'tub', value: 'tub' },
+							{ name: 'lake', value: 'lake' },
+							{ name: 'river', value: 'river' },
+							{ name: 'sea', value: 'sea' }
+						)
 				)
 		),
 	UserCommand
