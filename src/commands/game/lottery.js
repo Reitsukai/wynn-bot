@@ -388,10 +388,12 @@ module.exports = {
 						.setName('type')
 						.setDescription('Enter an integer that is the length of the lottery code')
 						.setRequired(false)
-						.addChoice('two-digit type', 2)
-						.addChoice('three-digit type', 3)
-						.addChoice('four-digit type', 4)
-						.addChoice('five-digit type', 5)
+						.addChoices(
+							{ name: 'two-digit type', value: 2 },
+							{ name: 'three-digit type', value: 3 },
+							{ name: 'four-digit type', value: 4 },
+							{ name: 'five-digit type', value: 5 }
+						)
 				)
 				.addIntegerOption((option) =>
 					option.setName('code').setDescription('Enter the integer that is the lottery number you want').setRequired(false)

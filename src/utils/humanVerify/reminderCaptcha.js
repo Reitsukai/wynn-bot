@@ -17,17 +17,18 @@ module.exports = async function reminderCaptcha(message, client, userId, tag) {
 			wrong: 0,
 			reminder: 0,
 			isBlock: true,
-			timeBlock: new Date(Date.now() + 10800000 * captchaUser.amount),
+			timeBlock: new Date(Date.now() + 10800000 * Math.pow(2, captchaUser.amount)),
 			$inc: {
 				amount: 1
 			}
 		});
-		client.options.spams.set(`${userId}`, 0);
+		// client.options.spamTime.set(`${userId}`, 0);
+		// client.options.spams.set(`${userId}`, 0);
 		return await utils.returnSlashAndMessage(
 			message,
 			t('commands/captcha:ban', {
 				user: tag,
-				time: 3 * captchaUser.amount
+				time: 3 * Math.pow(2, captchaUser.amount)
 			})
 		);
 	}

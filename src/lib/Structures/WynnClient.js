@@ -25,9 +25,20 @@ async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
 	if (process.env.OWNER_IDS.split(',').includes(id)) {
 		return;
 	}
+	let dateNow = Date.now();
+	//timeout cooldown
+	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
+	if (dateNow - getTimeout < 0) {
+		return t('preconditions:preconditionCooldown', {
+			remaining: `\`${(getTimeout - dateNow) / 1000}s\``
+		});
+	}
+	container.client.options.timeouts.set(`${id}_${name}`, dateNow + (delay || 0));
+	if (process.env.WHITE_LIST.split(',').includes(id)) {
+		return;
+	}
 	//spamTime
 	let spamTime = container.client.options.spamTime.get(`${id}_${name}`);
-	let dateNow = Date.now();
 	if (spamTime !== undefined) {
 		// check
 		let arraySpamTime = spamTime.split('_');
@@ -54,14 +65,6 @@ async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
 		countSpam++;
 		container.client.options.spams.set(`${id}`, countSpam);
 	}
-	//timeout cooldown
-	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
-	if (dateNow - getTimeout < 0) {
-		return t('preconditions:preconditionCooldown', {
-			remaining: `\`${(getTimeout - dateNow) / 1000}s\``
-		});
-	}
-	container.client.options.timeouts.set(`${id}_${name}`, dateNow + (delay || 0));
 }
 
 async function resetCooldown(idUser, command) {

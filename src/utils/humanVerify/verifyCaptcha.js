@@ -1,4 +1,5 @@
 const { send } = require('@sapphire/plugin-editable-commands');
+const cmdCheckSpam = require('../../config/commandCheckSpam');
 
 module.exports = async function verifyCaptcha(message, client) {
 	let captchaUser = await client.db.getCaptchaByDiscordId(message.author.id);
@@ -10,15 +11,20 @@ module.exports = async function verifyCaptcha(message, client) {
 			wrong: 0,
 			reminder: 0,
 			isBlock: true,
-			timeBlock: new Date(Date.now() + 10800000 * captchaUser.amount),
+			timeBlock: new Date(Date.now() + 10800000 * Math.pow(2, captchaUser.amount)),
 			$inc: {
 				amount: 1
 			}
 		});
-		client.options.spams.set(`${message.author.id}`, 0);
-		return await send(message, `☠ ${message.author.username} ! You have been banned for ${3 * captchaUser.amount}H for macros or botting!`);
+		// client.options.spamTime.set(`${message.author.id}`, 0);
+		// client.options.spams.set(`${message.author.id}`, 0);
+		return await send(
+			message,
+			`☠ ${message.author.username} ! You have been banned for ${3 * Math.pow(2, captchaUser.amount)}H for macros or botting!`
+		);
 	} else if (captchaUser.captcha === message.content) {
 		// ok
+		cmdCheckSpam.command.forEach((element) => client.options.spamTime.set(`${message.author.id}_${element}`, '_'));
 		client.options.spams.set(`${message.author.id}`, 0);
 		await client.db.updateCaptcha(message.author.id, {
 			isResolve: true,
@@ -34,13 +40,17 @@ module.exports = async function verifyCaptcha(message, client) {
 				wrong: 0,
 				reminder: 0,
 				isBlock: true,
-				timeBlock: new Date(Date.now() + 10800000 * captchaUser.amount),
+				timeBlock: new Date(Date.now() + 10800000 * Math.pow(2, captchaUser.amount)),
 				$inc: {
 					amount: 1
 				}
 			});
-			client.options.spams.set(`${message.author.id}`, 0);
-			return await send(message, `☠ ${message.author.username} ! You have been banned for ${3 * captchaUser.amount}H for macros or botting!`);
+			// client.options.spamTime.set(`${message.author.id}`, 0);
+			// client.options.spams.set(`${message.author.id}`, 0);
+			return await send(
+				message,
+				`☠ ${message.author.username} ! You have been banned for ${3 * Math.pow(2, captchaUser.amount)}H for macros or botting!`
+			);
 		}
 		await client.db.updateCaptcha(message.author.id, {
 			$inc: {
