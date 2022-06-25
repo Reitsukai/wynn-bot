@@ -25,6 +25,7 @@ async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
 	if (process.env.OWNER_IDS.split(',').includes(id)) {
 		return;
 	}
+	let dateNow = Date.now();
 	//timeout cooldown
 	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
 	if (dateNow - getTimeout < 0) {
@@ -38,7 +39,6 @@ async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
 	}
 	//spamTime
 	let spamTime = container.client.options.spamTime.get(`${id}_${name}`);
-	let dateNow = Date.now();
 	if (spamTime !== undefined) {
 		// check
 		let arraySpamTime = spamTime.split('_');
