@@ -54,16 +54,6 @@ class UserCommand extends WynnCommand {
 				]);
 			}
 			// sai type return ...;
-		} else if (input1 === 'buy') {
-			let userInfo = await this.container.client.db.fetchUser(message.author.id);
-			let input2 = await args.next();
-			if (isNaN(input2) && input2 !== null) {
-				input2 = 1;
-			}
-			return await Promise.all([
-				this.container.client.resetCustomCooldown(message.author.id, this.name),
-				this.buyBait(message, userInfo, t, input2, message.author.tag)
-			]);
 		}
 		return await this.mainProcess(message, t, message.author.id, message.author.tag);
 	}
@@ -162,36 +152,6 @@ class UserCommand extends WynnCommand {
 		);
 	}
 
-	async buyBait(message, userInfo, t, amount, tag) {
-		if (userInfo.money - collect.fishing.buy * amount < 0) {
-			return await utils.returnSlashAndMessage(
-				message,
-				t('commands/fishing:nomoney', {
-					user: tag
-				})
-			);
-		}
-		await Promise.all([
-			this.container.client.db.updateUser(userInfo.discordId, {
-				$inc: {
-					money: -collect.fishing.buy * amount
-				}
-			}),
-			this.container.client.db.updateItemFish(userInfo.discordId, {
-				$inc: {
-					bait: amount === 0 ? 1 : amount
-				}
-			})
-		]);
-		return await utils.returnSlashAndMessage(
-			message,
-			t('commands/fishing:buy', {
-				user: tag,
-				amount: amount
-			})
-		);
-	}
-
 	async execute(interaction) {
 		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
 		if (isBlock === true) return;
@@ -199,12 +159,6 @@ class UserCommand extends WynnCommand {
 			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
 		}
 		const t = await fetchT(interaction);
-		if (interaction.options.getSubcommand() === 'config') {
-			return await this.configLocation(interaction, t, interaction.user.id, interaction.options.getString('location'), interaction.user.tag);
-		} else if (interaction.options.getSubcommand() === 'buy') {
-			let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-			return await this.buyBait(interaction, userInfo, t, Number(interaction.options.getInteger('amount')), interaction.user.tag);
-		}
 		const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(interaction.user.id, this.name, coolDown.collect.fishing, t);
 		if (checkCoolDown) {
 			if (checkCoolDown.image !== undefined) {
@@ -221,6 +175,9 @@ class UserCommand extends WynnCommand {
 			}
 			return await interaction.reply(checkCoolDown);
 		}
+		if (interaction.options.getSubcommand() === 'config') {
+			return await this.configLocation(interaction, t, interaction.user.id, interaction.options.getString('location'), interaction.user.tag);
+		}
 		return await this.mainProcess(interaction, t, interaction.user.id, interaction.user.tag);
 	}
 }
@@ -230,12 +187,6 @@ module.exports = {
 		.setName('fishing')
 		.setDescription('Fishing, fishing, fishing ...')
 		.addSubcommand((subcommand) => subcommand.setName('now').setDescription('go to fishing now'))
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('buy')
-				.setDescription('buy bait')
-				.addIntegerOption((option) => option.setName('amount').setDescription('Enter an integer').setRequired(true))
-		)
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('config')

@@ -28,7 +28,7 @@ class UserCommand extends WynnCommand {
 			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
 		}
 		let input = await args.next();
-		if (!['fish'].includes(input)) {
+		if (!['fish'].includes(input) && input !== null) {
 			return;
 		}
 		const t = await fetchT(message);
@@ -55,6 +55,7 @@ class UserCommand extends WynnCommand {
 		try {
 			switch (input) {
 				case 'fish':
+				default:
 					const itemFish = await this.container.client.db.getItemFishByDiscordId(userId);
 					let arrayFish = itemFish.arrayFish.slice();
 					let maxCount = 1;
