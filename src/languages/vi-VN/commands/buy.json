@@ -1,0 +1,7 @@
+{
+	"usage": "{{prefix}}buy <type> <amount>",
+	"example": ["{{prefix}}buy bait 5"],
+	"description": "Mua vật phẩm 🎣",
+	"nomoney": "**{{user}}** không đủ tiền để mua.",
+	"baitdone": "**{{user}}** mua thành công {{amount}} mồi câu."
+}
