@@ -1,0 +1,7 @@
+{
+	"usage": "{{prefix}}buy <type> <amount>",
+	"example": ["{{prefix}}buy bait 5"],
+	"description": "Buy some item 🎣",
+	"nomoney": "**{{user}}** not enough money to buy.",
+	"baitdone": "**{{user}}** successfully purchased {{amount}} bait."
+}
