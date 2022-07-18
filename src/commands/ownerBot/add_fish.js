@@ -18,6 +18,9 @@ class UserCommand extends WynnCommand {
 		const t = await fetchT(message);
 		try {
 			if (process.env.OWNER_IDS.split(',').includes(message.author.id)) {
+				if (args.parser.parserOutput.ordered.length < 5) {
+					return message.channel.send('Error input');
+				}
 				const input = [];
 				let description = '';
 				for (let i = 0; i < args.parser.parserOutput.ordered.length; i++) {
@@ -30,7 +33,7 @@ class UserCommand extends WynnCommand {
 					}
 				}
 				input.push(description);
-				if (input.length < 5 || isNaN(input[0])) {
+				if (isNaN(input[0])) {
 					return message.channel.send('Error input');
 				}
 				await this.container.client.db.addNewFish(input[0], input[1], input[2], input[3], input[4]);
