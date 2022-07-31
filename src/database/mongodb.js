@@ -66,3 +66,8 @@ const { getCaptchaByDiscordId, updateCaptcha, checkIsBlock } = require('./query/
 module.exports.getCaptchaByDiscordId = getCaptchaByDiscordId;
 module.exports.updateCaptcha = updateCaptcha;
 module.exports.checkIsBlock = checkIsBlock;
+/*  RateConfig */
+const { addNewRateConfig, updateRateConfig, getAllRateConfig } = require('./query/rateConfig');
+module.exports.addNewRateConfig = addNewRateConfig;
+module.exports.updateRateConfig = updateRateConfig;
+module.exports.getAllRateConfig = getAllRateConfig;
