@@ -107,14 +107,18 @@ module.exports.loadFishRateAndInfo = async function loadFishRateAndInfo() {
 	arrayInfo.forEach((element) => {
 		container.client.options.fish.set(element.location, {
 			fish: element.array,
-			rate: {
-				rare: element.rare,
-				super: element.super,
-				ultra: element.ultra,
-				ultimate: element.ultimate,
-				legend: element.legend
-			}
+			rate: new Map([
+				['normal', element.normal],
+				['rare', element.rare],
+				['super', element.super],
+				['ultra', element.ultra],
+				['ultimate', element.ultimate],
+				['legend', element.legend]
+			])
 		});
 	});
-    console.log(container.client.options.fish.get('lake'));
+	console.log(container.client.options.fish.get('tub'));
+	console.log(container.client.options.fish.get('lake'));
+	console.log(container.client.options.fish.get('river'));
+	console.log(container.client.options.fish.get('sea'));
 };

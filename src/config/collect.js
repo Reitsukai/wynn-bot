@@ -38,26 +38,6 @@ module.exports = {
 			'sao biển'
 		],
 		special: ['cá 3 tủi'],
-		increaseturn: ['starfish'],
-		tub: [{ rate: 1, name: ['frog'] }],
-		lake: [
-			{ rate: 0.8, name: ['frog', 'crab', 'shrimp', 'eel'] },
-			{ rate: 0.92, name: ['cá 3 tủi'] },
-			{ rate: 1, name: ['fail'] }
-		],
-		river: [
-			{ rate: 0.6, name: ['frog', 'crab', 'shrimp'] },
-			{ rate: 0.75, name: ['carp'] },
-			{ rate: 0.85, name: ['crocodile'] },
-			{ rate: 1, name: ['fail'] }
-		],
-		sea: [
-			{ rate: 0.7, name: ['ray', 'crab', 'shrimp', 'jellyfish', 'squid'] },
-			{ rate: 0.77, name: ['dolphin', 'shark', 'starfish'] }, // 0.03
-			{ rate: 0.8, name: ['crocodile', 'whale'] }, // 0.01
-			{ rate: 0.80005, name: ['kraken'] },
-			{ rate: 0.800051, name: ['mermaid'] },
-			{ rate: 1, name: ['fail'] }
-		]
+		increaseturn: ['starfish']
 	}
 };
