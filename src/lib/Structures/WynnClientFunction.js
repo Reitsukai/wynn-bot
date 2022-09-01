@@ -104,6 +104,7 @@ module.exports.setArrayLottery = async function setArrayLottery(arrayType2, arra
 
 module.exports.loadFishRateAndInfo = async function loadFishRateAndInfo() {
 	const arrayInfo = await this.db.getAllRateConfig();
+	let infoFish = new Map();
 	arrayInfo.forEach((element) => {
 		container.client.options.fish.set(element.location, {
 			fish: element.array,
@@ -116,9 +117,22 @@ module.exports.loadFishRateAndInfo = async function loadFishRateAndInfo() {
 				['legend', element.legend]
 			])
 		});
+		element.array.forEach((e) => {
+			infoFish.set(e.name, e);
+		});
 	});
-	console.log(container.client.options.fish.get('tub'));
-	console.log(container.client.options.fish.get('lake'));
-	console.log(container.client.options.fish.get('river'));
-	console.log(container.client.options.fish.get('sea'));
+	let nameFish = [];
+	const iterator = infoFish.keys();
+	while (true) {
+		const name = iterator.next().value;
+		if (name !== undefined) {
+			nameFish.push(name);
+		} else {
+			break;
+		}
+	}
+	container.client.options.fish.set('listname', nameFish);
+	container.client.options.fish.set('listinfo', infoFish);
+	console.log(container.client.options.fish.get('listname'));
+	console.log(container.client.options.fish.get('listinfo'));
 };
