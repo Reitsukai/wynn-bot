@@ -157,6 +157,9 @@ module.exports.loadLanguageMappingVN = async function loadLanguageMappingVN() {
 		}
 		mapTemp.set(langMappingArray[index].key, langMappingArray[index].value);
 	}
+	if (langMappingArray[langMappingArray.length - 1] === undefined) {
+		return;
+	}
 	map.set(langMappingArray[langMappingArray.length - 1].type, mapTemp);
 	container.client.options.fish.set('vi-VN', map);
 	container.client.options.fish.set('listnameVN', Array.from(map.get('namefish').values()));

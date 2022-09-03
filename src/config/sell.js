@@ -6,17 +6,17 @@ module.exports = {
 		{ name: 'super', price: 5000 },
 		{ name: 'ultra', price: 10000 },
 		{ name: 'ultimate', price: 100000 },
-		{ name: 'legend', price: 500000 },
+		{ name: 'legend', price: 800000 },
 		// case details
 		{ name: 'frog', price: 100 }, //norm
 		{ name: 'eel', price: 200 }, //norm
 		{ name: 'carp', price: 2000 }, //rare
 		{ name: 'shark', price: 10000 }, //super
-		{ name: 'whale', price: 30000 }, //ultra
-		{ name: 'crocodile', price: 15000 }, //super
+		{ name: 'whale', price: 25000 }, //ultra
+		{ name: 'crocodile', price: 12000 }, //super
 		{ name: 'squid', price: 450 }, //rare
-		{ name: 'kraken', price: 500000 }, //legend
-		{ name: 'mermaid', price: 4000000 }, //legend
+		{ name: 'kraken', price: 800000 }, //legend
+		{ name: 'mermaid', price: 1500000 }, //legend
 		{ name: 'ray', price: 300 }, // rare
 		{ name: 'crab', price: 800 }, //rare
 		{ name: 'shrimp', price: 500 }, //rare

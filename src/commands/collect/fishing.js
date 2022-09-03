@@ -140,7 +140,7 @@ class UserCommand extends WynnCommand {
 		});
 		let nameFishForLang = resultFishing.name;
 		const currentLanguage = await this.container.i18n.fetchLanguage(message);
-		if (currentLanguage !== 'en-US') {
+		if (currentLanguage !== 'en-US' && this.container.client.options.fish.get('vi-VN') !== undefined) {
 			// switch case if amout lang > 2
 			nameFishForLang = this.container.client.options.fish.get('vi-VN').get('namefish').get(resultFishing.name);
 		}
