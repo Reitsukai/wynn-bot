@@ -138,11 +138,18 @@ class UserCommand extends WynnCommand {
 			},
 			arrayFish: newArray
 		});
+		let nameFishForLang = resultFishing.name;
+		const currentLanguage = await this.container.i18n.fetchLanguage(message);
+		if (currentLanguage !== 'en-US') {
+			// switch case if amout lang > 2
+			nameFishForLang = this.container.client.options.fish.get('vi-VN').get('namefish').get(resultFishing.name);
+		}
+
 		return await utils.returnSlashAndMessage(
 			message,
 			t('commands/fishing:fishingdone', {
 				user: tag,
-				name: collect.fishing.special.includes(resultFishing.name) ? `${resultFishing.name}` : t(`commands/fishing:${resultFishing.name}`),
+				name: nameFishForLang,
 				emoji: resultFishing.emoji,
 				rarity: t(`commands/fishing:${resultFishing.rarity}`)
 			})

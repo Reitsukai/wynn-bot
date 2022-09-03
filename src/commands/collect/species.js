@@ -23,6 +23,7 @@ class UserCommand extends WynnCommand {
 	}
 
 	async messageRun(message, args) {
+		const t = await fetchT(message);
 		try {
 			let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
 			if (isBlock === true) return;
@@ -33,7 +34,6 @@ class UserCommand extends WynnCommand {
 			if (input === null) {
 				return;
 			}
-			const t = await fetchT(message);
 			const checkCoolDown = await this.container.client.checkTimeCoolDownWithCheckSpam(
 				message.author.id,
 				this.name,
@@ -66,12 +66,14 @@ class UserCommand extends WynnCommand {
 		const inputPreParse = input.toLowerCase().replace('con ', '').replace('con', '');
 		if (this.container.client.options.fish.get('listname').includes(inputPreParse)) {
 			return await this.getInfoFish(message, t, inputPreParse, inputPreParse);
-		} else if (collect.fishing.listnameVN.includes(inputPreParse)) {
-			const index = collect.fishing.listnameVN.indexOf(inputPreParse);
-			// refactor this
-			return await this.getInfoFish(message, t, collect.fishing.listname[index], inputPreParse);
+		} else if (this.container.client.options.fish.get('listnameVN').includes(inputPreParse)) {
+			return await this.getInfoFish(
+				message,
+				t,
+				utils.getKeyByValueMap(this.container.client.options.fish.get('vi-VN').get('namefish'), inputPreParse),
+				inputPreParse
+			);
 		} else if (input.toLowerCase() === 'listfish') {
-			// const infoFish = await this.container.client.db.getAllFish();
 			const infoFish = [...this.container.client.options.fish.get('listinfo').values()];
 			let result = '';
 			for (let i = 0; i < infoFish.length; i++) {
@@ -91,7 +93,6 @@ class UserCommand extends WynnCommand {
 
 	async getInfoFish(message, t, name, nameLanguage) {
 		const infoFish = this.container.client.options.fish.get('listinfo').get(name);
-		//await this.container.client.db.getFishByName(name);
 		let emoji = infoFish.emoji;
 		let temp;
 		if ((temp = emoji.match(/:[0-9]+>/))) {
