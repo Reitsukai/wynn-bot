@@ -10,7 +10,8 @@ const {
 	resetCustomCooldown,
 	loadArrayLottery,
 	setArrayLottery,
-	loadFishRateAndInfo
+	loadFishRateAndInfo,
+	loadLanguageMappingVN
 } = require('./WynnClientFunction');
 
 class WynnClient extends SapphireClient {
@@ -59,6 +60,8 @@ class WynnClient extends SapphireClient {
 		this.setArrayLottery = setArrayLottery.bind(this);
 		//cache list fish and rate fish
 		this.loadFishRateAndInfo = loadFishRateAndInfo.bind(this);
+		//cache language
+		this.loadLanguageMappingVN = loadLanguageMappingVN.bind(this);
 	}
 }
 module.exports = WynnClient;

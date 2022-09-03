@@ -133,6 +133,32 @@ module.exports.loadFishRateAndInfo = async function loadFishRateAndInfo() {
 	}
 	container.client.options.fish.set('listname', nameFish);
 	container.client.options.fish.set('listinfo', infoFish);
+	console.log('listname');
 	console.log(container.client.options.fish.get('listname'));
+	console.log('listinfo');
 	console.log(container.client.options.fish.get('listinfo'));
+};
+
+module.exports.loadLanguageMappingVN = async function loadLanguageMappingVN() {
+	const langMappingArray = await this.db.findByLangLanguageMapping('VN');
+	langMappingArray.sort(function (a, b) {
+		let asc1 = a.type[0].charCodeAt(0);
+		let asc2 = b.type[0].charCodeAt(0);
+		if (asc1 < asc2) return -1;
+		if (asc1 > asc2) return 1;
+		return 0;
+	});
+	let map = new Map();
+	let mapTemp = new Map();
+	for (let index = 0; index < langMappingArray.length; index++) {
+		if (index > 0 && index < langMappingArray.length - 1 && langMappingArray[index].type !== langMappingArray[index + 1].type) {
+			map.set(langMappingArray[index].type, mapTemp);
+			mapTemp.clear();
+		}
+		mapTemp.set(langMappingArray[index].key, langMappingArray[index].value);
+	}
+	map.set(langMappingArray[langMappingArray.length - 1].type, mapTemp);
+	container.client.options.fish.set('langVN', map);
+	console.log('listlangVN');
+	console.log(container.client.options.fish.get('langVN'));
 };

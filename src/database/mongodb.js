@@ -71,3 +71,9 @@ const { addNewRateConfig, updateRateConfig, getAllRateConfig } = require('./quer
 module.exports.addNewRateConfig = addNewRateConfig;
 module.exports.updateRateConfig = updateRateConfig;
 module.exports.getAllRateConfig = getAllRateConfig;
+/* Language Mapping */
+const { findByTypeAndLanguage, findByLangLanguageMapping, findAllLanguageMapping, addNewLanguageMapping } = require('./query/languageMapping');
+module.exports.findByTypeAndLanguage = findByTypeAndLanguage;
+module.exports.findByLangLanguageMapping = findByLangLanguageMapping;
+module.exports.findAllLanguageMapping = findAllLanguageMapping;
+module.exports.addNewLanguageMapping = addNewLanguageMapping;
