@@ -76,6 +76,10 @@ class UserCommand extends WynnCommand {
 		} else if (input.toLowerCase() === 'listfish') {
 			const infoFish = [...this.container.client.options.fish.get('listinfo').values()];
 			let result = '';
+			infoFish.sort(function (a, b) {
+				if (a.id < b.id) return -1;
+				if (a.id > b.id) return 1;
+			});
 			for (let i = 0; i < infoFish.length; i++) {
 				result += '`' + infoFish[i].id.toString() + '`' + '....' + infoFish[i].emoji + ' ' + infoFish[i].name + '\n';
 			}
